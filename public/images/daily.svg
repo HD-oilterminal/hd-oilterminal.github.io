@@ -1,0 +1,14 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon/common/fill/nav/daily">
+<path id="Rectangle 36321" d="M3 7C3 5.34315 4.34315 4 6 4H18C19.6569 4 21 5.34315 21 7V19C21 20.6569 19.6569 22 18 22H6C4.34315 22 3 20.6569 3 19V7Z" fill="#BC81FF"/>
+<path id="Rectangle 36322" d="M3 7C3 5.34315 4.34315 4 6 4H18C19.6569 4 21 5.34315 21 7V8.5H3V7Z" fill="#761FEF"/>
+<path id="Vector 139" d="M8 3V6" stroke="#3420B6" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector 140" d="M16 3V6" stroke="#3420B6" stroke-width="1.5" stroke-linecap="round"/>
+<rect id="Rectangle 36349" opacity="0.5" x="6" y="10" width="2" height="2" rx="1" fill="white"/>
+<rect id="Rectangle 36352" opacity="0.5" x="6" y="13.5" width="2" height="2" rx="1" fill="white"/>
+<rect id="Rectangle 36355" opacity="0.5" x="6" y="17" width="2" height="2" rx="1" fill="white"/>
+<rect id="Rectangle 36350" opacity="0.5" x="10" y="10" width="2" height="2" rx="1" fill="white"/>
+<rect id="Rectangle 36353" opacity="0.5" x="10" y="13.5" width="2" height="2" rx="1" fill="white"/>
+<rect id="Rectangle 36351" opacity="0.5" x="14" y="10" width="2" height="2" rx="1" fill="white"/>
+</g>
+</svg>

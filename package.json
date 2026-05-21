@@ -1,0 +1,40 @@
+{
+  "name": "hd-oilterminal.github.io",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev --port 6006",
+    "build-storybook": "storybook build --disable-telemetry",
+    "lint": "eslint src --ext .ts,.vue",
+    "format": "prettier --write \"src/**/*.{ts,vue,css}\" \".storybook/**/*.ts\""
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^8",
+    "@storybook/addon-interactions": "^8",
+    "@storybook/blocks": "^8",
+    "@storybook/vue3": "^8",
+    "@storybook/vue3-vite": "^8",
+    "@vitejs/plugin-vue": "^5",
+    "autoprefixer": "^10",
+    "eslint": "^10.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-storybook": "^10.4.0",
+    "eslint-plugin-vue": "^10.9.1",
+    "pinia": "^3.0.4",
+    "postcss": "^8",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "storybook": "^8",
+    "tailwindcss": "^3",
+    "typescript": "^5",
+    "vite": "^6",
+    "vue": "^3",
+    "vue-eslint-parser": "^10.4.0",
+    "vue-i18n": "^11.4.4",
+    "vue-tsc": "^2"
+  },
+  "dependencies": {
+    "realgrid": "2.8.7"
+  }
+}

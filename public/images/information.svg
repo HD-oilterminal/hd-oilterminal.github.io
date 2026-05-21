@@ -1,0 +1,10 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon/common/fill/nav/information">
+<path id="Rectangle 36321" d="M2 5C2 3.34315 3.34315 2 5 2H15C16.6569 2 18 3.34315 18 5V19C18 20.6569 16.6569 22 15 22H5C3.34315 22 2 20.6569 2 19V5Z" fill="#FFABAB"/>
+<path id="Vector 126" d="M9 6.5H9.5V5.5H9V6.5ZM5 6.5H9V5.5H5V6.5Z" fill="#4D546B"/>
+<path id="Vector 127" d="M7 9.5H7.5V8.5H7V9.5ZM5 9.5H7V8.5H5V9.5Z" fill="#4D546B"/>
+<path id="Vector 128" d="M6 12.5H6.5V11.5H6V12.5ZM5 12.5H6V11.5H5V12.5Z" fill="#4D546B"/>
+<path id="Union" fill-rule="evenodd" clip-rule="evenodd" d="M15 19C18.866 19 22 15.866 22 12C22 8.13401 18.866 5 15 5C11.134 5 8 8.13401 8 12C8 13.7654 8.65354 15.3782 9.73189 16.6096L7 19H15Z" fill="#FF4949"/>
+<path id="Union_2" fill-rule="evenodd" clip-rule="evenodd" d="M15 10.5C15.5523 10.5 16 10.0523 16 9.5C16 8.94772 15.5523 8.5 15 8.5C14.4477 8.5 14 8.94772 14 9.5C14 10.0523 14.4477 10.5 15 10.5ZM15 11.5C14.4477 11.5 14 11.9477 14 12.5V14.5C14 15.0523 14.4477 15.5 15 15.5C15.5523 15.5 16 15.0523 16 14.5V12.5C16 11.9477 15.5523 11.5 15 11.5Z" fill="white"/>
+</g>
+</svg>
