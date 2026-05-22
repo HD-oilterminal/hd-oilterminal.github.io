@@ -39,7 +39,7 @@ const config: StorybookConfig = {
     }
     // hdot-tmaster-front 컴포넌트가 참조하는 공유 패키지는
     // hd-oilterminal의 node_modules에서 단일 버전으로 resolve
-    config.resolve.dedupe = ['vue', 'pinia', 'vue-i18n', 'realgrid']
+    config.resolve.dedupe = ['vue', 'pinia', 'vue-i18n', 'realgrid', 'radix-vue', '@internationalized/date', 'dayjs']
     return config
   },
 }

@@ -10,8 +10,9 @@
     "types": ["vite/client"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "hdot-tmaster-front/*": ["../hdot-tmaster-front/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", ".storybook"]
 }

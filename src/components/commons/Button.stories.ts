@@ -2,13 +2,13 @@ import type { Meta, StoryObj } from '@storybook/vue3'
 import Button from 'hdot-tmaster-front/components/commons/Button.vue'
 
 const meta: Meta<typeof Button> = {
-  title: 'Common/Button',
+  title: 'commons/Button',
   component: Button,
   tags: ['autodocs'],
   argTypes: {
     variant: { control: 'select', options: ['primary', 'secondary', 'ghost'] },
-    size: { control: 'select', options: ['sm', 'md', 'lg'] },
-  },
+    size: { control: 'select', options: ['sm', 'md', 'lg'] }
+  }
 }
 
 export default meta

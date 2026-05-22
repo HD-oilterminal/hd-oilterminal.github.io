@@ -2,13 +2,13 @@ import type { Meta, StoryObj } from '@storybook/vue3'
 import SearchInput from 'hdot-tmaster-front/components/commons/SearchInput.vue'
 
 const meta: Meta<typeof SearchInput> = {
-  title: 'Common/SearchInput',
+  title: 'commons/SearchInput',
   component: SearchInput,
   tags: ['autodocs'],
   argTypes: {
     placeholder: { control: 'text' },
-    modelValue: { control: 'text' },
-  },
+    modelValue: { control: 'text' }
+  }
 }
 
 export default meta
