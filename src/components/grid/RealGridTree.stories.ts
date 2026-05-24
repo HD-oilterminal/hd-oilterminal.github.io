@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import { CellIndex, ColumnLayoutDirection, GridBase, GridCell, TreeView } from 'realgrid'
+import { CellIndex, ColumnLayoutDirection, GridBase, TreeView } from 'realgrid'
 import RealGridTree from 'hdot-tmaster-front/components/grid/RealGridTree.vue'
 import type { ColumnLayout, Columns } from 'hdot-tmaster-front/types/grid'
 import { useFormat } from 'hdot-tmaster-front/composables/useFormat'

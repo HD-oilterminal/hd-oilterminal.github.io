@@ -9,9 +9,17 @@ const meta: Meta<typeof DatePicker> = {
   tags: ['autodocs'],
   argTypes: {
     modelValue: { control: 'text' },
-    placeholder: { control: 'text' },
+    type: {
+      control: 'select',
+      options: ['date', 'month', 'year'],
+    },
     format: { control: 'text' },
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
+    placeholder: { control: 'text' },
+    locale: {
+      control: 'select',
+      options: ['ko', 'en-US', 'ja', 'zh-CN']
+    }
   }
 }
 
@@ -22,6 +30,20 @@ export const Default: Story = {
   args: {
     placeholder: '날짜 선택',
     disabled: false
+  }
+}
+
+export const MonthMode: Story = {
+  args: {
+    type: 'month',
+    placeholder: '월 선택'
+  }
+}
+
+export const YearMode: Story = {
+  args: {
+    type: 'year',
+    placeholder: '연도 선택'
   }
 }
 

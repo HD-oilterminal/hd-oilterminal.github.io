@@ -43,7 +43,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
         working-directory: hd-oilterminal.github.io
-      - run: pnpm build-storybook
+      - run: pnpm build
         working-directory: hd-oilterminal.github.io
         env:
           VITE_REALGRID_KEY: ${{ secrets.VITE_REALGRID_KEY }}

@@ -1,3 +1,5 @@
+[![HDOT Design System](https://github.com/HD-oilterminal/hd-oilterminal.github.io/actions/workflows/storybook.yml/badge.svg)](https://github.com/HD-oilterminal/hd-oilterminal.github.io/actions/workflows/storybook.yml)
+
 # HDOT Design System
 
 ## 프로젝트 개요
@@ -58,12 +60,13 @@ hd-oilterminal.github.io/
 ├── tsconfig.json
 └── package.json
 ```
-
+> 대략적 구조로 최신화 하지 않음  
+> 위 기준으로 적당한 배치 진행
 ---
 
 ## 컴포넌트 이식 규칙 (hdot-tmaster-front → 이 프로젝트)
 
-Nuxt 자동 import를 제거하고 명시적 import로 변환한다.
+Nuxt 자동 import를 제거하고 명시적 import로 변환
 
 | 원본 (Nuxt) | 이식 후 |
 |-------------|---------|
@@ -73,7 +76,7 @@ Nuxt 자동 import를 제거하고 명시적 import로 변환한다.
 | `useAuthApi().logout()` | 제거, emit으로 위임 |
 | `~/types/...` | `@/types/...` |
 
-**AppHeader**의 `logout` emit: 부모(Story decorator)에서 처리한다.
+**AppHeader**의 `logout` emit: 부모(Story decorator)에서 처리
 
 ---
 
@@ -96,8 +99,8 @@ decorators: [
   (story) => ({
     setup() {
       const mdiStore = useMdiStore()
-      mdiStore.tabs = [...]
-      mdiStore.activeTabId = 'op_main'
+      mdiStore.tabs = ['main', 'codes', 'users']
+      mdiStore.activeTabId = 'main'
       return {}
     },
     template: '<story />',
@@ -119,13 +122,6 @@ pnpm lint               # ESLint (Storybook 규칙)
 
 ## 이미지 파일
 
-컴포넌트가 `/images/*.svg` 경로를 참조한다. Storybook에서 표시하려면 `public/images/`에 파일을 복사해야 한다. 소스: `hdot-tmaster-front/public/images/`
-
----
-
-## 미완료 / 추후 작업
-
-- [x] `public/images/` 에 SVG 아이콘 파일 복사
-- [x] 빌드 최종 검증 (`pnpm build-storybook`)
-- [x] ESLint TypeScript/Vue 파서 설정 (`@typescript-eslint/parser`, `vue-eslint-parser`)
-- [ ] `hdot-tmaster-front`에 새 컴포넌트 추가 시 이 프로젝트에도 동기화
+- 컴포넌트가 `/images/*.svg` 경로를 참조  
+- Storybook에서 표시하려면 `public/images/`에 파일을 복사  
+  (`hdot-tmaster-front/public/images/` ---> `public/images/`)

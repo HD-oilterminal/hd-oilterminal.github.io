@@ -10,7 +10,15 @@ const meta: Meta<typeof DateRangePicker> = {
     placeholder: { control: 'text' },
     format: { control: 'text' },
     numberOfMonths: { control: { type: 'number', min: 1, max: 3 } },
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
+    type: {
+      control: 'select',
+      options: ['date', 'month', 'year'],
+    },
+    locale: {
+      control: 'select',
+      options: ['ko', 'en-US', 'ja', 'zh-CN'],
+    }
   }
 }
 
@@ -22,6 +30,20 @@ export const Default: Story = {
     placeholder: '날짜 범위 선택',
     numberOfMonths: 2,
     disabled: false
+  }
+}
+
+export const MonthRange: Story = {
+  args: {
+    type: 'month',
+    placeholder: '월 범위 선택',
+  }
+}
+
+export const YearRange: Story = {
+  args: {
+    type: 'year',
+    placeholder: '연도 범위 선택',
   }
 }
 
