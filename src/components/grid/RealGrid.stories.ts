@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import RealGrid from 'hdot-tmaster-front/components/grid/RealGrid.vue'
 import { ValueType } from 'realgrid'
+
 import rows from './ReadGrid.data.json'
+import RealGrid from './RealGrid.vue'
 
 const meta: Meta<typeof RealGrid> = {
   title: 'grid/RealGrid',

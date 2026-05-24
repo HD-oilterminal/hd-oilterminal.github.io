@@ -7,5 +7,5 @@ addons.setConfig({
     brandTitle: 'HDOT Design System',
     brandImage: '/images/logo.svg',
     brandUrl: '/'
-  }),
+  })
 })

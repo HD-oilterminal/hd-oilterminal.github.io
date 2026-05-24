@@ -1,46 +1,66 @@
 {
-  "name": "hd-oilterminal.github.io",
+  "name": "hdot-design-system",
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "exports": {
+    "./src/components/*": "./src/components/*",
+    "./src/composables/*": "./src/composables/*",
+    "./src/types/*": "./src/types/*"
+  },
   "scripts": {
     "dev": "storybook dev --port 6006",
     "build": "storybook build --disable-telemetry",
     "lint": "eslint src --ext .ts,.vue",
-    "format": "prettier --write \"src/**/*.{ts,vue,css}\" \".storybook/**/*.ts\""
+    "format": "prettier --write \"src/**/*.{ts,vue,css}\" \".storybook/**/*.ts\"",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@internationalized/date": "^3.12.1",
+    "@internationalized/date": "^3.12.2",
     "@storybook/addon-essentials": "^8.6.14",
     "@storybook/addon-interactions": "^8.6.14",
     "@storybook/blocks": "^8.6.14",
     "@storybook/manager-api": "^8.6.14",
+    "@storybook/preview-api": "^8.6.14",
     "@storybook/theming": "^8.6.14",
     "@storybook/vue3": "^8.6.18",
     "@storybook/vue3-vite": "^8.6.18",
+    "@tailwindcss/vite": "^4.3.0",
     "@types/node": "^25.9.1",
+    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@typescript-eslint/parser": "^8.60.0",
     "@vitejs/plugin-vue": "^5.2.4",
-    "autoprefixer": "^10.5.0",
-    "dayjs": "^1.11.20",
-    "eslint": "^10.4.0",
+    "dayjs": "^1.11.21",
+    "eslint": "^10.4.1",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
     "eslint-plugin-storybook": "^10.4.1",
     "eslint-plugin-vue": "^10.9.1",
-    "hdot-tmaster-front": "file:../hdot-tmaster-front",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.6",
     "pinia": "^3.0.4",
     "postcss": "^8.5.15",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "radix-vue": "^1.9.17",
+    "reka-ui": "^2.9.8",
     "storybook": "^8.6.18",
-    "tailwindcss": "^3.4.19",
+    "tailwindcss": "^4.3.0",
     "typescript": "^5.9.3",
     "unplugin-auto-import": "^21.0.0",
     "vite": "^6.4.2",
-    "vue": "^3.5.34",
+    "vue": "^3.5.35",
     "vue-eslint-parser": "^10.4.0",
     "vue-i18n": "^11.4.4",
     "vue-tsc": "^2.2.12"
+  },
+  "lint-staged": {
+    "*.{vue,ts,tsx,js,jsx,mjs,mts}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,scss,html,json,md,yaml,yml}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "realgrid": "2.8.7"

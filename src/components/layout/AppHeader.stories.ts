@@ -1,11 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
+
 import { useMdiStore } from '@/stores/mdi'
-import AppHeader from 'hdot-tmaster-front/components/layout/AppHeader.vue'
+
+import AppHeader from './AppHeader.vue'
 
 type Story = StoryObj<typeof AppHeader>
 
 export default {
-  title: 'Layout/AppHeader',
+  title: 'Layout/사이트 상단(AppHeader)',
   component: AppHeader,
   tags: ['autodocs'],
   parameters: {

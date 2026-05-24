@@ -1,24 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import { ref } from 'vue'
-import DatePicker from 'hdot-tmaster-front/components/commons/DatePicker.vue'
 import dayjs from 'dayjs'
+import { ref } from 'vue'
+
+import DatePicker from './DatePicker.vue'
 
 const meta: Meta<typeof DatePicker> = {
-  title: 'commons/DatePicker',
+  title: 'commons/날짜입력-달력',
   component: DatePicker,
   tags: ['autodocs'],
   argTypes: {
-    modelValue: { control: 'text' },
     type: {
       control: 'select',
-      options: ['date', 'month', 'year'],
+      options: ['date', 'month', 'year']
     },
     format: { control: 'text' },
     disabled: { control: 'boolean' },
     placeholder: { control: 'text' },
     locale: {
       control: 'select',
-      options: ['ko', 'en-US', 'ja', 'zh-CN']
+      options: ['ko', 'en', 'ja', 'zh-CN'],
+      description: '언어설정'
     }
   }
 }
@@ -26,9 +27,12 @@ const meta: Meta<typeof DatePicker> = {
 export default meta
 type Story = StoryObj<typeof DatePicker>
 
+const today = dayjs(Date.now()).format('YYYY-MM-DD')
+
 export const Default: Story = {
   args: {
     placeholder: '날짜 선택',
+    modelValue: today,
     disabled: false
   }
 }
@@ -36,39 +40,42 @@ export const Default: Story = {
 export const MonthMode: Story = {
   args: {
     type: 'month',
-    placeholder: '월 선택'
+    placeholder: '월 선택',
+    modelValue: today
   }
 }
 
 export const YearMode: Story = {
   args: {
     type: 'year',
-    placeholder: '연도 선택'
+    placeholder: '연도 선택',
+    modelValue: today
   }
 }
 
 export const WithValue: Story = {
   args: {
-    modelValue: dayjs(Date.now()).format('YYYY-MM-DD')
+    modelValue: today
   }
 }
 
 export const CustomFormat: Story = {
   args: {
-    modelValue: dayjs(Date.now()).format('YYYY-MM-DD'),
+    modelValue: today,
     format: 'YYYY년 MM월 DD일'
   }
 }
 
 export const CustomPlaceholder: Story = {
   args: {
+    modelValue: today,
     placeholder: '기준일을 선택하세요'
   }
 }
 
 export const Disabled: Story = {
   args: {
-    modelValue: dayjs(Date.now()).format('YYYY-MM-DD'),
+    modelValue: today,
     disabled: true
   }
 }

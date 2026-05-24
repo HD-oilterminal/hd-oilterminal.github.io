@@ -3,18 +3,21 @@ import { setup } from '@storybook/vue3'
 import { createPinia, setActivePinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
 import RealGrid, { CalendarMode, SelectionStyle } from 'realgrid'
-import '../src/assets/tailwind.css'
-import kr from '../src/i18n/kr'
+import ko from '../src/i18n/ko'
 
+//
+import '../src/assets/tailwind.css'
+
+//
 RealGrid.setLicenseKey(import.meta.env.VITE_REALGRID_KEY)
 RealGrid.setDefault({
   editor: {
     dateCellEditor: {
-      viewMode: CalendarMode.MONTH,
+      viewMode: CalendarMode.MONTH
     },
     numberCellEditor: {
-      showStepButton: true,
-    },
+      showStepButton: true
+    }
   },
   edit: {
     editable: false,
@@ -22,22 +25,22 @@ RealGrid.setDefault({
     commitByCell: true,
     commitWhenLeave: true,
     columnEditableFirst: false,
-    movable: false,
+    movable: false
   },
   rowIndicator: {
-    visible: false,
+    visible: false
   },
   stateBar: {
-    visible: false,
+    visible: false
   },
   checkBar: {
-    visible: true,
+    visible: true
   },
   header: {
-    height: 30,
+    height: 30
   },
   footer: {
-    visible: false,
+    visible: false
   },
   display: {
     rowHeight: -1,
@@ -46,14 +49,14 @@ RealGrid.setDefault({
     rowResizable: true,
     eachRowResizable: true,
     selectionStyle: SelectionStyle.ROWS,
-    vscrollBar: true,
-  },
+    vscrollBar: true
+  }
 })
 
 const pinia = createPinia()
 setActivePinia(pinia)
 
-const i18n = createI18n({ legacy: false, locale: 'kr', messages: { kr } })
+const i18n = createI18n({ legacy: false, locale: 'ko', messages: { ko } })
 
 setup(app => {
   app.use(pinia)
@@ -65,10 +68,10 @@ const preview: Preview = {
     controls: {
       matchers: {
         color: /(background|color)$/i,
-        date: /Date$/i,
-      },
-    },
-  },
+        date: /Date$/i
+      }
+    }
+  }
 }
 
 export default preview

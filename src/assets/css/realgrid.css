@@ -1,0 +1,10 @@
+.rg-tree-icon {
+  display: inline;
+}
+
+.rg-header-renderer span > i,
+.rg-header-group-cell span > i {
+  color: #2a99be;
+  display: block;
+  font-style: normal;
+}

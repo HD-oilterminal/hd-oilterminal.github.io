@@ -4,6 +4,7 @@ import tsPlugin from '@typescript-eslint/eslint-plugin'
 import vueParser from 'vue-eslint-parser'
 import vuePlugin from 'eslint-plugin-vue'
 import prettierConfig from 'eslint-config-prettier'
+import simpleImportSort from 'eslint-plugin-simple-import-sort'
 
 export default [
   ...storybook.configs['flat/recommended'],
@@ -15,24 +16,24 @@ export default [
       parserOptions: {
         parser: tsParser,
         extraFileExtensions: ['.vue'],
-        sourceType: 'module',
-      },
+        sourceType: 'module'
+      }
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
+      'simple-import-sort': simpleImportSort
     },
     rules: {
-      // @storybook/vue3 에서 Meta/StoryObj 타입을 import하는 건 정상
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
       'storybook/no-renderer-packages': 'off',
-      // 컴포넌트 이름 두 단어 강제 해제
       'vue/multi-word-component-names': 'off',
-      // 포맷팅 규칙 (prettier 위임)
       'vue/max-attributes-per-line': 'off',
       'vue/html-self-closing': 'off',
       'vue/singleline-html-element-content-newline': 'off',
       'vue/html-indent': 'off',
-      'vue/html-closing-bracket-newline': 'off',
-    },
+      'vue/html-closing-bracket-newline': 'off'
+    }
   },
-  prettierConfig,
+  prettierConfig
 ]

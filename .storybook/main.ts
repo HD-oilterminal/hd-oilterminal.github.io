@@ -1,20 +1,22 @@
-import { fileURLToPath, URL } from 'url'
 import type { StorybookConfig } from '@storybook/vue3-vite'
+import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
+import { fileURLToPath, URL } from 'url'
 
-const tmaster = fileURLToPath(new URL('../../hdot-tmaster-front', import.meta.url))
+const srcDir = fileURLToPath(new URL('../src', import.meta.url))
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|ts|tsx)'],
   addons: ['@storybook/addon-essentials', '@storybook/addon-interactions'],
   framework: {
     name: '@storybook/vue3-vite',
-    options: {},
+    options: {}
   },
-  viteFinal: async (config) => {
+  viteFinal: async config => {
     config.plugins = [
       ...(config.plugins ?? []),
+      tailwindcss(),
       vue(),
       AutoImport({
         imports: [
@@ -22,26 +24,31 @@ const config: StorybookConfig = {
           'pinia',
           'vue-i18n',
           {
-            '#app': ['navigateTo', 'useNuxtApp', 'useRuntimeConfig'],
-          },
+            '#app': ['navigateTo', 'useNuxtApp', 'useRuntimeConfig']
+          }
         ],
-        dirs: [`${tmaster}/stores`, `${tmaster}/composables`, `${tmaster}/services`],
-        dts: false,
-      }),
+        dirs: [`${srcDir}/stores`, `${srcDir}/composables`],
+        dts: false
+      })
     ]
     config.resolve ??= {}
     config.resolve.alias = {
       ...((config.resolve.alias as Record<string, string>) ?? {}),
-      '@': tmaster,
-      '~': tmaster,
-      'hdot-tmaster-front': tmaster,
-      '#app': fileURLToPath(new URL('./nuxt-mock.ts', import.meta.url)),
+      '@': srcDir,
+      '~': srcDir,
+      '#app': fileURLToPath(new URL('./nuxt-mock.ts', import.meta.url))
     }
-    // hdot-tmaster-front 컴포넌트가 참조하는 공유 패키지는
-    // hd-oilterminal의 node_modules에서 단일 버전으로 resolve
-    config.resolve.dedupe = ['vue', 'pinia', 'vue-i18n', 'realgrid', 'radix-vue', '@internationalized/date', 'dayjs']
+    config.resolve.dedupe = [
+      'vue',
+      'pinia',
+      'vue-i18n',
+      'realgrid',
+      'reka-ui',
+      '@internationalized/date',
+      'dayjs'
+    ]
     return config
-  },
+  }
 }
 
 export default config

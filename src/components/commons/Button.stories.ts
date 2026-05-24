@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import Button from 'hdot-tmaster-front/components/commons/Button.vue'
+
+import Button from './Button.vue'
 
 const meta: Meta<typeof Button> = {
-  title: 'commons/Button',
+  title: 'commons/버튼',
   component: Button,
   tags: ['autodocs'],
   argTypes: {

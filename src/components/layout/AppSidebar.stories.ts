@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
+
 import { useMenuStore } from '@/stores/menu'
-import AppSidebar from 'hdot-tmaster-front/components/layout/AppSidebar.vue'
+
+import AppSidebar from './AppSidebar.vue'
 
 const meta: Meta<typeof AppSidebar> = {
-  title: 'Layout/AppSidebar',
+  title: 'Layout/사이트 사이드메뉴(Sidebar)',
   component: AppSidebar,
   tags: ['autodocs'],
   parameters: {
