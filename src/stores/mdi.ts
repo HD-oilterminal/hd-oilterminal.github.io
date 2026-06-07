@@ -1,16 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export interface MdiTab {
-  id: string
-  menuId: string
-  title: string
-  closable: boolean
-}
+import type { MdiTab } from '../types/mdi'
 
 export const useMdiStore = defineStore('mdi', () => {
-  const tabs = ref<MdiTab[]>([{ id: 'op_main', menuId: 'op_main', title: '메인', closable: false }])
-  const activeTabId = ref('op_main')
+  const tabs = ref<MdiTab[]>([])
+  const activeTabId = ref('')
 
   const activate = (id: string) => {
     activeTabId.value = id

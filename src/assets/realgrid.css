@@ -1,0 +1,48 @@
+.rg-tree-icon {
+  display: inline;
+}
+
+.rg-header-renderer span > i,
+.rg-header-group-cell span > i {
+  color: #2a99be;
+  display: block;
+  font-style: normal;
+}
+
+.multiline-pre-line {
+  white-space: pre-line !important;
+}
+
+.multiline-pre {
+  white-space: pre !important;
+}
+
+.rg-data-cell.multiline-pre-line .rg-renderer.rg-tree-renderer > span:not(.square) {
+  margin-left: 2px;
+}
+
+.rg-data-cell.multiline-pre-line.left-tab .rg-renderer.rg-tree-renderer > span:not(.square) {
+  margin-left: 5px;
+}
+
+.rg-data-cell.multiline-pre-line.left-tab .rg-renderer.rg-tree-renderer > .rg-tree-leaf + span {
+  margin-left: 0;
+}
+
+.rg-fixed-column-bar,
+.rg-fixed-row-bar-cell {
+  background-color: #ccc !important;
+}
+
+.bg-grid-order {
+  background-color: #fff;
+}
+
+.bg-grid-order-task {
+  background-color: #f4f4f4;
+}
+
+.grid-cell-pointer-text-blue {
+  cursor: pointer;
+  color: #001aff;
+}

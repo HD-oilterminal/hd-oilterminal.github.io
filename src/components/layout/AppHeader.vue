@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useMdiStore } from '../../stores/mdi'
+import Tooltip from '../commons/Tooltip.vue'
+
 const { t } = useI18n()
 const mdiStore = useMdiStore()
 
@@ -52,20 +58,26 @@ const navIcons = [
 </script>
 
 <template>
-  <header
-    class="flex h-12 shrink-0 items-stretch border-b border-gray-200"
-    style="background-color: #ebecf6"
-  >
-    <!-- 로고 + 프로필 (기존 shrink_btn_wrap) -->
+  <header class="flex h-12 shrink-0 items-stretch border-b border-gray-200 bg-gray-100">
     <div
-      class="flex cursor-pointer items-center gap-3 border-r border-gray-200 px-3 hover:brightness-95"
-      style="min-width: 180px"
-      @click="mdiStore.activate('op_main')"
+      class="flex cursor-pointer items-center gap-2 border-r border-gray-200 px-3 hover:brightness-95"
+      @click="mdiStore.activate('')"
     >
       <img src="/images/logo.svg" alt="HDOT" class="h-5 w-auto" />
-      <div class="flex items-center gap-1 text-[11px] text-gray-400">
-        <span>—</span><span>—</span><span>—</span>
+      <div class="text-hdot-primary text-xs leading-3">
+        <div class="text-bold text-[11px] text-gray-500">울산사업부</div>
+        <span>처음인</span> <span>책임매니저</span>
       </div>
+
+      <!--
+      <button
+        class="flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] text-gray-400 hover:bg-white/60 hover:text-gray-700"
+        @click="emit('logout')"
+      >
+        <img src="/images/logout.svg" alt="" class="h-3.5 w-3.5 opacity-60" />
+        {{ t('header.myinfo_popup.logout_btn') }}
+      </button>
+      -->
     </div>
 
     <!-- MDI 탭 바 (가로 스크롤) -->
@@ -103,43 +115,20 @@ const navIcons = [
       <button class="px-1 text-gray-400 hover:text-gray-600" @click="scrollTabs(1)">›</button>
     </div>
 
-    <!-- 우측: header_navi_wrap + 세션 + 프로필 -->
-    <div class="flex items-center gap-3 border-l border-gray-200 px-3">
-      <!-- 세션 타이머 -->
+    <div class="flex items-center gap-4 border-l border-gray-200 px-3">
       <span class="text-xs text-gray-500 tabular-nums">{{ sessionTime }}</span>
 
-      <!-- 단축 아이콘 (기존 h_right header_navi_wrap 동일 구조) -->
-      <div class="flex items-center gap-4">
-        <button
-          v-for="nav in navIcons"
-          :key="nav.code"
-          type="button"
-          class="navi group relative flex flex-col items-center gap-0.5"
-          :data-open_popup_code="nav.code"
-        >
-          <img
-            :src="`/images/${nav.icon}.svg`"
-            :alt="nav.label"
-            class="h-5 w-5 opacity-60 group-hover:opacity-100"
-          />
-          <!-- 기존 span: 호버 시 하단 툴팁 -->
-          <span
-            class="pointer-events-none absolute -bottom-7 left-1/2 hidden -translate-x-1/2 rounded bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-gray-700 group-hover:block"
-            style="white-space: nowrap"
+      <div class="flex items-center gap-3">
+        <Tooltip v-for="nav in navIcons" :key="nav.code" :content="nav.label" side="bottom">
+          <button
+            type="button"
+            class="navi flex flex-col items-center gap-0.5 opacity-60 hover:opacity-100"
+            :data-open_popup_code="nav.code"
           >
-            {{ nav.label }}
-          </span>
-        </button>
+            <img :src="`/images/${nav.icon}.svg`" :alt="nav.label" class="h-5 w-5" />
+          </button>
+        </Tooltip>
       </div>
-
-      <!-- 로그아웃 (작게) -->
-      <button
-        class="flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] text-gray-400 hover:bg-white/60 hover:text-gray-700"
-        @click="emit('logout')"
-      >
-        <img src="/images/logout.svg" alt="" class="h-3.5 w-3.5 opacity-60" />
-        {{ t('header.myinfo_popup.logout_btn') }}
-      </button>
     </div>
   </header>
 </template>

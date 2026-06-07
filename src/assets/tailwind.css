@@ -1,8 +1,10 @@
-@import "tailwindcss";
-@import "./css/realgrid.css";
+@import 'tailwindcss';
+@import 'realgrid/dist/realgrid-style.css';
+@import 'realgrid.css';
 
 @theme {
   --font-sans: 'pretendard', sans-serif;
+  --font-weight-medium: 400;
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
@@ -17,6 +19,6 @@
   --radius-lg: var(--radius-md);
   --radius-md: var(--radius-sm);
   --radius-sm: 0.2rem;
-}
 
-@source "../components/**/*.{vue,ts}";
+  --color-hdot-primary: #0369b4;
+}

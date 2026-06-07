@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import 'realgrid/dist/realgrid-style.css'
-
 import type { CellIndex, ClickData, GridBase, LocalTreeDataProvider, TreeView } from 'realgrid'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 

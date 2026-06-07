@@ -31,7 +31,7 @@ const emit = defineEmits<{
         :key="tab.value"
         :value="tab.value"
         :disabled="tab.disabled"
-        class="-mb-px px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600"
+        class="-mb-px px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600"
       >
         {{ tab.label }}
       </TabsTrigger>

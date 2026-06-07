@@ -24,7 +24,7 @@ const isOpen = ref(props.open ?? false)
 
 watch(
   () => props.open,
-  (val) => {
+  val => {
     if (val !== undefined) isOpen.value = val
   }
 )

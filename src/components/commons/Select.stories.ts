@@ -7,28 +7,28 @@ const options = [
   { label: '옵션 1', value: 'opt1' },
   { label: '옵션 2', value: 'opt2' },
   { label: '옵션 3 (비활성)', value: 'opt3', disabled: true },
-  { label: '옵션 4', value: 'opt4' },
+  { label: '옵션 4', value: 'opt4' }
 ]
 
 const meta: Meta<typeof Select> = {
   title: 'commons/목록선택(Select)',
   component: Select,
-  tags: ['autodocs'],
+  tags: ['autodocs']
 }
 
 export default meta
 type Story = StoryObj<typeof Select>
 
 export const Default: Story = {
-  args: { options, placeholder: '선택하세요' },
+  args: { options, placeholder: '선택하세요' }
 }
 
 export const WithValue: Story = {
-  args: { options, modelValue: 'opt2' },
+  args: { options, modelValue: 'opt2' }
 }
 
 export const Disabled: Story = {
-  args: { options, disabled: true, placeholder: '비활성화' },
+  args: { options, disabled: true, placeholder: '비활성화' }
 }
 
 export const Interactive: Story = {
@@ -43,6 +43,6 @@ export const Interactive: Story = {
         <Select v-model="value" :options="options" placeholder="선택하세요" />
         <p class="text-sm text-gray-500">선택: {{ value || '없음' }}</p>
       </div>
-    `,
-  }),
+    `
+  })
 }

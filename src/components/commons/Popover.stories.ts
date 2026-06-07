@@ -8,8 +8,8 @@ const meta: Meta<typeof Popover> = {
   tags: ['autodocs'],
   argTypes: {
     side: { control: 'select', options: ['top', 'right', 'bottom', 'left'] },
-    align: { control: 'select', options: ['start', 'center', 'end'] },
-  },
+    align: { control: 'select', options: ['start', 'center', 'end'] }
+  }
 }
 
 export default meta
@@ -30,8 +30,8 @@ export const Default: Story = {
           <p class="text-sm text-gray-500">여기에 팝오버 내용이 들어갑니다.</p>
         </div>
       </Popover>
-    `,
-  }),
+    `
+  })
 }
 
 export const TopAlign: Story = {
@@ -46,6 +46,6 @@ export const TopAlign: Story = {
           <div class="p-4 w-48 text-sm text-gray-700">위에 뜨는 팝오버</div>
         </Popover>
       </div>
-    `,
-  }),
+    `
+  })
 }

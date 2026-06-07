@@ -23,7 +23,7 @@ const emit = defineEmits<{
 <template>
   <label
     :class="[
-      'inline-flex select-none items-center gap-2',
+      'inline-flex items-center gap-2 select-none',
       disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
     ]"
   >
@@ -31,7 +31,7 @@ const emit = defineEmits<{
       :id="id"
       :checked="modelValue"
       :disabled="disabled"
-      class="relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-transparent bg-gray-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:pointer-events-none data-[state=checked]:bg-blue-600"
+      class="relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-transparent bg-gray-200 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 focus-visible:outline-none disabled:pointer-events-none data-[state=checked]:bg-blue-600"
       @update:checked="emit('update:modelValue', $event)"
     >
       <SwitchThumb

@@ -17,7 +17,7 @@ withDefaults(
   <Label
     :for="$props.for"
     :class="[
-      'text-sm font-medium leading-none',
+      'text-sm leading-none font-medium',
       disabled ? 'cursor-not-allowed opacity-50' : 'cursor-default text-gray-700'
     ]"
   >

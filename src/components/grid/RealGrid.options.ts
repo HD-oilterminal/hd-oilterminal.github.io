@@ -62,7 +62,7 @@ const generate = (
 
   if (props.layout) {
     grid.setColumnLayout(props.layout)
-    Object.keys(props.columns).forEach((key) => {
+    Object.keys(props.columns).forEach(key => {
       const col = props.columns[key]
       if (col.spanning) {
         const colLayout = grid.layoutByColumn(col.key || key)
@@ -82,7 +82,7 @@ const generate = (
 type ColumnType = DataColumn | SeriesColumn | LiteralColumn | ConfigObject | string
 
 const columnsAdapter = (columns: Columns): ColumnType[] => {
-  return Object.keys(columns).map((key) => {
+  return Object.keys(columns).map(key => {
     const column = columns[key]
     const def: ColumnType = {
       name: column.key || key,
@@ -105,7 +105,7 @@ const columnsAdapter = (columns: Columns): ColumnType[] => {
 }
 
 const fieldsAdaptor = (columns: Columns): DataFieldInput[] => {
-  return Object.keys(columns).map((key) => {
+  return Object.keys(columns).map(key => {
     return {
       fieldName: key,
       dataType: columns[key].type ?? ValueType.TEXT,

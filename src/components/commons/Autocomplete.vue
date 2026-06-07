@@ -10,6 +10,7 @@ import {
   ComboboxRoot,
   ComboboxViewport
 } from 'reka-ui'
+import { ref } from 'vue'
 
 export interface Option {
   label: string
@@ -41,8 +42,8 @@ const isOpen = ref(false)
 function filterByLabel(vals: Array<string | Record<string, unknown>>, term: string) {
   if (!term) return vals
   const lower = term.toLowerCase()
-  return vals.filter((v) => {
-    const opt = props.options?.find((o) => o.value === v)
+  return vals.filter(v => {
+    const opt = props.options?.find(o => o.value === v)
     return opt?.label.toLowerCase().includes(lower) ?? false
   })
 }
@@ -80,7 +81,7 @@ function filterByLabel(vals: Array<string | Record<string, unknown>>, term: stri
         :placeholder="placeholder"
         :disabled="disabled"
         :display-value="
-          (val: unknown) => options?.find((o) => o.value === val)?.label ?? String(val ?? '')
+          (val: unknown) => options?.find(o => o.value === val)?.label ?? String(val ?? '')
         "
         class="w-full bg-transparent outline-none placeholder:text-gray-400 disabled:cursor-not-allowed"
         @focus="isOpen = true"
@@ -90,7 +91,7 @@ function filterByLabel(vals: Array<string | Record<string, unknown>>, term: stri
       <ComboboxContent
         position="popper"
         :side-offset="4"
-        class="w-(--reka-combobox-trigger-width) z-50 rounded-md border border-gray-200 bg-white shadow-lg"
+        class="z-50 w-(--reka-combobox-trigger-width) rounded-md border border-gray-200 bg-white shadow-lg"
       >
         <ComboboxViewport class="max-h-60 overflow-y-auto p-1">
           <ComboboxEmpty class="py-6 text-center text-sm text-gray-500">{{
@@ -100,7 +101,7 @@ function filterByLabel(vals: Array<string | Record<string, unknown>>, term: stri
             v-for="option in options"
             :key="option.value"
             :value="option.value"
-            class="data-disabled:pointer-events-none data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-disabled:opacity-50 relative flex cursor-pointer select-none items-center rounded-sm px-3 py-2 pr-8 text-sm text-gray-900 outline-none"
+            class="relative flex cursor-pointer items-center rounded-sm px-3 py-2 pr-8 text-sm text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700"
           >
             {{ option.label }}
             <ComboboxItemIndicator class="absolute right-3 flex items-center">

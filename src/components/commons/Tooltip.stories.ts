@@ -15,9 +15,11 @@ export default meta
 type Story = StoryObj<typeof Tooltip>
 
 export const Default: Story = {
-  render: (args) => ({
+  render: args => ({
     components: { Tooltip },
-    setup() { return { args } },
+    setup() {
+      return { args }
+    },
     template: `
       <div class="flex justify-center pt-12">
         <Tooltip v-bind="args">
@@ -29,7 +31,7 @@ export const Default: Story = {
     `
   }),
   args: {
-    content: '도움말 텍스트입니다',
+    content: '도움말 텍스트입니다'
   },
   parameters: {
     docs: {

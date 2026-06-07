@@ -27,7 +27,7 @@ const currentYear = ref(
 
 watch(
   () => props.modelValue,
-  (val) => {
+  val => {
     if (val) currentYear.value = parseInt(val.split('-')[0])
   }
 )
@@ -60,7 +60,7 @@ const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } =
 
 <template>
   <div
-    class="w-69 select-none p-3"
+    class="w-69 p-3 select-none"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp"
     @pointercancel="onPointerCancel"
@@ -116,7 +116,7 @@ const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } =
         :disabled="disabled"
         :class="[
           'inline-flex h-9 w-full items-center justify-center rounded-md text-sm transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+          'focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none',
           'disabled:pointer-events-none disabled:opacity-40',
           month.isSelected
             ? 'bg-blue-600 text-white hover:bg-blue-700'

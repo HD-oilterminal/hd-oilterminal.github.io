@@ -22,7 +22,7 @@ const pageStart = ref(Math.floor((selectedYear.value ?? today.getFullYear()) / 1
 
 watch(
   () => props.modelValue,
-  (val) => {
+  val => {
     if (val) pageStart.value = Math.floor(parseInt(val) / 12) * 12
   }
 )
@@ -57,7 +57,7 @@ const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } =
 
 <template>
   <div
-    class="w-[276px] select-none p-3"
+    class="w-[276px] p-3 select-none"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp"
     @pointercancel="onPointerCancel"
@@ -113,7 +113,7 @@ const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } =
         :disabled="disabled"
         :class="[
           'inline-flex h-9 w-full items-center justify-center rounded-md text-sm transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+          'focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none',
           'disabled:pointer-events-none disabled:opacity-40',
           year.isSelected
             ? 'bg-blue-600 text-white hover:bg-blue-700'

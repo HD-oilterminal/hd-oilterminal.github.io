@@ -45,7 +45,7 @@ const emit = defineEmits<{
     @update:model-value="emit('update:modelValue', $event)"
   >
     <SelectTrigger
-      class="h-control-md data-placeholder:text-gray-400 inline-flex w-full items-center justify-between gap-2 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+      class="h-control-md inline-flex w-full items-center justify-between gap-2 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-gray-400"
     >
       <SelectValue :placeholder="placeholder ?? '선택'" />
       <svg
@@ -88,7 +88,7 @@ const emit = defineEmits<{
             :key="option.value"
             :value="option.value"
             :disabled="option.disabled"
-            class="data-disabled:pointer-events-none data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-disabled:opacity-50 relative flex cursor-pointer select-none items-center rounded-sm px-3 py-2 pr-8 text-sm text-gray-900 outline-none data-[state=checked]:font-medium"
+            class="relative flex cursor-pointer items-center rounded-sm px-3 py-2 pr-8 text-sm text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-[state=checked]:font-medium"
           >
             <SelectItemText>{{ option.label }}</SelectItemText>
             <SelectItemIndicator class="absolute right-3 flex items-center">

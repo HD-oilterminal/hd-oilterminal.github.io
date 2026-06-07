@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import 'realgrid/dist/realgrid-style.css'
-
 import type { GridView, LocalDataProvider } from 'realgrid'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
@@ -10,7 +8,7 @@ import { gridish } from './RealGrid.options'
 const props = withDefaults(defineProps<GridProps>(), {
   fields: () => [],
   rows: () => [],
-  height: '400px',
+  height: '100%',
   editable: false
 })
 
@@ -35,7 +33,7 @@ onMounted(() => {
 
 watch(
   () => props.rows,
-  (rows) => provider?.setRows(rows),
+  rows => provider?.setRows(rows),
   { deep: true }
 )
 

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+
+import { useMdiStore } from '../../stores/mdi'
+import { useMenuStore } from '../../stores/menu'
 import type { MenuLv1Item, MenuLv2Item } from '../../types/menu'
 import Tooltip from '../commons/Tooltip.vue'
 
@@ -45,16 +49,10 @@ const openUpperMenu = (menuId: string) => {
 const openPage = (sub: MenuLv2Item) => {
   isExpanded.value = false
 
-  if (sub.menu_id === 'op_main') {
-    mdiStore.activate('op_main')
-    return
-  }
-
   const opened = mdiStore.openTab({
     id: sub.menu_id,
     menuId: sub.menu_id,
-    title: sub.menu_nm,
-    closable: true
+    title: sub.menu_nm
   })
 
   if (!opened) {
@@ -68,7 +66,7 @@ const close = () => {
 </script>
 
 <template>
-  <nav class="flex h-full flex-col">
+  <nav class="z-50 flex h-full flex-col" @mouseleave="close">
     <Transition name="slide">
       <div
         v-if="isExpanded && activeUpperId"
@@ -95,7 +93,7 @@ const close = () => {
       </div>
     </Transition>
 
-    <div class="relative flex h-full w-12 flex-col border-r border-gray-200 bg-[#ebecf6]">
+    <div class="relative flex h-full w-12 flex-col border-r border-gray-200 bg-gray-100">
       <ul class="flex flex-1 flex-col items-center gap-2 py-6">
         <li v-for="menu in visibleLv1" :key="menu.menu_id" @click="openUpperMenu(menu.menu_id)">
           <Tooltip :content="menu.menu_nm" side="right">

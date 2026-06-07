@@ -23,7 +23,7 @@ const emit = defineEmits<{
 <template>
   <label
     :class="[
-      'inline-flex items-center gap-2 select-none',
+      'inline-flex items-center gap-1 select-none',
       disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
     ]"
   >
@@ -63,6 +63,6 @@ const emit = defineEmits<{
         </svg>
       </CheckboxIndicator>
     </CheckboxRoot>
-    <span v-if="label" class="text-sm text-gray-900">{{ label }}</span>
+    <span v-if="label" class="text-gray-900">{{ label }}</span>
   </label>
 </template>

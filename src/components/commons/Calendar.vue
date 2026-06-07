@@ -56,7 +56,7 @@ const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } =
     :disabled="disabled"
     :readonly="readonly"
     :locale="locale"
-    class="select-none p-3"
+    class="p-3 select-none"
     @update:model-value="selected"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp"
@@ -122,7 +122,7 @@ const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } =
                 <CalendarCellTrigger
                   :day="day"
                   :month="month.value"
-                  class="data-disabled:pointer-events-none data-selected:bg-blue-600 data-today:font-semibold data-outside-view:text-gray-300 data-selected:data-today:text-white data-selected:text-white data-today:text-blue-600 data-disabled:opacity-40 data-selected:hover:bg-blue-700 inline-flex h-9 w-9 items-center justify-center rounded-md text-sm transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-md text-sm transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-disabled:pointer-events-none data-disabled:opacity-40 data-outside-view:text-gray-300 data-selected:bg-blue-600 data-selected:text-white data-selected:hover:bg-blue-700 data-today:font-semibold data-today:text-blue-600 data-selected:data-today:text-white"
                 />
               </CalendarCell>
             </CalendarGridRow>

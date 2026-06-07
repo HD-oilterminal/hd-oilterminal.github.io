@@ -14,6 +14,8 @@ import {
   RangeCalendarPrev,
   RangeCalendarRoot
 } from 'reka-ui'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useDragNav } from '../../composables/useDragNav'
 
@@ -78,7 +80,7 @@ const selected = (value: DateRange) => {
     :readonly="readonly"
     :number-of-months="numberOfMonths"
     :locale="locale || defaultLocale"
-    class="select-none p-3"
+    class="p-3 select-none"
     @update:model-value="selected"
     @pointerdown="onPointerDown"
     @pointerup="onPointerUp"
@@ -153,7 +155,7 @@ const selected = (value: DateRange) => {
                 <RangeCalendarCellTrigger
                   :day="date"
                   :month="month.value"
-                  class="data-disabled:pointer-events-none data-highlighted:rounded-none data-selected:rounded-none data-selection-end:rounded-r-md data-selection-start:rounded-l-md data-highlighted:bg-blue-100 data-selected:bg-blue-100 data-selection-end:bg-blue-600! data-selection-start:bg-blue-600! data-today:font-semibold data-outside-view:text-gray-300 data-selection-end:text-white data-selection-start:text-white data-today:text-blue-600 data-disabled:opacity-40 inline-flex h-9 w-9 items-center justify-center rounded-md text-sm transition-colors hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-md text-sm transition-colors hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-disabled:pointer-events-none data-disabled:opacity-40 data-highlighted:rounded-none data-highlighted:bg-blue-100 data-outside-view:text-gray-300 data-selected:rounded-none data-selected:bg-blue-100 data-selection-end:rounded-r-md data-selection-end:bg-blue-600! data-selection-end:text-white data-selection-start:rounded-l-md data-selection-start:bg-blue-600! data-selection-start:text-white data-today:font-semibold data-today:text-blue-600"
                 />
               </RangeCalendarCell>
             </RangeCalendarGridRow>
