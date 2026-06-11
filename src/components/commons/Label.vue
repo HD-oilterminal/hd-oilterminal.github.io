@@ -5,23 +5,36 @@ withDefaults(
   defineProps<{
     for?: string
     required?: boolean
-    disabled?: boolean
+    text?: string
+    textSize?: string
   }>(),
   {
-    for: ''
+    for: '',
+    text: '',
+    textSize: '8rem'
   }
 )
 </script>
 
 <template>
   <Label
-    :for="$props.for"
-    :class="[
-      'text-sm leading-none font-medium',
-      disabled ? 'cursor-not-allowed opacity-50' : 'cursor-default text-gray-700'
-    ]"
+    :for="$props.for || undefined"
+    class="hdot-label flex flex-1 items-center gap-2 text-sm font-medium"
   >
+    <span
+      :class="required ? 'required' : ''"
+      class="shrink-0 text-right"
+      :style="{ width: textSize }"
+      >{{ text }}</span
+    >
     <slot />
-    <span v-if="required" class="ml-0.5 text-red-500">*</span>
   </Label>
 </template>
+
+<style scoped>
+span.required::before {
+  content: '*';
+  color: var(--color-red-500);
+  margin-right: var(--spacing);
+}
+</style>

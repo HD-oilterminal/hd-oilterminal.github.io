@@ -46,5 +46,5 @@ defineExpose({ getGrid: () => grid, getProvider: () => provider })
 </script>
 
 <template>
-  <div ref="container" :style="{ width: '100%', height }" />
+  <div ref="container" class="realgrid-container" :style="{ height }" />
 </template>

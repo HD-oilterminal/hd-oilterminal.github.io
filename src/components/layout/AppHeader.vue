@@ -40,9 +40,9 @@ onUnmounted(() => {
 const emit = defineEmits<{ logout: [] }>()
 
 // 탭 스크롤
-const tabsEl = ref<HTMLElement | null>(null)
+const tabs = ref<HTMLElement | null>(null)
 const scrollTabs = (dir: -1 | 1) => {
-  tabsEl.value?.scrollBy({ left: dir * 150, behavior: 'smooth' })
+  tabs.value?.scrollBy({ left: dir * 150, behavior: 'smooth' })
 }
 
 // 기존 header_navi_wrap 구성 그대로 (MNU92xxx)
@@ -84,21 +84,22 @@ const navIcons = [
     <div class="flex min-w-0 flex-1 items-stretch overflow-hidden">
       <button class="px-1 text-gray-400 hover:text-gray-600" @click="scrollTabs(-1)">‹</button>
       <ul
-        ref="tabsEl"
-        class="flex flex-1 items-stretch gap-px overflow-x-auto"
-        style="scrollbar-width: none"
+        ref="tabs"
+        class="flex flex-1 scrollbar-none items-stretch gap-px overflow-x-auto text-xs"
       >
         <li
           v-for="tab in mdiStore.tabs"
           :key="tab.id"
-          class="group flex shrink-0 cursor-pointer items-center gap-1 border-b-2 px-3 text-xs transition-colors"
+          class="group flex shrink-0 cursor-pointer items-center gap-1 border-b-2 px-3 transition-colors"
           :class="
             tab.id === mdiStore.activeTabId
               ? 'border-b-2 bg-white font-semibold'
               : 'border-transparent text-gray-500 hover:bg-white/60 hover:text-gray-700'
           "
           :style="
-            tab.id === mdiStore.activeTabId ? 'border-bottom-color:#1e6afb; color:#1e6afb' : ''
+            tab.id === mdiStore.activeTabId
+              ? 'border-bottom-color:var(--color-hdot-primary); color:var(--color-hdot-primary)'
+              : ''
           "
           @click="mdiStore.activate(tab.id)"
         >
