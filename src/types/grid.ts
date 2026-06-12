@@ -17,6 +17,12 @@ export interface GridProps {
   editable?: boolean
   layout?: ColumnLayout
   headerHeight?: number
+  fixed?: Fixed
+}
+
+export interface Fixed {
+  column?: number
+  row?: number
 }
 
 export interface TreeProps extends GridProps {
@@ -36,13 +42,9 @@ export interface Column {
   visible?: boolean
   editable?: boolean
   styleName?: string
-  values?: string[]
-  labels?: string[]
+  code?: string
   displaying?: (grid: GridBase, index: CellIndex, value: unknown) => string | undefined
-  styling?: (
-    grid: GridBase,
-    model: GridCell
-  ) => string | ColumnStyleObject | ColumnSummaryStyleObject | undefined
+  styling?: (grid: GridBase, model: GridCell) => string | ColumnStyleObject | ColumnSummaryStyleObject | undefined
   spanning?: (grid: GridBase, layout: CellLayoutColumnItem, itemIndex: number) => number
 }
 

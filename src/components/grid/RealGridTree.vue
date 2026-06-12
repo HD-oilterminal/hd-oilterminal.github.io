@@ -2,7 +2,9 @@
 import type { CellIndex, ClickData, GridBase, LocalTreeDataProvider, TreeView } from 'realgrid'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
-import type { TreeProps } from '../../types/grid'
+import type { TreeProps } from '@/types/grid'
+
+import { useRealGrid } from '../../composables/useRealGrid'
 import { treeish } from './RealGrid.options'
 
 const props = withDefaults(defineProps<TreeProps>(), {
@@ -25,8 +27,13 @@ const container = ref<HTMLDivElement>()
 let grid: TreeView
 let provider: LocalTreeDataProvider
 
+const { resolveColumns } = useRealGrid()
+
 onMounted(() => {
-  ;({ grid, provider } = treeish('Sample Title', container.value, props))
+  ;({ grid, provider } = treeish('Sample Title', container.value, {
+    ...props,
+    columns: resolveColumns(props.columns)
+  }))
 
   emit('ready', { grid, provider })
 

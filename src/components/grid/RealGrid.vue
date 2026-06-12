@@ -2,7 +2,9 @@
 import type { GridView, LocalDataProvider } from 'realgrid'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-import type { GridProps } from '../../types/grid'
+import type { GridProps } from '@/types/grid'
+
+import { useRealGrid } from '../../composables/useRealGrid'
 import { gridish } from './RealGrid.options'
 
 const props = withDefaults(defineProps<GridProps>(), {
@@ -21,8 +23,13 @@ const container = ref<HTMLDivElement>()
 let grid: GridView
 let provider: LocalDataProvider
 
+const { resolveColumns } = useRealGrid()
+
 onMounted(() => {
-  ;({ grid, provider } = gridish('Sample Grid Name', container.value, props))
+  ;({ grid, provider } = gridish('Sample Grid Name', container.value, {
+    ...props,
+    columns: resolveColumns(props.columns)
+  }))
 
   emit('ready', { grid, provider })
 

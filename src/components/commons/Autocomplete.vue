@@ -10,7 +10,10 @@ import {
   ComboboxRoot,
   ComboboxViewport
 } from 'reka-ui'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useCodesStore } from '@/stores/codes'
 
 export interface Option {
   label: string
@@ -22,14 +25,14 @@ const props = withDefaults(
     modelValue?: string
     options?: Option[]
     placeholder?: string
+    code?: string
     disabled?: boolean
-    emptyText?: string
   }>(),
   {
     modelValue: undefined,
     options: () => [],
     placeholder: '',
-    emptyText: '결과 없음'
+    code: undefined
   }
 )
 
@@ -37,16 +40,26 @@ const emit = defineEmits<{
   'update:modelValue': [value: string | undefined]
 }>()
 
-const isOpen = ref(false)
+const codesStore = useCodesStore()
+const { t, locale } = useI18n()
 
-function filterByLabel(vals: Array<string | Record<string, unknown>>, term: string) {
-  if (!term) return vals
-  const lower = term.toLowerCase()
-  return vals.filter(v => {
-    const opt = props.options?.find(o => o.value === v)
-    return opt?.label.toLowerCase().includes(lower) ?? false
-  })
-}
+const resolvedOptions = computed<Option[]>(() => {
+  if (!props.code) return props.options ?? []
+  return (codesStore.list(props.code) ?? []).map(i => ({
+    value: i.code,
+    label: locale.value === 'ko' ? i.name : (i.englishName ?? i.name)
+  }))
+})
+
+const isOpen = ref(false)
+const searchTerm = ref('')
+
+const filteredOptions = computed(() => {
+  if (!searchTerm.value) return resolvedOptions.value
+
+  const lower = searchTerm.value.toLowerCase()
+  return resolvedOptions.value.filter(o => o.label.toLowerCase().includes(lower) || o.value.toLowerCase().includes(lower))
+})
 </script>
 
 <template>
@@ -54,7 +67,7 @@ function filterByLabel(vals: Array<string | Record<string, unknown>>, term: stri
     :model-value="modelValue"
     :disabled="disabled"
     :open="isOpen"
-    :filter-function="filterByLabel"
+    ignore-filter
     class="relative w-full"
     @update:open="isOpen = $event"
     @update:model-value="emit('update:modelValue', $event as string | undefined)"
@@ -78,11 +91,10 @@ function filterByLabel(vals: Array<string | Record<string, unknown>>, term: stri
         <path d="m21 21-4.3-4.3" />
       </svg>
       <ComboboxInput
-        :placeholder="placeholder"
+        v-model="searchTerm"
+        :placeholder="placeholder || t('placeholder.select')"
         :disabled="disabled"
-        :display-value="
-          (val: unknown) => options?.find(o => o.value === val)?.label ?? String(val ?? '')
-        "
+        :display-value="(val: unknown) => resolvedOptions.find(o => o.value === val)?.label ?? String(val ?? '')"
         class="w-full bg-transparent outline-none placeholder:text-gray-400 disabled:cursor-not-allowed"
         @focus="isOpen = true"
       />
@@ -94,11 +106,9 @@ function filterByLabel(vals: Array<string | Record<string, unknown>>, term: stri
         class="z-50 w-(--reka-combobox-trigger-width) rounded-md border border-gray-200 bg-white shadow-lg"
       >
         <ComboboxViewport class="max-h-60 overflow-y-auto p-1">
-          <ComboboxEmpty class="py-6 text-center text-sm text-gray-500">{{
-            emptyText
-          }}</ComboboxEmpty>
+          <ComboboxEmpty class="py-6 text-center text-sm text-gray-500">{{ t('no-results') }}</ComboboxEmpty>
           <ComboboxItem
-            v-for="option in options"
+            v-for="option in filteredOptions"
             :key="option.value"
             :value="option.value"
             class="relative flex cursor-pointer items-center rounded-sm px-3 py-2 pr-8 text-sm text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700"

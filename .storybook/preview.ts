@@ -1,12 +1,17 @@
+import '../src/assets/tailwind.css'
+
 import type { Preview } from '@storybook/vue3'
 import { setup } from '@storybook/vue3'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { createPinia, setActivePinia } from 'pinia'
-import { createI18n } from 'vue-i18n'
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
 import RealGrid, { CalendarMode, SelectionStyle } from 'realgrid'
+import { createI18n } from 'vue-i18n'
+
 import ko from '../src/i18n/ko'
 
-//
-import '../src/assets/tailwind.css'
+dayjs.extend(customParseFormat)
 
 //
 RealGrid.setLicenseKey(import.meta.env.VITE_REALGRID_KEY)
@@ -54,6 +59,7 @@ RealGrid.setDefault({
 })
 
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedState)
 setActivePinia(pinia)
 
 const i18n = createI18n({ legacy: false, locale: 'ko', messages: { ko } })

@@ -14,21 +14,19 @@ import type { Columns, GridProps, TreeProps } from '../../types/grid'
 export const treeish = (title: string, container?: HTMLDivElement, props?: GridProps) => {
   if (!container) throw new Error('Container is required!')
 
-  return generate(
-    new TreeView(container, false, { title }),
-    new LocalTreeDataProvider(false),
-    props!
-  ) as { grid: TreeView; provider: LocalTreeDataProvider }
+  return generate(new TreeView(container, false, { title }), new LocalTreeDataProvider(false), props!) as {
+    grid: TreeView
+    provider: LocalTreeDataProvider
+  }
 }
 
 export const gridish = (title: string, container?: HTMLDivElement, props?: GridProps) => {
   if (!container) throw new Error('Container is required!')
 
-  return generate(
-    new GridView(container, false, { title }),
-    new LocalDataProvider(false),
-    props!
-  ) as { grid: GridView; provider: LocalDataProvider }
+  return generate(new GridView(container, false, { title }), new LocalDataProvider(false), props!) as {
+    grid: GridView
+    provider: LocalDataProvider
+  }
 }
 
 const generate = (
@@ -58,7 +56,7 @@ const generate = (
   grid.setDisplayOptions({ showTooltip: true, tooltipEllipsisOnly: true }) // 글 줄임("...")의 경우 툴팁으로 표시
   grid.setCopyOptions({ copyDisplayText: true, singleMode: true })
   grid.setDataSource(provider)
-  grid.setFixedOptions({ colCount: 2, rowCount: 2 })
+  grid.setFixedOptions({ colCount: props.fixed?.column ?? 0, rowCount: props.fixed?.row ?? 0 })
 
   if (props.layout) {
     grid.setColumnLayout(props.layout)
@@ -99,6 +97,11 @@ const columnsAdapter = (columns: Columns): ColumnType[] => {
     if (column.styleName) def.styleName = column.styleName
     if (column.displaying) def.displayCallback = column.displaying
     if (column.styling) def.styleCallback = column.styling
+    if (column.values && column.labels) {
+      def.values = column.values
+      def.labels = column.labels
+      def.lookupDisplay = true
+    }
 
     return def
   })
