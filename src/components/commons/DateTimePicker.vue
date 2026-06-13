@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { CalendarDate, type DateValue } from '@internationalized/date'
+import { CalendarDateTime, type DateValue } from '@internationalized/date'
+import dayjs from 'dayjs'
 import {
   DatePickerCalendar,
   DatePickerCell,
@@ -21,16 +22,14 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useDragNav } from '../../composables/useDragNav'
-import { dateString, pad, toDate } from '../../composables/useFormat'
+import { dateString, pad, padTime } from '../../composables/useFormat'
 
 const props = withDefaults(
   defineProps<{
     modelValue?: string
     disabled?: boolean
   }>(),
-  {
-    modelValue: ''
-  }
+  { modelValue: '' }
 )
 
 const emit = defineEmits<{
@@ -39,29 +38,43 @@ const emit = defineEmits<{
 
 const { locale } = useI18n()
 
-const internalValue = ref<DateValue | undefined>(toDate(props.modelValue))
+const toDateTime = (val?: string): CalendarDateTime | undefined => {
+  if (!val) return undefined
+  const d = dayjs(val, 'YYYY-MM-DD HH:mm', true)
+  if (!d.isValid()) return undefined
+  return new CalendarDateTime(d.year(), d.month() + 1, d.date(), d.hour(), d.minute())
+}
+
+const internalValue = ref<DateValue | undefined>(toDateTime(props.modelValue))
 const isOpen = ref(false)
 const yearInput = ref()
 const monthInput = ref()
 const dayInput = ref()
+const hourInput = ref()
+const minuteInput = ref()
 const prev = ref()
 const next = ref()
 
-const onUpdate = (value: DateValue | undefined) => {
-  internalValue.value = value as CalendarDate | undefined
-  emit('update:modelValue', value ? dateString(value) : '')
+const onUpdate = (value?: DateValue) => {
+  internalValue.value = value as CalendarDateTime | undefined
+  emit('update:modelValue', value ? dateString(value, 'YYYY-MM-DD HH:mm') : '')
 }
 
 const onBackspace = (e: KeyboardEvent) => {
   if (e.key !== 'Backspace') return
-
   const focused = document.activeElement
-  if (focused === monthInput.value?.$el && monthInput.value.$el.textContent?.trim() === '__') {
+  if (focused === minuteInput.value?.$el && minuteInput.value.$el.textContent?.trim() === '__') {
     e.preventDefault()
-    yearInput.value.$el.focus()
+    hourInput.value.$el.focus()
+  } else if (focused === hourInput.value?.$el && hourInput.value.$el.textContent?.trim() === '__') {
+    e.preventDefault()
+    dayInput.value.$el.focus()
   } else if (focused === dayInput.value?.$el && dayInput.value.$el.textContent?.trim() === '__') {
     e.preventDefault()
     monthInput.value.$el.focus()
+  } else if (focused === monthInput.value?.$el && monthInput.value.$el.textContent?.trim() === '__') {
+    e.preventDefault()
+    yearInput.value.$el.focus()
   }
 }
 
@@ -71,8 +84,10 @@ const onFocusOut = (e: FocusEvent) => {
     const yearPh = yearInput.value?.$el?.textContent?.trim() === '____'
     const monthPh = monthInput.value?.$el?.textContent?.trim() === '__'
     const dayPh = dayInput.value?.$el?.textContent?.trim() === '__'
-    const allEmpty = yearPh && monthPh && dayPh
-    const allFilled = !yearPh && !monthPh && !dayPh
+    const hourPh = hourInput.value?.$el?.textContent?.trim() === '__'
+    const minutePh = minuteInput.value?.$el?.textContent?.trim() === '__'
+    const allEmpty = yearPh && monthPh && dayPh && hourPh && minutePh
+    const allFilled = !yearPh && !monthPh && !dayPh && !hourPh && !minutePh
     if (!allEmpty && !allFilled) {
       internalValue.value = undefined
       emit('update:modelValue', '')
@@ -90,7 +105,7 @@ const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } =
 watch(
   () => props.modelValue,
   val => {
-    const next = toDate(val)
+    const next = toDateTime(val)
     if (next?.toString() !== internalValue.value?.toString()) internalValue.value = next
   }
 )
@@ -109,13 +124,14 @@ watch(
       :model-value="internalValue as DateValue"
       :disabled="disabled"
       :locale="locale"
-      granularity="hour"
+      granularity="minute"
+      :hour-cycle="24"
       close-on-select
       @update:model-value="onUpdate"
     >
       <DatePickerField
         v-slot="{ segments }"
-        class="h-control-md inline-flex min-w-32 items-center rounded-md border border-gray-300 bg-white pl-1 text-sm focus-within:ring-2 focus-within:ring-blue-500"
+        class="h-control-md inline-flex min-w-45 items-center rounded-md border border-gray-300 bg-white pl-1 text-sm focus-within:ring-2 focus-within:ring-blue-500"
         :class="disabled ? 'cursor-not-allowed opacity-50' : ''"
         @focusin="isOpen = true"
         @keydown="onBackspace"
@@ -139,7 +155,7 @@ watch(
         <DatePickerInput
           ref="yearInput"
           part="year"
-          class="rounded px-1 tabular-nums caret-transparent outline-none focus:bg-gray-300 data-placeholder:text-gray-400"
+          class="rounded px-1 tabular-nums caret-transparent outline-none focus:bg-gray-200 data-placeholder:text-gray-400"
         >
           {{ pad(segments.find(s => s.part === 'year')?.value, '____') }}
         </DatePickerInput>
@@ -147,7 +163,7 @@ watch(
         <DatePickerInput
           ref="monthInput"
           part="month"
-          class="rounded px-1 tabular-nums caret-transparent outline-none focus:bg-gray-300 data-placeholder:text-gray-400"
+          class="rounded px-1 tabular-nums caret-transparent outline-none focus:bg-gray-200 data-placeholder:text-gray-400"
         >
           {{ pad(segments.find(s => s.part === 'month')?.value, '__', 2) }}
         </DatePickerInput>
@@ -155,9 +171,24 @@ watch(
         <DatePickerInput
           ref="dayInput"
           part="day"
-          class="rounded px-1 tabular-nums caret-transparent outline-none focus:bg-gray-300 data-placeholder:text-gray-400"
+          class="rounded px-1 tabular-nums caret-transparent outline-none focus:bg-gray-200 data-placeholder:text-gray-400"
         >
           {{ pad(segments.find(s => s.part === 'day')?.value, '__', 2) }}
+        </DatePickerInput>
+        <DatePickerInput
+          ref="hourInput"
+          part="hour"
+          class="rounded px-1 tabular-nums caret-transparent outline-none focus:bg-gray-200 data-placeholder:text-gray-400"
+        >
+          {{ padTime(segments.find(s => s.part === 'hour')?.value, '__') }}
+        </DatePickerInput>
+        <span class="mx-[-2px] text-gray-500 select-none">:</span>
+        <DatePickerInput
+          ref="minuteInput"
+          part="minute"
+          class="rounded px-1 tabular-nums caret-transparent outline-none focus:bg-gray-200 data-placeholder:text-gray-400"
+        >
+          {{ padTime(segments.find(s => s.part === 'minute')?.value, '__') }}
         </DatePickerInput>
       </DatePickerField>
 
@@ -211,7 +242,7 @@ watch(
             </DatePickerNext>
           </DatePickerHeader>
 
-          <div class="relative z-1000 flex gap-4">
+          <div class="relative flex gap-4">
             <DatePickerGrid v-for="month in grid" :key="month.value.toString()" class="border-collapse">
               <DatePickerGridHead>
                 <DatePickerGridRow class="flex">

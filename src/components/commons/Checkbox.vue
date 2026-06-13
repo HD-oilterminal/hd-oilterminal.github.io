@@ -23,7 +23,7 @@ const emit = defineEmits<{
 <template>
   <label
     :class="[
-      'inline-flex items-center gap-1 select-none',
+      'inline-flex items-center gap-1 text-sm select-none',
       disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
     ]"
   >
@@ -39,13 +39,7 @@ const emit = defineEmits<{
         :force-mount="true"
         class="flex h-4 w-4 items-center justify-center text-white data-[state=unchecked]:invisible"
       >
-        <svg
-          v-if="modelValue === 'indeterminate'"
-          width="10"
-          height="2"
-          viewBox="0 0 10 2"
-          fill="currentColor"
-        >
+        <svg v-if="modelValue === 'indeterminate'" width="10" height="2" viewBox="0 0 10 2" fill="currentColor">
           <rect width="10" height="2" rx="1" />
         </svg>
         <svg

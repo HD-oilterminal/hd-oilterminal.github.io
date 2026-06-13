@@ -6,27 +6,19 @@ withDefaults(
     for?: string
     required?: boolean
     text?: string
-    textSize?: string
+    size?: string
   }>(),
   {
     for: '',
     text: '',
-    textSize: '8rem'
+    size: '6rem'
   }
 )
 </script>
 
 <template>
-  <Label
-    :for="$props.for || undefined"
-    class="hdot-label flex flex-1 items-center gap-2 text-sm font-medium"
-  >
-    <span
-      :class="required ? 'required' : ''"
-      class="shrink-0 text-right"
-      :style="{ width: textSize }"
-      >{{ text }}</span
-    >
+  <Label :for="$props.for || undefined" class="flex flex-1 items-center gap-2 text-sm font-medium">
+    <span :class="required ? 'required' : ''" class="shrink-0 text-right" :style="{ width: size }">{{ text }}</span>
     <slot />
   </Label>
 </template>

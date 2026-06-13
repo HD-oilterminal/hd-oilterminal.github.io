@@ -2,11 +2,11 @@ import type { Meta, StoryObj } from '@storybook/vue3'
 import dayjs from 'dayjs'
 import { ref } from 'vue'
 
-import DatePicker from './DatePicker.vue'
+import DateTimePicker from './DateTimePicker.vue'
 
-const meta: Meta<typeof DatePicker> = {
-  title: 'commons/달력-날짜 입력',
-  component: DatePicker,
+const meta: Meta<typeof DateTimePicker> = {
+  title: 'commons/달력-날짜시간 입력',
+  component: DateTimePicker,
   tags: ['autodocs'],
   argTypes: {
     disabled: { control: 'boolean' }
@@ -15,29 +15,29 @@ const meta: Meta<typeof DatePicker> = {
 }
 
 export default meta
-type Story = StoryObj<typeof DatePicker>
+type Story = StoryObj<typeof DateTimePicker>
 
-const today = dayjs(Date.now()).format('YYYY-MM-DD')
+const now = dayjs().format('YYYY-MM-DD HH:mm')
 
 export const Disabled: Story = {
   args: {
-    modelValue: today,
+    modelValue: now,
     disabled: false
   }
 }
 
 export const Interactive: Story = {
   render: () => ({
-    components: { DatePicker },
+    components: { DateTimePicker },
     setup() {
-      const date = ref<string>()
-      return { date }
+      const datetime = ref<string>()
+      return { datetime }
     },
     template: `
       <div class="space-y-4 p-4">
-        <DatePicker v-model="date" />
+        <DateTimePicker v-model="datetime" />
         <p class="text-sm text-gray-600">
-          선택된 날짜: <span class="font-medium text-gray-900">{{ date ?? '없음' }}</span>
+          선택된 날짜시간: <span class="font-medium text-gray-900">{{ datetime ?? '없음' }}</span>
         </p>
       </div>
     `

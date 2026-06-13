@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import { CellIndex, ColumnLayoutDirection, GridBase, TreeView } from 'realgrid'
 
-import { useFormat } from '@/composables/useFormat'
+import { numeric } from '@/composables/useFormat'
 import type { ColumnLayout, Columns } from '@/types/grid'
 
-// mock data
 import rows from './RealGridTree.data.json'
 import RealGridTree from './RealGridTree.vue'
 
@@ -20,8 +19,6 @@ const meta: Meta<typeof RealGridTree> = {
 
 export default meta
 type Story = StoryObj<typeof RealGridTree>
-
-const { numeric } = useFormat()
 
 const columns: Columns = {
   number: {
@@ -48,9 +45,7 @@ const columns: Columns = {
     header: {
       template: '${top}<i>${bottom}</i>',
       values: { top: '장르코드', bottom: '유형' }
-    },
-    values: [],
-    labels: []
+    }
   },
   publisher: {
     header: '출판사'
@@ -60,9 +55,7 @@ const columns: Columns = {
     header: {
       template: '${top}<i>${bot}</i>',
       values: { top: '출판상태', bot: '열람상태' }
-    },
-    values: [],
-    labels: []
+    }
   },
   status: {
     width: 80,
