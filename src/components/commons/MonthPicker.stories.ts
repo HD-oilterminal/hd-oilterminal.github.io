@@ -27,6 +27,9 @@ export const Disabled: Story = {
 }
 
 export const Interactive: Story = {
+  parameters: {
+    docs: { source: { code: `<MonthPicker v-model="month" />` } }
+  },
   render: () => ({
     components: { MonthPicker },
     setup() {

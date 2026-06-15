@@ -20,6 +20,18 @@ export default meta
 type Story = StoryObj<typeof Tabs>
 
 export const Default: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<Tabs v-model="active" :tabs="tabs">
+  <template #overview>개요 탭 내용입니다.</template>
+  <template #details>상세 탭 내용입니다.</template>
+  <template #history>이력 탭 내용입니다.</template>
+  <template #settings>설정 탭 내용입니다.</template>
+</Tabs>`
+      }
+    }
+  },
   render: () => ({
     components: { Tabs },
     setup() {

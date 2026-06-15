@@ -34,6 +34,9 @@ export const FewPages: Story = {
 }
 
 export const Interactive: Story = {
+  parameters: {
+    docs: { source: { code: `<Pagination v-model="page" :total="200" :items-per-page="10" />` } }
+  },
   render: () => ({
     components: { Pagination },
     setup() {

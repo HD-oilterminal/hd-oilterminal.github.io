@@ -27,6 +27,9 @@ export const Disabled: Story = {
 }
 
 export const Interactive: Story = {
+  parameters: {
+    docs: { source: { code: `<DateTimePicker v-model="datetime" />` } }
+  },
   render: () => ({
     components: { DateTimePicker },
     setup() {

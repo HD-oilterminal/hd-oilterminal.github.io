@@ -51,6 +51,9 @@ export const NoLabel: Story = {
 }
 
 export const Interactive: Story = {
+  parameters: {
+    docs: { source: { code: `<Checkbox v-model="checked" :label="checked ? '선택됨' : '선택 안됨'" />` } }
+  },
   render: () => ({
     components: { Checkbox },
     setup() {

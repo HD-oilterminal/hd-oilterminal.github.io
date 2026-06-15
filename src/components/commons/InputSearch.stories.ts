@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import { ref } from 'vue'
 
-import Autocomplete from './Autocomplete.vue'
+import InputSearch from './InputSearch.vue'
 
 const options = [
   { label: '서울', value: 'seoul' },
@@ -13,14 +13,14 @@ const options = [
   { label: '울산', value: 'ulsan' }
 ]
 
-const meta: Meta<typeof Autocomplete> = {
+const meta: Meta<typeof InputSearch> = {
   title: 'commons/입력-자동완성',
-  component: Autocomplete,
+  component: InputSearch,
   tags: ['autodocs']
 }
 
 export default meta
-type Story = StoryObj<typeof Autocomplete>
+type Story = StoryObj<typeof InputSearch>
 
 export const Default: Story = {
   args: { options, placeholder: '도시 검색...' }
@@ -35,15 +35,18 @@ export const Disabled: Story = {
 }
 
 export const Interactive: Story = {
+  parameters: {
+    docs: { source: { code: `<InputSearch v-model="value" :options="options" placeholder="도시 검색..." />` } }
+  },
   render: () => ({
-    components: { Autocomplete },
+    components: { InputSearch },
     setup() {
       const value = ref<string>()
       return { value, options }
     },
     template: `
       <div class="space-y-2">
-        <Autocomplete v-model="value" :options="options" placeholder="도시 검색..." class="w-64" />
+        <InputSearch v-model="value" :options="options" placeholder="도시 검색..." class="w-64" />
         <p class="text-sm text-gray-500">선택: {{ value ?? '없음' }}</p>
       </div>
     `

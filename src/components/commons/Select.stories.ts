@@ -32,6 +32,9 @@ export const Disabled: Story = {
 }
 
 export const Interactive: Story = {
+  parameters: {
+    docs: { source: { code: `<Select v-model="value" :options="options" placeholder="선택하세요" />` } }
+  },
   render: () => ({
     components: { Select },
     setup() {

@@ -33,6 +33,9 @@ export const NoLabel: Story = {
 }
 
 export const Interactive: Story = {
+  parameters: {
+    docs: { source: { code: `<Switch v-model="on" :label="on ? '켜짐' : '꺼짐'" />` } }
+  },
   render: () => ({
     components: { Switch },
     setup() {

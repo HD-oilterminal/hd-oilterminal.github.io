@@ -27,6 +27,9 @@ export const Disabled: Story = {
 }
 
 export const Interactive: Story = {
+  parameters: {
+    docs: { source: { code: `<YearPicker v-model="year" />` } }
+  },
   render: () => ({
     components: { YearPicker },
     setup() {

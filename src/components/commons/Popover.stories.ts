@@ -16,6 +16,21 @@ export default meta
 type Story = StoryObj<typeof Popover>
 
 export const Default: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<Popover>
+  <template #trigger>
+    <button>팝오버 열기</button>
+  </template>
+  <div class="p-4 w-64">
+    <p class="text-sm font-medium text-gray-900 mb-1">팝오버 제목</p>
+    <p class="text-sm text-gray-500">여기에 팝오버 내용이 들어갑니다.</p>
+  </div>
+</Popover>`
+      }
+    }
+  },
   render: () => ({
     components: { Popover },
     template: `
@@ -35,6 +50,18 @@ export const Default: Story = {
 }
 
 export const TopAlign: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<Popover side="top">
+  <template #trigger>
+    <button>위쪽으로</button>
+  </template>
+  <div class="p-4 w-48 text-sm text-gray-700">위에 뜨는 팝오버</div>
+</Popover>`
+      }
+    }
+  },
   render: () => ({
     components: { Popover },
     template: `
