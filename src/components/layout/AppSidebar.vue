@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import { useMdiStore } from '../../stores/mdi'
-import { useMenuStore } from '../../stores/menu'
 import type { MenuLv1Item, MenuLv2Item } from '../../types/menu'
 import Tooltip from '../commons/Tooltip.vue'
 
-const menuStore = useMenuStore()
-const mdiStore = useMdiStore()
+const menus = menuSystem()
+const mdi = mdiSystem()
 
 const activeUpperId = ref('')
 const isExpanded = ref(false)
@@ -33,9 +31,7 @@ const iconMap: Record<string, string> = {
 const getIcon = (menuId: string) => `/images/${iconMap[menuId] ?? 'settings'}.svg`
 
 // Utility(MNU92000)는 사이드바에서 제외 (기존 JS 동일)
-const visibleLv1 = computed(() =>
-  menuStore.menuLv1.filter((m: MenuLv1Item) => m.menu_id !== 'MNU92000')
-)
+const visibleLv1 = computed(() => menus.menuLv1.filter((m: MenuLv1Item) => m.menu_id !== 'MNU92000'))
 
 const openUpperMenu = (menuId: string) => {
   if (activeUpperId.value === menuId && isExpanded.value) {
@@ -49,14 +45,14 @@ const openUpperMenu = (menuId: string) => {
 const openPage = (sub: MenuLv2Item) => {
   isExpanded.value = false
 
-  const opened = mdiStore.openTab({
+  const opened = mdi.open({
     id: sub.menu_id,
     menuId: sub.menu_id,
     title: sub.menu_nm
   })
 
   if (!opened) {
-    mdiStore.activate(sub.menu_id)
+    mdi.activate(sub.menu_id)
   }
 }
 
@@ -68,22 +64,19 @@ const close = () => {
 <template>
   <nav class="z-50 flex h-full flex-col" @mouseleave="close">
     <Transition name="slide">
-      <div
-        v-if="isExpanded && activeUpperId"
-        class="fixed left-12 h-full w-52 border-r border-gray-200 bg-white shadow-lg"
-      >
+      <div v-if="isExpanded && activeUpperId" class="fixed left-12 h-full w-52 border-r border-gray-200 bg-white shadow-lg">
         <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">
           <span class="text-sm font-semibold text-gray-900">
-            {{ menuStore.menuLv1.find((m: MenuLv1Item) => m.menu_id === activeUpperId)?.menu_nm }}
+            {{ menus.menuLv1.find((m: MenuLv1Item) => m.menu_id === activeUpperId)?.menu_nm }}
           </span>
           <button class="text-gray-400 hover:text-gray-700" @click="close">✕</button>
         </div>
         <ul class="py-1">
           <li
-            v-for="sub in menuStore.getSubMenus(activeUpperId)"
+            v-for="sub in menus.getSubMenus(activeUpperId)"
             :key="sub.menu_id"
             class="cursor-pointer px-4 py-2.5 text-sm text-gray-700 hover:text-blue-700"
-            :class="mdiStore.isOpen(sub.menu_id) ? 'font-medium text-blue-600' : 'hover:bg-blue-50'"
+            :class="mdi.isOpen(sub.menu_id) ? 'font-medium text-blue-600' : 'hover:bg-blue-50'"
             style="transition: background 0.1s"
             @click="openPage(sub)"
           >

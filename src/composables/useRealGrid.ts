@@ -1,10 +1,10 @@
 import { useI18n } from 'vue-i18n'
 
-import { useCodesStore } from '@/stores/codes'
-import type { Columns } from '@/types/grid'
+import { codeSystem } from '../stores/codeSystem'
+import type { Columns } from '../types/grid'
 
 export function useRealGrid() {
-  const codesStore = useCodesStore()
+  const codesStore = codeSystem()
   const { locale } = useI18n()
 
   function labelOf(item: { name: string; englishName?: string }): string {
@@ -14,14 +14,14 @@ export function useRealGrid() {
   function resolveColumns(columns: Columns): Columns {
     return Object.fromEntries(
       Object.entries(columns).map(([key, col]) => {
-        if (col.code) {
+        if (!('subColumns' in col) && col.code) {
           const items = codesStore.list(col.code)
           if (items?.length) {
             return [
               key,
               {
                 ...col,
-                values: items.map(i => i.code),
+                values: items.map(i => i.key),
                 labels: items.map(i => labelOf(i))
               }
             ]

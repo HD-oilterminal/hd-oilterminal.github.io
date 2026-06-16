@@ -39,11 +39,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <SelectRoot
-    :model-value="modelValue"
-    :disabled="disabled"
-    @update:model-value="emit('update:modelValue', $event)"
-  >
+  <SelectRoot :model-value="modelValue" :disabled="disabled" @update:model-value="emit('update:modelValue', $event)">
     <SelectTrigger
       class="h-control-md inline-flex w-full items-center justify-between gap-2 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-gray-400"
     >
@@ -66,7 +62,7 @@ const emit = defineEmits<{
       <SelectContent
         position="popper"
         :side-offset="4"
-        class="z-50 w-[var(--reka-select-trigger-width)] rounded-md border border-gray-200 bg-white shadow-lg"
+        class="z-50 w-(--reka-select-trigger-width) rounded-md border border-gray-200 bg-white shadow-lg"
       >
         <SelectScrollUpButton class="flex items-center justify-center py-1 text-gray-500">
           <svg

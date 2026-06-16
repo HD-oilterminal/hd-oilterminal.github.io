@@ -1,10 +1,6 @@
-.rg-tree-icon {
-  display: inline;
-}
-
 .rg-header-renderer span > i,
 .rg-header-group-cell span > i {
-  color: #2a99be;
+  color: var(--color-hdot-primary);
   display: block;
   font-style: normal;
 }
@@ -44,11 +40,11 @@
 
 .grid-cell-pointer-text-blue {
   cursor: pointer;
-  color: #001aff;
+  color: var(--color-hdot-primary);
 }
 
 /*
-Align
+Cell align
  */
 .rg-data-cell > .rg-renderer,
 .rg-data-cell-left > .rg-renderer {
@@ -61,4 +57,9 @@ Align
 
 .rg-data-cell-right > .rg-renderer {
   text-align: right;
+}
+
+.rg-tree-collapsed.square,
+.rg-tree-expanded.square {
+  margin-right: 0.4rem;
 }

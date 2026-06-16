@@ -34,19 +34,9 @@ const config: StorybookConfig = {
     config.resolve ??= {}
     config.resolve.alias = {
       ...((config.resolve.alias as Record<string, string>) ?? {}),
-      '@': srcDir,
-      '~': srcDir,
       '#app': fileURLToPath(new URL('./nuxt-mock.ts', import.meta.url))
     }
-    config.resolve.dedupe = [
-      'vue',
-      'pinia',
-      'vue-i18n',
-      'realgrid',
-      'reka-ui',
-      '@internationalized/date',
-      'dayjs'
-    ]
+    config.resolve.dedupe = ['vue', 'pinia', 'vue-i18n', 'realgrid', 'reka-ui', '@internationalized/date', 'dayjs']
     return config
   }
 }

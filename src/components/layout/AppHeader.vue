@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
-import { useMdiStore } from '../../stores/mdi'
+import { mdiSystem } from '../../stores/mdiSystem'
 import Tooltip from '../commons/Tooltip.vue'
 
-const { t } = useI18n()
-const mdiStore = useMdiStore()
+const mdi = mdiSystem()
 
 // 세션 타이머
 const sessionTime = ref('5:00:00')
@@ -61,7 +59,7 @@ const navIcons = [
   <header class="flex h-12 shrink-0 items-stretch border-b border-gray-200 bg-gray-100">
     <div
       class="flex cursor-pointer items-center gap-2 border-r border-gray-200 px-3 hover:brightness-95"
-      @click="mdiStore.activate('')"
+      @click="mdi.activate('')"
     >
       <img src="/images/logo.svg" alt="HDOT" class="h-5 w-auto" />
       <div class="text-hdot-primary text-xs leading-3">
@@ -83,31 +81,26 @@ const navIcons = [
     <!-- MDI 탭 바 (가로 스크롤) -->
     <div class="flex min-w-0 flex-1 items-stretch overflow-hidden">
       <button class="px-1 text-gray-400 hover:text-gray-600" @click="scrollTabs(-1)">‹</button>
-      <ul
-        ref="tabs"
-        class="flex flex-1 scrollbar-none items-stretch gap-px overflow-x-auto text-xs"
-      >
+      <ul ref="tabs" class="flex flex-1 scrollbar-none items-stretch gap-px overflow-x-auto text-xs">
         <li
-          v-for="tab in mdiStore.tabs"
+          v-for="tab in mdi.tabs"
           :key="tab.id"
           class="group flex shrink-0 cursor-pointer items-center gap-1 border-b-2 px-3 transition-colors"
           :class="
-            tab.id === mdiStore.activeTabId
+            tab.id === mdi.activeTabId
               ? 'border-b-2 bg-white font-semibold'
               : 'border-transparent text-gray-500 hover:bg-white/60 hover:text-gray-700'
           "
           :style="
-            tab.id === mdiStore.activeTabId
-              ? 'border-bottom-color:var(--color-hdot-primary); color:var(--color-hdot-primary)'
-              : ''
+            tab.id === mdi.activeTabId ? 'border-bottom-color:var(--color-hdot-primary); color:var(--color-hdot-primary)' : ''
           "
-          @click="mdiStore.activate(tab.id)"
+          @click="mdi.activate(tab.id)"
         >
           <span class="max-w-40 truncate">{{ tab.title }}</span>
           <button
             v-if="tab.closable"
             class="ml-0.5 rounded p-0.5 text-gray-400 opacity-0 group-hover:opacity-100 hover:bg-gray-200 hover:text-gray-700"
-            @click.stop="mdiStore.closeTab(tab.id)"
+            @click.stop="mdi.close(tab.id)"
           >
             ✕
           </button>

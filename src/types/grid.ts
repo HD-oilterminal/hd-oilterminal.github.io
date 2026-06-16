@@ -1,6 +1,7 @@
 import type {
   CellIndex,
   CellLayoutColumnItem,
+  ColumnLayoutDirection,
   ColumnStyleObject,
   ColumnSummaryStyleObject,
   DataValues,
@@ -11,11 +12,11 @@ import type {
 } from 'realgrid'
 
 export interface GridProps {
+  title: string
   columns: Columns
   rows: DataValues[]
   height?: string
   editable?: boolean
-  layout?: ColumnLayout
   headerHeight?: number
   fixed?: Fixed
 }
@@ -26,7 +27,7 @@ export interface Fixed {
 }
 
 export interface TreeProps extends GridProps {
-  rowsProp?: string
+  treeColumnKey?: string
 }
 
 export interface ColumnHeader {
@@ -34,7 +35,11 @@ export interface ColumnHeader {
   values?: Record<string, string>
 }
 
-export type TextAlign = 'left' | 'center' | 'right'
+export enum TextAlign {
+  LEFT = 'left',
+  RIGHT = 'right',
+  CENTER = 'center'
+}
 
 export interface Column {
   key?: string
@@ -47,15 +52,35 @@ export interface Column {
   code?: string
   values?: string[]
   labels?: string[]
-  textAlign?: TextAlign
+  align?: TextAlign
   numberFormat?: string
   prefix?: string
   suffix?: string
   displaying?: (grid: GridBase, index: CellIndex, value: unknown) => string | undefined
   styling?: (grid: GridBase, model: GridCell) => string | ColumnStyleObject | ColumnSummaryStyleObject | undefined
-  spanning?: (grid: GridBase, layout: CellLayoutColumnItem, itemIndex: number) => number
+
+  /**
+   * 셀 병합
+   *
+   * sample:
+   * <pre>
+   * spanning: (grid: GridBase, item: CellLayoutColumnItem, index: number) => {
+   *   return (grid as TreeView).getParent(index) === -1 ? 2 : 1
+   * }
+   * </pre>
+   *
+   * @return {number} - 값 만큼 셀 병합
+   */
+  spanning?: (grid: GridBase, item: CellLayoutColumnItem, index: number) => number
 }
 
-export type Columns = Record<string, Column>
+export interface ColumnGroup {
+  header?: ColumnHeader | string
+  direction?: ColumnLayoutDirection
+  hideChildHeaders?: boolean
+  subColumns: Record<string, Column>
+}
+
+export type Columns = Record<string, Column | ColumnGroup>
 
 export type ColumnLayout = string | (string | LayoutItem)[]

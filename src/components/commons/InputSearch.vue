@@ -13,7 +13,7 @@ import {
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useCodesStore } from '@/stores/codes'
+import { codeSystem } from '../../stores/codeSystem'
 
 export interface Option {
   label: string
@@ -40,14 +40,14 @@ const emit = defineEmits<{
   'update:modelValue': [value: string | undefined]
 }>()
 
-const codesStore = useCodesStore()
+const codes = codeSystem()
 const { t, locale } = useI18n()
 
 const resolvedOptions = computed<Option[]>(() => {
   if (!props.code) return props.options ?? []
-  return (codesStore.list(props.code) ?? []).map(i => ({
-    value: i.code,
-    label: locale.value === 'ko' ? i.name : (i.englishName ?? i.name)
+  return (codes.list(props.code) ?? []).map(i => ({
+    value: i.key,
+    label: locale.value === 'ko' ? i.name : (i.english ?? i.name)
   }))
 })
 

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 
-import { useMdiStore } from '@/stores/mdi'
-
+import { mdiSystem } from '../../stores/mdiSystem'
 import AppHeader from './AppHeader.vue'
 
 type Story = StoryObj<typeof AppHeader>
@@ -19,7 +18,7 @@ export const Default: Story = {
   decorators: [
     _ => ({
       setup() {
-        const mdiStore = useMdiStore()
+        const mdiStore = mdiSystem()
         mdiStore.tabs = [
           { id: 'a', menuId: 'a', title: '메인', closable: false },
           { id: 'b', menuId: 'b', title: '어떤 업무' },

@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import type { CellIndex, ClickData, GridBase, LocalTreeDataProvider, TreeView } from 'realgrid'
+import type { CellIndex, ClickData, DataValues, GridBase, LocalTreeDataProvider, TreeView } from 'realgrid'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
-import type { TreeProps } from '@/types/grid'
-
 import { useRealGrid } from '../../composables/useRealGrid'
-import { treeish } from './RealGrid.options'
+import type { TreeProps } from '../../types/grid'
+import { useGrid } from './options'
 
 const props = withDefaults(defineProps<TreeProps>(), {
   columns: () => ({}),
   rows: () => [],
-  rowsProp: undefined,
-  height: '400px',
-  editable: false,
-  layout: undefined,
-  headerHeight: undefined
+  height: '100%',
+  editable: false
 })
 
 const emit = defineEmits<{
-  ready: [{ grid: TreeView; provider: LocalTreeDataProvider }]
+  ready: [{ grid: TreeView; provider: LocalTreeDataProvider; excel: (rows?: DataValues[], filename?: string) => void }]
   currentChanged: [row: number, column: string]
   cellClicked: [grid: GridBase, clickData: ClickData]
 }>()
@@ -28,6 +24,7 @@ let grid: TreeView
 let provider: LocalTreeDataProvider
 
 const { resolveColumns } = useRealGrid()
+const { treeish } = useGrid()
 
 onMounted(() => {
   ;({ grid, provider } = treeish('Sample Title', container.value, {
@@ -35,7 +32,7 @@ onMounted(() => {
     columns: resolveColumns(props.columns)
   }))
 
-  emit('ready', { grid, provider })
+  emit('ready', { grid, provider, excel })
 
   grid.onCurrentChanged = (grid: GridBase, index: CellIndex) => {
     emit('currentChanged', index.itemIndex ?? 0, grid?.getCurrent().fieldName ?? '')
@@ -51,7 +48,18 @@ onBeforeUnmount(() => {
   grid?.destroy()
 })
 
-defineExpose({ getGrid: () => grid, getProvider: () => provider })
+const excel = (rows?: DataValues[], filename?: string) => {
+  if (rows) provider.setRows(rows, props.treeColumnKey ?? '')
+
+  grid.exportGrid({
+    type: 'excel',
+    target: 'local',
+    fileName: filename ?? props.title,
+    done: () => {
+      if (rows) provider.setRows(props.rows, props.treeColumnKey ?? '')
+    }
+  })
+}
 </script>
 
 <template>

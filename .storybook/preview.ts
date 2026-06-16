@@ -1,6 +1,15 @@
 import '../src/assets/tailwind.css'
 
 import type { Preview } from '@storybook/vue3'
+import JSZip from 'jszip'
+
+declare global {
+  interface Window {
+    JSZip: typeof JSZip
+  }
+}
+
+window.JSZip = JSZip
 import { setup } from '@storybook/vue3'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
