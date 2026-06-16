@@ -156,6 +156,9 @@ export const Default: Story = {
     rows,
     rowsProp: 'chapters',
     height: '400px',
-    headerHeight: 50
+    headerHeight: 50,
+    fixed: {
+      column: 2
+    }
   }
 }

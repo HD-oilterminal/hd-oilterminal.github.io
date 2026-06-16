@@ -34,6 +34,8 @@ export interface ColumnHeader {
   values?: Record<string, string>
 }
 
+export type TextAlign = 'left' | 'center' | 'right'
+
 export interface Column {
   key?: string
   width?: number
@@ -43,6 +45,12 @@ export interface Column {
   editable?: boolean
   styleName?: string
   code?: string
+  values?: string[]
+  labels?: string[]
+  textAlign?: TextAlign
+  numberFormat?: string
+  prefix?: string
+  suffix?: string
   displaying?: (grid: GridBase, index: CellIndex, value: unknown) => string | undefined
   styling?: (grid: GridBase, model: GridCell) => string | ColumnStyleObject | ColumnSummaryStyleObject | undefined
   spanning?: (grid: GridBase, layout: CellLayoutColumnItem, itemIndex: number) => number

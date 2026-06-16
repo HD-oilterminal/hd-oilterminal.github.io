@@ -46,3 +46,19 @@
   cursor: pointer;
   color: #001aff;
 }
+
+/*
+Align
+ */
+.rg-data-cell > .rg-renderer,
+.rg-data-cell-left > .rg-renderer {
+  text-align: left;
+}
+
+.rg-data-cell-center > .rg-renderer {
+  text-align: center;
+}
+
+.rg-data-cell-right > .rg-renderer {
+  text-align: right;
+}

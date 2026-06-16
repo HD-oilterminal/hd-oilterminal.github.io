@@ -1,13 +1,20 @@
-import type {
+import {
   ConfigObject,
   DataColumn,
   DataFieldInput,
   DataProviderBase,
   GridBase,
+  GridView,
   LiteralColumn,
-  SeriesColumn
+  LocalDataProvider,
+  LocalTreeDataProvider,
+  RestoreMode,
+  SelectionMode,
+  SelectionStyle,
+  SeriesColumn,
+  TreeView,
+  ValueType
 } from 'realgrid'
-import { GridView, LocalDataProvider, LocalTreeDataProvider, TreeView, ValueType } from 'realgrid'
 
 import type { Columns, GridProps, TreeProps } from '../../types/grid'
 
@@ -50,13 +57,27 @@ const generate = (
     provider.setRows(props.rows)
   }
 
-  grid.setColumns(columnsAdapter(props.columns))
+  grid.setColumns(columnsAdapter(props.columns, props.editable))
   grid.setEditOptions({ editable: props.editable, checkable: true })
   grid.setCheckBar({ visible: true })
-  grid.setDisplayOptions({ showTooltip: true, tooltipEllipsisOnly: true }) // 글 줄임("...")의 경우 툴팁으로 표시
-  grid.setCopyOptions({ copyDisplayText: true, singleMode: true })
+  grid.setDisplayOptions({
+    showTooltip: true,
+    tooltipEllipsisOnly: true,
+    selectionMode: SelectionMode.EXTENDED,
+    selectionStyle: SelectionStyle.BLOCK
+  })
+  grid.setCopyOptions({ copyDisplayText: true, singleMode: false })
   grid.setDataSource(provider)
   grid.setFixedOptions({ colCount: props.fixed?.column ?? 0, rowCount: props.fixed?.row ?? 0 })
+
+  if (props.editable) {
+    provider.restoreMode = RestoreMode.AUTO
+    grid.setStateBar({ visible: true, errorVisible: true })
+    grid.setContextMenu([{ label: '수정 취소하기', name: 'restore' }])
+    grid.onContextMenuItemClicked = (_grid, menu, data) => {
+      if (data.dataRow !== undefined && menu.name === 'restore') provider.restoreUpdatedRows(data.dataRow)
+    }
+  }
 
   if (props.layout) {
     grid.setColumnLayout(props.layout)
@@ -79,14 +100,15 @@ const generate = (
 
 type ColumnType = DataColumn | SeriesColumn | LiteralColumn | ConfigObject | string
 
-const columnsAdapter = (columns: Columns): ColumnType[] => {
+const columnsAdapter = (columns: Columns, editable?: boolean): ColumnType[] => {
   return Object.keys(columns).map(key => {
     const column = columns[key]
     const def: ColumnType = {
       name: column.key || key,
       fieldName: key,
       width: column.width,
-      editable: column.editable ?? false,
+      type: column.type ?? ValueType.TEXT,
+      editable: column.editable ?? editable ?? false,
       visible: column.visible ?? true
     }
 
@@ -95,12 +117,31 @@ const columnsAdapter = (columns: Columns): ColumnType[] => {
     }
 
     if (column.styleName) def.styleName = column.styleName
-    if (column.displaying) def.displayCallback = column.displaying
-    if (column.styling) def.styleCallback = column.styling
-    if (column.values && column.labels) {
+    if (column.textAlign) def.styleName = `${def.styleName ?? ''} rg-data-cell-${column.textAlign}`
+
+    if (column.values?.length) {
       def.values = column.values
       def.labels = column.labels
       def.lookupDisplay = true
+      if (def.editable) {
+        def.editor = {
+          type: 'dropdown',
+          domainOnly: true,
+          textReadOnly: true,
+          dropDownWhenClick: true,
+          dropDownWhenEnter: true
+        }
+        def.editButtonVisibility = 'hidden'
+      }
+    }
+
+    if (column.displaying) def.displayCallback = column.displaying
+    if (column.styling) def.styleCallback = column.styling
+    if (column.prefix) def.prefix = column.prefix
+    if (column.suffix) def.suffix = column.suffix
+    if (column.type === ValueType.NUMBER) {
+      def.numberFormat = column.numberFormat ?? '#,##0'
+      def.styleName = (def.styleName ?? '') + ' rg-data-cell-right'
     }
 
     return def
