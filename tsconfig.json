@@ -14,9 +14,5 @@
       "hdot-tmaster-front/*": ["../hdot-tmaster-front/*"]
     }
   },
-  "include": [
-    "src",
-    ".storybook",
-    "../hdot-tmaster-front/.nuxt/types/imports.d.ts"
-  ]
+  "include": ["src", ".storybook", "../hdot-tmaster-front/.nuxt/types/imports.d.ts"]
 }

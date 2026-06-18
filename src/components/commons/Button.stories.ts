@@ -34,3 +34,7 @@ export const Small: Story = {
 export const Large: Story = {
   args: { label: '버튼', size: 'lg' }
 }
+
+export const Disabled: Story = {
+  args: { label: '버튼', disabled: true }
+}

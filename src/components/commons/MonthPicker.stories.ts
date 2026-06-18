@@ -19,11 +19,12 @@ type Story = StoryObj<typeof MonthPicker>
 
 const thisMonth = dayjs().format('YYYY-MM')
 
+export const Default: Story = {
+  args: { modelValue: thisMonth }
+}
+
 export const Disabled: Story = {
-  args: {
-    modelValue: thisMonth,
-    disabled: false
-  }
+  args: { modelValue: thisMonth, disabled: true }
 }
 
 export const Interactive: Story = {

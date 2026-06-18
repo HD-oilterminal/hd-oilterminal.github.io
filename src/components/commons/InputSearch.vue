@@ -74,7 +74,7 @@ const filteredOptions = computed(() => {
   >
     <ComboboxAnchor
       class="h-control-md inline-flex w-full items-center gap-2 rounded-md border border-gray-300 bg-white px-3 text-sm focus-within:ring-2 focus-within:ring-blue-500"
-      :class="disabled ? 'cursor-not-allowed opacity-50' : ''"
+      :class="disabled ? 'cursor-not-allowed bg-gray-100 opacity-50' : ''"
     >
       <svg
         width="14"

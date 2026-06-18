@@ -19,11 +19,12 @@ type Story = StoryObj<typeof YearPicker>
 
 const thisYear = dayjs().format('YYYY')
 
+export const Default: Story = {
+  args: { modelValue: thisYear }
+}
+
 export const Disabled: Story = {
-  args: {
-    modelValue: thisYear,
-    disabled: false
-  }
+  args: { modelValue: thisYear, disabled: true }
 }
 
 export const Interactive: Story = {

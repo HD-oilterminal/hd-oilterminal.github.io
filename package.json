@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./src/components/*": "./src/components/*",
-    "./src/composables/*": "./src/composables/*",
-    "./src/stores/*": "./src/stores/*",
-    "./src/types/*": "./src/types/*"
+    "./components/*": "./src/components/*",
+    "./composables/*": "./src/composables/*",
+    "./stores/*": "./src/stores/*",
+    "./types/*": "./src/types/*"
   },
   "scripts": {
     "dev": "storybook dev --port 6006",

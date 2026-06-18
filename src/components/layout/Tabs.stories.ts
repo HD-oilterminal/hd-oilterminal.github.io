@@ -10,14 +10,51 @@ const tabs = [
   { value: 'settings', label: '설정', disabled: true }
 ]
 
+const tabsWithCount = [
+  { value: 'work', label: '오늘의 작업', count: 0 },
+  { value: 'req', label: '오더요청', count: 3 },
+  { value: 'doc', label: '서류완료대기', count: 12 },
+  { value: 'vetting', label: '선박베팅 요청' }
+]
+
 const meta: Meta<typeof Tabs> = {
-  title: 'commons/탭-화면',
+  title: 'Layout/탭',
   component: Tabs,
   tags: ['autodocs']
 }
 
 export default meta
 type Story = StoryObj<typeof Tabs>
+
+export const WithCount: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<Tabs v-model="active" :tabs="tabs">
+  <template #work>오늘의 작업 내용</template>
+  <template #req>오더요청 내용</template>
+  <template #doc>서류완료대기 내용</template>
+  <template #vetting>선박베팅 요청 내용</template>
+</Tabs>`
+      }
+    }
+  },
+  render: () => ({
+    components: { Tabs },
+    setup() {
+      const active = ref('req')
+      return { active, tabs: tabsWithCount }
+    },
+    template: `
+      <Tabs v-model="active" :tabs="tabs">
+        <template #work><p class="text-sm text-gray-700">오늘의 작업 내용입니다.</p></template>
+        <template #req><p class="text-sm text-gray-700">오더요청 내용입니다.</p></template>
+        <template #doc><p class="text-sm text-gray-700">서류완료대기 내용입니다.</p></template>
+        <template #vetting><p class="text-sm text-gray-700">선박베팅 요청 내용입니다.</p></template>
+      </Tabs>
+    `
+  })
+}
 
 export const Default: Story = {
   parameters: {

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import type { DataValues } from 'realgrid'
-import { CellIndex, GridBase, ValueType } from 'realgrid'
+import { ValueType } from 'realgrid'
+import { ref } from 'vue'
 
 import { numeric } from '../../composables/useFormat'
-import type { Columns } from '../../types/grid'
+import type { Columns, Rows } from '../../types/core'
 import rows from './RealTree.data.json'
 import RealTree from './RealTree.vue'
 
@@ -24,7 +24,7 @@ const columns: Columns = {
   number: {
     width: 70,
     header: 'No',
-    displaying: (_, __, value) => {
+    displaying: value => {
       return value === '0' ? '' : String(value ?? '')
     }
   },
@@ -34,7 +34,7 @@ const columns: Columns = {
       template: '${top}<i>${bottom}</i>',
       values: { top: '소설번호', bottom: '챕터번호' }
     },
-    styling: (_, dataCell) => {
+    styling: dataCell => {
       if (Number.isNaN(parseInt(String(dataCell?.value)))) {
         return { styleName: 'grid-cell-pointer-text-blue' }
       }
@@ -83,12 +83,12 @@ const columns: Columns = {
     },
     subColumns: {
       dateOrQuantity: {
-        displaying: (grid: GridBase, index: CellIndex, value: unknown) => {
+        displaying: (value, index, grid) => {
           const row = grid.getDataSource().getJsonRow(index.dataRow ?? 0)
           if (row.number > 0) return String(value ?? '')
           return numeric(value)
         },
-        spanning: (grid: GridBase, _, index: number) => {
+        spanning: () => {
           return 1
         }
       },
@@ -146,9 +146,27 @@ export const Default: Story = {
   }
 }
 
-type ReadyPayload = { excel: (rows?: DataValues[], filename?: string) => void }
-
 export const WithExcelDownload: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<script setup lang="ts">
+import { ref } from 'vue'
+
+const treeRef = ref()
+
+const download = () => treeRef.value.excel(rows)
+</script>
+
+<template>
+  <div style="display:flex; flex-direction:column; gap:8px;">
+    <button @click="download">엑셀 다운로드 (전체 데이터)</button>
+    <RealTree ref="treeRef" title="엑셀 다운로드" :columns="columns" :rows="rows" treeColumnKey="chapters" height="400px" />
+  </div>
+</template>`
+      }
+    }
+  },
   args: {
     title: '엑셀 다운로드',
     columns,
@@ -161,20 +179,16 @@ export const WithExcelDownload: Story = {
   render: args => ({
     components: { RealTree },
     setup() {
-      let excelFn: ReadyPayload['excel'] | undefined
+      const treeRef = ref<InstanceType<typeof RealTree>>()
 
-      const onReady = ({ excel }: ReadyPayload) => {
-        excelFn = excel
-      }
+      const download = () => treeRef.value?.excel(rows as Rows)
 
-      const download = () => excelFn?.(rows as DataValues[])
-
-      return { args, onReady, download }
+      return { args, treeRef, download }
     },
     template: `
       <div style="display:flex; flex-direction:column; gap:8px;">
         <button @click="download">엑셀 다운로드 (전체 데이터)</button>
-        <RealTree v-bind="args" @ready="onReady" />
+        <RealTree title="샘플 트리그리드" ref="treeRef" v-bind="args" />
       </div>
     `
   })

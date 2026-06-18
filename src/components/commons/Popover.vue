@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
+import { PopoverAnchor, PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
 import { ref, watch } from 'vue'
 
 const props = withDefaults(
@@ -7,12 +7,23 @@ const props = withDefaults(
     open?: boolean
     side?: 'top' | 'right' | 'bottom' | 'left'
     align?: 'start' | 'center' | 'end'
-    sideOffset?: number
+    /**
+     * trigger 클릭으로 열고/닫는 대신 위치 기준(anchor)만 제공.
+     * 외부에서 `open`을 직접 제어하는 finder 류에 사용.
+     */
+    asAnchor?: boolean
+    /**
+     * 열릴 때 content 로 포커스를 가져가지 않고, 포커스 트랩도 비활성화.
+     * trigger 의 input 에서 계속 타이핑해야 하는 경우 사용.
+     */
+    manualFocus?: boolean
   }>(),
   {
     side: 'bottom',
     align: 'start',
-    sideOffset: 4
+    sideOffset: 4,
+    asAnchor: false,
+    manualFocus: false
   }
 )
 
@@ -33,19 +44,24 @@ function handleOpenChange(val: boolean) {
   isOpen.value = val
   emit('update:open', val)
 }
+
+function handleOpenAutoFocus(e: Event) {
+  if (props.manualFocus) e.preventDefault()
+}
 </script>
 
 <template>
   <PopoverRoot :open="isOpen" @update:open="handleOpenChange">
-    <PopoverTrigger as-child>
+    <component :is="asAnchor ? PopoverAnchor : PopoverTrigger" as-child>
       <slot name="trigger" />
-    </PopoverTrigger>
+    </component>
     <PopoverPortal>
       <PopoverContent
         :side="side"
         :align="align"
-        :side-offset="sideOffset"
-        class="z-50 rounded-md border border-gray-200 bg-white shadow-lg outline-none"
+        :trap-focus="!manualFocus"
+        class="z-50 mt-1.5 rounded-md border border-gray-200 bg-white shadow-lg outline-none"
+        @open-auto-focus="handleOpenAutoFocus"
       >
         <slot />
       </PopoverContent>

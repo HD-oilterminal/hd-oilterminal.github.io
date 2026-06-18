@@ -1,5 +1,9 @@
 export default {
   'no-results': '결과 없음',
+  button: {
+    confirm: '확인',
+    cancel: '취소'
+  },
   placeholder: {
     select: '값을 선택 하세요.'
   },

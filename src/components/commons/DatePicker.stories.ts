@@ -19,11 +19,12 @@ type Story = StoryObj<typeof DatePicker>
 
 const today = dayjs(Date.now()).format('YYYY-MM-DD')
 
+export const Default: Story = {
+  args: { modelValue: today }
+}
+
 export const Disabled: Story = {
-  args: {
-    modelValue: today,
-    disabled: false
-  }
+  args: { modelValue: today, disabled: true }
 }
 
 export const Interactive: Story = {

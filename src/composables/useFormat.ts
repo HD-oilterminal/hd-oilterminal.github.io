@@ -1,5 +1,9 @@
 import { CalendarDate, type DateValue, getLocalTimeZone } from '@internationalized/date'
 import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+
+// strict 모드(세 번째 인자 true) 포맷 파싱 + 실제 존재하지 않는 날짜(예: 2026-04-31) 거부에 필요
+dayjs.extend(customParseFormat)
 
 export const numeric = (value: unknown, minimumFractionDigits = 3): string => {
   const number = String(value).replace(/(?!^-)[^0-9]/g, '')
@@ -34,3 +38,10 @@ export const toDate = (value?: string, format = 'YYYY-MM-DD') => {
   const parsed = dayjs(value, format, true)
   return parsed.isValid() ? new CalendarDate(parsed.year(), parsed.month() + 1, parsed.date()) : undefined
 }
+
+export const paginate = (list: any[], page = 1, pageSize = 10, start = (page - 1) * pageSize) => ({
+  page,
+  list: list.slice(start, start + pageSize),
+  totalCount: list.length,
+  total_page: Math.floor(list.length / pageSize) + 1
+})

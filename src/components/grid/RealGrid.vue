@@ -1,69 +1,99 @@
 <script setup lang="ts">
-import { ClickData, DataValues, GridBase, GridView, LocalDataProvider } from 'realgrid'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import type { ClickData, RowObject } from 'realgrid'
+import { GridBase, GridView, LocalDataProvider } from 'realgrid'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import { useRealGrid } from '../../composables/useRealGrid'
-import type { GridProps } from '../../types/grid'
-import { useGrid } from './options'
+import type { GridProps, Rows } from '../../types/core'
+import Pagination from '../commons/Pagination.vue'
+import { useGrid } from './RealGridOptions'
 
 const props = withDefaults(defineProps<GridProps>(), {
   columns: () => ({}),
   rows: () => [],
   height: '100%',
-  editable: false
+  editable: false,
+  checkable: false,
+  excel: () => ({ bridge: () => {}, get: () => {} })
 })
 
 const emit = defineEmits<{
-  ready: [{ grid: GridView; provider: LocalDataProvider; excel: (rows?: DataValues[], filename?: string) => void }]
   currentChanged: [row: number, column: string]
-  cellClicked: [grid: GridBase, clickData: ClickData]
+  cellClicked: [clickData: ClickData, grid: GridBase]
+  rowClicked: [row: RowObject, grid: GridBase]
+  paging: [page: number]
 }>()
 
 const container = ref<HTMLDivElement>()
-let grid: GridView
-let provider: LocalDataProvider
+const pageable = computed(() => (Array.isArray(props.rows) ? undefined : props.rows))
+
+let core: GridView
+let data: LocalDataProvider
 
 const { resolveColumns } = useRealGrid()
 const { gridish } = useGrid()
 
 onMounted(() => {
-  ;({ grid, provider } = gridish(props.title, container.value, {
+  ;({ grid: core, provider: data } = gridish(props.title, container.value, {
     ...props,
     columns: resolveColumns(props.columns)
   }))
 
-  emit('ready', { grid, provider, excel })
+  props.excel.bridge(function (rows?: Rows, filename?: string) {
+    let raws: Rows
+    if (rows) {
+      raws = data.getRows()
+      data.setRows(rows)
+    }
 
-  grid.onCurrentChanged = (_g, newIndex) => {
-    emit('currentChanged', newIndex.itemIndex ?? 0, grid?.getCurrent().fieldName ?? '')
+    core.exportGrid({
+      type: 'excel',
+      target: 'local',
+      fileName: filename ?? props.title,
+      done: () => raws && data.setRows(raws)
+    })
+  })
+
+  core.onCurrentChanged = (_g, newIndex) => {
+    emit('currentChanged', newIndex.itemIndex ?? 0, core?.getCurrent().fieldName ?? '')
   }
 
-  grid.onCellClicked = (grid, value) => {
-    emit('cellClicked', grid, value)
+  core.onCellClicked = (grid, value) => {
+    emit('cellClicked', value, grid)
+    if (value.dataRow != undefined) emit('rowClicked', data.getJsonRow(value.dataRow), grid)
   }
 })
+
+watch(
+  () => props.rows,
+  rows => data?.setRows(Array.isArray(rows) ? rows : rows.list)
+)
 
 onBeforeUnmount(() => {
-  provider?.clearRows()
-  grid?.destroy()
+  data?.clearRows()
+  core?.destroy()
 })
 
-const excel = (rows?: DataValues[], filename?: string) => {
-  let raws: DataValues[]
-  if (rows) {
-    raws = provider.getRows()
-    provider.setRows(rows)
+defineExpose({
+  get grid() {
+    return core
+  },
+  get provider() {
+    return data
   }
-
-  grid.exportGrid({
-    type: 'excel',
-    target: 'local',
-    fileName: filename ?? props.title,
-    done: () => raws && provider.setRows(raws)
-  })
-}
+})
 </script>
 
 <template>
-  <div ref="container" class="realgrid-container" :style="{ height }" />
+  <div class="realgrid-wrapper" :style="{ height }">
+    <div ref="container" class="realgrid-container" />
+    <div v-if="pageable" class="realgrid-pagination">
+      <Pagination
+        :model-value="pageable.page"
+        :items-per-page="1"
+        :total="pageable.total_page"
+        @update:model-value="emit('paging', $event)"
+      />
+    </div>
+  </div>
 </template>

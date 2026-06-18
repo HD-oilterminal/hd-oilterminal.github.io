@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import type { DataValues } from 'realgrid'
 import { ValueType } from 'realgrid'
+import { ref } from 'vue'
 
-import type { Columns } from '../../types/grid'
-import { TextAlign } from '../../types/grid'
+import { useGridExcel } from '../../composables/useRealGrid'
+import { Columns, TextAlign } from '../../types/core'
 import rows from './ReadGrid.data.json'
 import RealGrid from './RealGrid.vue'
 
@@ -40,39 +40,107 @@ export const Default: Story = {
   }
 }
 
-type ReadyPayload = { excel: (rows?: DataValues[], filename?: string) => void }
+export const Pageable: Story = {
+  name: '서버사이드 페이지네이션',
+  parameters: {
+    docs: {
+      source: {
+        code: `<script setup lang="ts">
+const size = 20
+const rows = ref()
+
+const load = async (page) => {
+  await fetch('/api/oper/work_order/list', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ page, size })
+  })
+    .then(({content}) => (rows.value = content))
+}
+
+onMounted(() => load(1))
+</script>
+
+<template>
+  <RealGrid title="샘플 그리드" :columns="columns" :rows="rows" height="300px" @paging="load" />
+</template>`
+      }
+    }
+  },
+  render: () => ({
+    components: { RealGrid },
+    setup() {
+      const SIZE = 20
+      const TOTAL_PAGE = 221
+
+      const fakeServer = (page: number) => ({
+        count: SIZE,
+        total_page: TOTAL_PAGE,
+        page,
+        list: Array.from({ length: SIZE }, (_, i) => {
+          const n = (page - 1) * SIZE + i + 1
+          return { artist: `아티스트 ${n}`, title: `곡명 ${n}`, album: 'ALBUM01', plays: n * 10 }
+        })
+      })
+
+      const rows = ref(fakeServer(1))
+
+      const load = (page: number) => {
+        rows.value = fakeServer(page)
+      }
+
+      return { columns, rows, load }
+    },
+    template: `
+      <RealGrid title="뻥튀기 데이터 그리드" :columns="columns" :rows="rows" height="300px" @paging="load" />
+    `
+  })
+}
 
 export const WithExcelDownload: Story = {
-  name: '엑셀 다운로드 하는 리얼그리드',
+  name: '엑셀 다운로드',
+  parameters: {
+    docs: {
+      source: {
+        code: `<script setup lang="ts">
+const gridRef = ref()
+
+const download = () => {
+  // const filename = prompt('엑셀 다운로드를 진행할까요?', '다운로드할 파일명')
+  // if (filename) gridRef.value.excel(rows, filename)
+}
+</script>
+
+<template>
+  <button @click="download">엑셀 다운로드 (전체 데이터)</button>
+  <RealGrid ref="gridRef" title="테스트 그리드" :columns="columns" :rows="rows" :excel="download" height="300px" />
+</template>`
+      }
+    }
+  },
   args: {
-    title: '엑셀 다운로드',
     columns,
     rows: rows.slice(0, 3),
     height: '300px'
   },
-  render: args => ({
-    components: { RealGrid },
-    setup() {
-      let excelFn: ReadyPayload['excel'] | undefined
+  render: args => {
+    return {
+      components: { RealGrid },
+      setup() {
+        const excel = useGridExcel()
 
-      const onReady = ({ excel }: ReadyPayload) => {
-        excelFn = excel
-      }
-
-      const download = () => {
-        let filename
-        if ((filename = prompt('엑셀 다운로드를 진행할까요?', '다운로드할 파일명.xlsx'))) {
-          excelFn?.(rows as DataValues[], filename)
+        const download = () => {
+          excel.get(prompt('엑셀 다운로드를 진행할까요?', '다운로드할 파일명'))
         }
-      }
 
-      return { args, onReady, download }
-    },
-    template: `
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <button style="border:1px solid;cursor:pointer" @click="download">엑셀 다운로드 (전체 데이터)</button>
-        <RealGrid title="테스트 그리드" v-bind="args" @ready="onReady" />
-      </div>
-    `
-  })
+        return { args, excel, download }
+      },
+      template: `
+        <div class="flex flex-col gap-4">
+          <button style="border:1px solid;cursor:pointer" @click="download">엑셀 다운로드 (전체 데이터)</button>
+          <RealGrid ref="gridRef" title="테스트 그리드" v-bind="args" :excel="excel" />
+        </div>
+      `
+    }
+  }
 }

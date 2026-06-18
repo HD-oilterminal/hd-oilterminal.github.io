@@ -1,21 +1,33 @@
-import type { ConfigObject, DataColumn, DataFieldInput, LiteralColumn, SeriesColumn } from 'realgrid'
 import {
+  type CellIndex,
+  type CellLayoutColumnItem,
+  type CellLayoutHeader,
   ColumnLayoutDirection,
+  type ColumnObject,
+  type ConfigObject,
+  type DataColumn,
+  type DataFieldInput,
   DataProviderBase,
   GridBase,
+  GridFitStyle,
+  type GridItem,
   GridView,
+  type LiteralColumn,
   LocalDataProvider,
   LocalTreeDataProvider,
   RestoreMode,
   SelectionMode,
   SelectionStyle,
+  type SeriesColumn,
   TreeExpanderIconStyle,
   TreeView,
   ValueType
 } from 'realgrid'
 import { useI18n } from 'vue-i18n'
 
-import type { Column, ColumnGroup, GridProps, TreeProps } from '../../types/grid'
+import type { Column, ColumnGroup, ColumnHeader, GridProps, TreeProps } from '../../types/core'
+
+export type TreeGridItem = GridItem & { parentIndex: number }
 
 //
 export const useGrid = () => {
@@ -68,25 +80,25 @@ const generate = (
 
   provider.setFields(fieldsAdaptor(dataColumns))
 
+  const rows = Array.isArray(props.rows) ? props.rows : props.rows.list
+
   if (provider instanceof LocalTreeDataProvider) {
     const treeColumnKey = (props as TreeProps).treeColumnKey ?? ''
-    if (treeColumnKey) {
-      provider.setObjectRows({ [treeColumnKey]: props.rows }, treeColumnKey, '', '')
-    }
-
-    provider.setRows(props.rows, treeColumnKey)
+    provider.setNestedRows({ rows }, 'rows', treeColumnKey)
   } else {
-    provider.setRows(props.rows)
+    provider.setRows(rows)
   }
 
   grid.setColumns(columnsAdapter(dataColumns, props.editable))
   grid.setEditOptions({ editable: props.editable, checkable: true })
-  grid.setCheckBar({ visible: true })
+  grid.setCheckBar({ visible: props.checkable ?? true })
   grid.setDisplayOptions({
     showTooltip: true,
     tooltipEllipsisOnly: true,
+    fitStyle: GridFitStyle.EVEN,
     selectionMode: SelectionMode.EXTENDED,
-    selectionStyle: SelectionStyle.BLOCK
+    selectionStyle: SelectionStyle.BLOCK,
+    rowHeight: 30
   })
   grid.setCopyOptions({ copyDisplayText: true, singleMode: false })
   grid.setFooter({ visible: false })
@@ -105,46 +117,55 @@ const generate = (
   }
 
   if (entries.some(([, e]) => 'subColumns' in e)) {
+    const spanningColumns: Array<{ key: string; spanning: NonNullable<Column['spanning']> }> = []
+
     grid.setColumnLayout(
       entries.map(([key, entry]) => {
         if ('subColumns' in entry) {
           const group = entry as ColumnGroup
           return {
             name: key,
-            header: typeof group.header === 'string' ? { text: group.header } : group.header,
+            header: composeHeader(group.header),
             direction: group.direction ?? ColumnLayoutDirection.HORIZONTAL,
             hideChildHeaders: group.hideChildHeaders ?? true,
-            items: Object.entries(group.subColumns).map(([childKey, childCol]) => childCol.key || childKey)
+            items: Object.entries(group.subColumns).map(([childKey, childCol]) => {
+              if (childCol.spanning)
+                spanningColumns.push({
+                  key: childKey,
+                  spanning: (index, grid, item) => {
+                    return childCol.spanning!(index, grid, item)
+                  }
+                })
+              return childKey
+            })
           }
         }
-        const col = entry as Column
-        return col.key || key
+
+        if (entry.spanning) spanningColumns.push({ key, spanning: entry.spanning })
+
+        return key
       })
     )
 
-    for (const [key, entry] of entries) {
-      if ('items' in entry) {
-        for (const [childKey, childCol] of Object.entries((entry as ColumnGroup).subColumns)) {
-          if (childCol.spanning) {
-            const colLayout = grid.layoutByColumn(childCol.key || childKey)
-            if (colLayout) colLayout.spanCallback = childCol.spanning
-          }
+    for (const { key, spanning } of spanningColumns) {
+      const colLayout = grid.layoutByColumn(key)
+      if (colLayout)
+        colLayout.spanCallback = (grid: GridBase, item: CellLayoutColumnItem, index: number) => {
+          return spanning(index, grid, item)
         }
-      } else {
-        const col = entry as Column
-        if (col.spanning) {
-          const colLayout = grid.layoutByColumn(col.key || key)
-          if (colLayout) colLayout.spanCallback = col.spanning
-        }
-      }
     }
+
+    grid.header.height = 40
   }
 
-  if (props.headerHeight) grid.header.height = props.headerHeight
+  grid.header.height = (props.headerHeight ?? grid.header.height) || 30
 
   if (grid instanceof TreeView && grid.treeOptions) {
     grid.treeOptions.expanderIconStyle = TreeExpanderIconStyle.SQUARE
     grid.treeOptions.iconVisible = false
+    grid.setRowStyleCallback((_, item) => ({
+      style: { background: `var(--color-realgrid-row${(item as TreeGridItem).parentIndex > -1 ? '-odd' : ''})` }
+    }))
   }
 
   return {
@@ -168,7 +189,14 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
     }
 
     if (column.header) {
-      def.header = typeof column.header === 'string' ? { text: column.header } : column.header
+      if (Array.isArray(column.header)) {
+        def.header = {
+          template: (column.header as string[]).slice(1).reduce((a, b) => a + `<i>${b ?? ''}</i>`, column.header[0] ?? ''),
+          values: column.header
+        }
+      } else {
+        def.header = typeof column.header === 'string' ? { text: column.header } : column.header
+      }
     }
 
     if (column.styleName) def.styleName = column.styleName
@@ -190,7 +218,12 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
       }
     }
 
-    if (column.displaying) def.displayCallback = column.displaying
+    if (column.displaying) {
+      const displaying = column.displaying
+      def.displayCallback = (_: GridBase, __: CellIndex, ___: unknown) => {
+        return displaying(___, __, _)
+      }
+    }
     if (column.styling) def.styleCallback = column.styling
     if (column.prefix) def.prefix = column.prefix
     if (column.suffix) def.suffix = column.suffix
@@ -213,4 +246,17 @@ const fieldsAdaptor = (columns: Record<string, Column>): DataFieldInput[] => {
       defaultValue: ''
     }
   })
+}
+
+const composeHeader = (header: ColumnHeader | string | string[] = ''): CellLayoutHeader | ColumnObject => {
+  if (typeof header === 'string') return { text: header as string }
+
+  if (Array.isArray(header)) {
+    return {
+      template: (header as string[]).slice(1).reduce((a, b) => a + `<i>${b ?? ''}</i>`, header[0] ?? ''),
+      values: header
+    }
+  }
+
+  return header
 }
