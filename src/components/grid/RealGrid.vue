@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ClickData, DataValues, GridBase, GridView, LocalDataProvider } from 'realgrid'
+import { ClickData, DataValues, GridBase, GridView, LocalDataProvider } from 'realgrid'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 import { useRealGrid } from '../../composables/useRealGrid'
@@ -49,13 +49,17 @@ onBeforeUnmount(() => {
 })
 
 const excel = (rows?: DataValues[], filename?: string) => {
-  if (rows) provider.setRows(rows)
+  let raws: DataValues[]
+  if (rows) {
+    raws = provider.getRows()
+    provider.setRows(rows)
+  }
 
   grid.exportGrid({
     type: 'excel',
     target: 'local',
     fileName: filename ?? props.title,
-    done: () => rows && provider.setRows(props.rows)
+    done: () => raws && provider.setRows(raws)
   })
 }
 </script>
