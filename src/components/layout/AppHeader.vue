@@ -35,9 +35,6 @@ onUnmounted(() => {
   if (timerId) clearInterval(timerId)
 })
 
-const emit = defineEmits<{ logout: [] }>()
-
-// 탭 스크롤
 const tabs = ref<HTMLElement | null>(null)
 const scrollTabs = (dir: -1 | 1) => {
   tabs.value?.scrollBy({ left: dir * 150, behavior: 'smooth' })
@@ -62,10 +59,7 @@ const navIcons = [
       @click="mdi.activate('')"
     >
       <img src="/images/logo.svg" alt="HDOT" class="h-5 w-auto" />
-      <div class="text-hdot-primary text-xs leading-3">
-        <div class="text-bold text-[11px] text-gray-500">울산사업부</div>
-        <span>처음인</span> <span>책임매니저</span>
-      </div>
+      <slot name="logged-user" />
 
       <!--
       <button

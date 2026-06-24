@@ -48,6 +48,16 @@ function handleOpenChange(val: boolean) {
 function handleOpenAutoFocus(e: Event) {
   if (props.manualFocus) e.preventDefault()
 }
+
+function handleFocusOutside(e: Event) {
+  const target = (e as CustomEvent).detail?.originalEvent?.target as HTMLElement | null
+  if (target?.closest('[data-reka-portal]')) e.preventDefault()
+}
+
+function handlePointerDownOutside(e: Event) {
+  const target = (e as CustomEvent).detail?.originalEvent?.target as HTMLElement | null
+  if (target?.closest('[data-reka-portal]')) e.preventDefault()
+}
 </script>
 
 <template>
@@ -62,6 +72,8 @@ function handleOpenAutoFocus(e: Event) {
         :trap-focus="!manualFocus"
         class="z-50 mt-1.5 rounded-md border border-gray-200 bg-white shadow-lg outline-none"
         @open-auto-focus="handleOpenAutoFocus"
+        @focus-outside="handleFocusOutside"
+        @pointer-down-outside="handlePointerDownOutside"
       >
         <slot />
       </PopoverContent>

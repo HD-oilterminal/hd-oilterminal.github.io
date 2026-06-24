@@ -110,7 +110,7 @@ const generate = (
 
   if (props.editable) {
     provider.restoreMode = RestoreMode.AUTO
-    grid.setContextMenu([{ label: t('grid.context.restore'), name: 'restore' }])
+    grid.setContextMenu([{ label: t('수정 취소하기'), name: 'restore' }])
     grid.onContextMenuItemClicked = (_grid, menu, data) => {
       if (data.dataRow !== undefined && menu.name === 'restore') provider.restoreUpdatedRows(data.dataRow)
     }
@@ -228,8 +228,19 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
     if (column.prefix) def.prefix = column.prefix
     if (column.suffix) def.suffix = column.suffix
     if (column.type === ValueType.NUMBER) {
-      def.numberFormat = column.numberFormat ?? '#,##0'
-      def.styleName = (def.styleName ?? '') + ' rg-data-cell-right'
+      if (!column.displaying) {
+        const fmt = column.numberFormat ?? '#,##0'
+        const formatter = new Intl.NumberFormat(undefined, {
+          maximumFractionDigits: fmt.includes('.') ? fmt.split('.')[1]?.replace(/[^0#]/g, '').length : 0,
+          minimumFractionDigits: fmt.includes('.') ? (fmt.split('.')[1]?.match(/0/g)?.length ?? 0) : 0,
+          useGrouping: fmt.includes(',')
+        })
+        def.displayCallback = (_: GridBase, __: CellIndex, value: unknown) => {
+          if (value === null || value === undefined || value === '') return value as string
+          const n = Number(value)
+          return isNaN(n) ? String(value) : formatter.format(n)
+        }
+      }
     }
 
     return def
@@ -240,7 +251,7 @@ const fieldsAdaptor = (columns: Record<string, Column>): DataFieldInput[] => {
   return Object.keys(columns).map(key => {
     return {
       fieldName: key,
-      dataType: columns[key].type ?? ValueType.TEXT,
+      dataType: ValueType.TEXT,
       displayCallback: columns[key].displaying,
       nullValue: '',
       defaultValue: ''

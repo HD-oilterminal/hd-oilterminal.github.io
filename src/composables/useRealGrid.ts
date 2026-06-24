@@ -17,7 +17,7 @@ export const useRealGrid = () => {
       Object.entries(columns).map(([key, col]) => {
         if (!('subColumns' in col) && col.code) {
           const items: Code[] = codes.list(col.code)
-          if (items.length) {
+          if (items?.length) {
             return [
               key,
               {

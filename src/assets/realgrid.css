@@ -60,8 +60,7 @@
 /*
 Cell align
  */
-.rg-data-cell > .rg-renderer,
-.rg-data-cell-center > .rg-renderer {
+.rg-data-cell > .rg-renderer {
   text-align: center;
 }
 

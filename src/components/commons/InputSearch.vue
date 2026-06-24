@@ -41,7 +41,7 @@ const emit = defineEmits<{
 }>()
 
 const codes = codeSystem()
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 
 const resolvedOptions = computed<Option[]>(() => {
   if (!props.code) return props.options ?? []
@@ -92,7 +92,7 @@ const filteredOptions = computed(() => {
       </svg>
       <ComboboxInput
         v-model="searchTerm"
-        :placeholder="placeholder || t('placeholder.select')"
+        :placeholder="placeholder || $t('값을 선택 하세요.')"
         :disabled="disabled"
         :display-value="(val: unknown) => resolvedOptions.find(o => o.value === val)?.label ?? String(val ?? '')"
         class="w-full bg-transparent outline-none placeholder:text-gray-400 disabled:cursor-not-allowed"
@@ -106,7 +106,7 @@ const filteredOptions = computed(() => {
         class="z-50 w-(--reka-combobox-trigger-width) rounded-md border border-gray-200 bg-white shadow-lg"
       >
         <ComboboxViewport class="max-h-60 overflow-y-auto p-1">
-          <ComboboxEmpty class="py-6 text-center text-sm text-gray-500">{{ t('no-results') }}</ComboboxEmpty>
+          <ComboboxEmpty class="py-6 text-center text-sm text-gray-500">{{ $t('결과 없음') }}</ComboboxEmpty>
           <ComboboxItem
             v-for="option in filteredOptions"
             :key="option.value"

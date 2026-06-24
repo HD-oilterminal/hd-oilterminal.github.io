@@ -26,5 +26,13 @@ export const codeSystem = defineStore('code-system', () => {
     return _locale !== 'ko' ? (found.english ?? found.name) : found.name
   }
 
-  return { all: codes, load, list, getName, locale }
+  return {
+    get all() {
+      return codes
+    },
+    load,
+    list,
+    getName,
+    locale
+  }
 })

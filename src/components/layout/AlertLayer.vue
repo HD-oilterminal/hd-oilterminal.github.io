@@ -78,12 +78,7 @@ function onKeydown(e: KeyboardEvent) {
           </div>
 
           <div class="mt-6 shrink-0">
-            <Button
-              :label="_alertState.confirmLabel || $t('button.confirm')"
-              variant="primary"
-              class="w-full"
-              @click="onConfirm"
-            />
+            <Button :label="_alertState.confirmLabel || $t('확인')" variant="primary" class="w-full" @click="onConfirm" />
           </div>
         </div>
       </div>
