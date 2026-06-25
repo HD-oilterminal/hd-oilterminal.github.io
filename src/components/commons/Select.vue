@@ -25,25 +25,40 @@ withDefaults(
     options?: Option[]
     placeholder?: string
     disabled?: boolean
+    class?: string
   }>(),
   {
     modelValue: undefined,
     placeholder: '',
-    options: () => []
+    options: () => [],
+    class: ''
   }
 )
+
+defineOptions({ inheritAttrs: false })
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
+
+const EMPTY_VALUE = '__EMPTY__'
+const toInternal = (v: string) => (v === '' ? EMPTY_VALUE : v)
+const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
 </script>
 
 <template>
-  <SelectRoot :model-value="modelValue" :disabled="disabled" @update:model-value="emit('update:modelValue', $event)">
+  <SelectRoot
+    :model-value="modelValue !== undefined ? toInternal(modelValue) : undefined"
+    :disabled="disabled"
+    @update:model-value="emit('update:modelValue', toExternal($event))"
+  >
     <SelectTrigger
-      class="h-control-md inline-flex w-full items-center justify-between gap-2 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50 data-placeholder:text-gray-400"
+      :class="[
+        'h-control-md inline-flex w-full items-center justify-between gap-2 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50 data-placeholder:text-gray-400',
+        $props.class
+      ]"
     >
-      <SelectValue :placeholder="placeholder ?? '선택'" />
+      <SelectValue :placeholder="placeholder ?? '선택'" class="whitespace-nowrap" />
       <svg
         width="14"
         height="14"
@@ -82,7 +97,7 @@ const emit = defineEmits<{
           <SelectItem
             v-for="option in options"
             :key="option.value"
-            :value="option.value"
+            :value="toInternal(option.value)"
             :disabled="option.disabled"
             class="relative flex cursor-pointer items-center rounded-sm px-3 py-2 pr-8 text-sm whitespace-nowrap text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-[state=checked]:font-medium"
           >

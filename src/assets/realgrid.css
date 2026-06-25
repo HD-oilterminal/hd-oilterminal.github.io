@@ -6,6 +6,7 @@
 .realgrid-wrapper {
   display: flex;
   flex-direction: column;
+  @apply grow;
 }
 
 .realgrid-container {

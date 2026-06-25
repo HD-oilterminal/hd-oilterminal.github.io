@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 
 export interface MdiTab {
-  id: string
-  menuId: string
   title: string
+  id: string
+  menuId?: string
   closable?: boolean
 }
 
@@ -14,7 +14,9 @@ export const mdiSystem = defineStore('mdi-system', () => {
   const isOpen = (id: string) => tabs.value.some(t => t.id === id)
 
   const open = (tab: MdiTab): boolean => {
+    if (!tab.menuId) tab.menuId = tab.id
     if (!isOpen(tab.id)) tabs.value.push(tab)
+
     activeTabId.value = tab.id
     return true
   }

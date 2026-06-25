@@ -29,7 +29,7 @@ export type Translator = ReturnType<typeof useI18n>['t']
 export interface GridProps {
   title: string
   columns: Columns
-  rows: Rows | PagedRows
+  rows: Rows | PagedRows | undefined
   height?: string
   checkable?: boolean
   editable?: boolean

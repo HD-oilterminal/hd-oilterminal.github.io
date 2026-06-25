@@ -135,15 +135,20 @@ defineExpose({ input })
 </script>
 
 <template>
-  <label class="flex items-center gap-2 text-sm font-medium" :class="disabled ? 'cursor-not-allowed' : ''">
-    <span v-if="label" :class="required ? 'required' : ''" class="shrink-0 text-right" :style="{ width: labelSize }">
+  <label class="flex min-w-0 shrink items-center gap-2" :class="disabled ? 'cursor-not-allowed' : ''">
+    <span
+      v-if="label"
+      :class="required ? 'required' : ''"
+      class="shrink-0 text-right text-gray-500"
+      :style="{ width: labelSize }"
+    >
       {{ label }}
     </span>
     <span
-      class="h-control-md flex flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
+      class="h-control-md flex min-w-0 flex-1 shrink items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
       :class="disabled ? 'bg-gray-100 opacity-40' : ''"
     >
-      <span v-if="prefix" class="shrink-0 text-sm text-gray-500">{{ prefix }}</span>
+      <span v-if="prefix" class="shrink-0 text-sm text-gray-600">{{ prefix }}</span>
       <input
         v-if="!isNumber"
         ref="input"
@@ -153,7 +158,7 @@ defineExpose({ input })
         :disabled="disabled"
         :readonly="readonly"
         :value="modelValue as string"
-        class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-400"
+        class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400 read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-400"
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       />
       <input

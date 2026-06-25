@@ -19,8 +19,8 @@ const props = withDefaults(defineProps<GridProps>(), {
 
 const emit = defineEmits<{
   currentChanged: [row: number, column: string]
-  cellClicked: [clickData: ClickData, grid: GridBase]
-  rowClicked: [row: RowObject, grid: GridBase]
+  cellClicked: [data: ClickData, grid: GridBase]
+  rowClicked: [row: RowObject, data: ClickData, grid: GridBase]
   paging: [page: number]
 }>()
 
@@ -60,7 +60,7 @@ onMounted(() => {
 
   core.onCellClicked = (grid, value) => {
     emit('cellClicked', value, grid)
-    if (value.dataRow != undefined) emit('rowClicked', data.getJsonRow(value.dataRow), grid)
+    if (value.dataRow != undefined) emit('rowClicked', data.getJsonRow(value.dataRow), value, grid)
   }
 })
 

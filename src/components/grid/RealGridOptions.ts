@@ -80,7 +80,7 @@ const generate = (
 
   provider.setFields(fieldsAdaptor(dataColumns))
 
-  const rows = Array.isArray(props.rows) ? props.rows : props.rows.list
+  const rows = (Array.isArray(props.rows) ? props.rows : props.rows?.list) ?? []
 
   if (provider instanceof LocalTreeDataProvider) {
     const treeColumnKey = (props as TreeProps).treeColumnKey ?? ''

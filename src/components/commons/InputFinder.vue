@@ -3,7 +3,7 @@ import type { RowObject } from 'realgrid'
 import { nextTick, ref } from 'vue'
 
 import { paginate } from '../../composables/useFormat'
-import type { Columns, PagedRows, Row } from '../../types/core'
+import type { Columns, PagedRows, Row, Rows } from '../../types/core'
 import RealGrid from '../grid/RealGrid.vue'
 import Input from './Input.vue'
 import Popover from './Popover.vue'
@@ -92,7 +92,7 @@ watch(keyword, ({ extern }) => {
 </script>
 
 <template>
-  <Popover as-anchor :open="isOpen" @update:open="isOpen = $event">
+  <Popover v-model:open="isOpen" as-anchor>
     <template #trigger>
       <div class="relative w-full">
         <Input
@@ -110,8 +110,7 @@ watch(keyword, ({ extern }) => {
           type="button"
           :disabled="disabled"
           class="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed"
-          aria-label="검색"
-          @click="isOpen = true"
+          @click="isOpen = !isOpen"
         >
           <svg
             width="16"

@@ -298,7 +298,7 @@ const onKeydown = (e: KeyboardEvent) => {
           type="text"
           inputmode="numeric"
           :disabled="disabled"
-          class="w-10 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
+          class="w-11 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
           @focusin="isOpen = true"
         />
         <span class="mx-[-2px] text-gray-500 select-none">-</span>
@@ -307,7 +307,7 @@ const onKeydown = (e: KeyboardEvent) => {
           type="text"
           inputmode="numeric"
           :disabled="disabled"
-          class="w-6 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
+          class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
           @focusin="isOpen = true"
         />
         <span class="mx-[-2px] text-gray-500 select-none">-</span>
@@ -316,7 +316,7 @@ const onKeydown = (e: KeyboardEvent) => {
           type="text"
           inputmode="numeric"
           :disabled="disabled"
-          class="w-6 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
+          class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
           @focusin="isOpen = true"
         />
       </div>
