@@ -13,8 +13,10 @@ export const useRealGrid = () => {
   }
 
   function resolveColumns(columns: Columns): Columns {
+    if (Array.isArray(columns?.[0])) return arrayColumns(columns)
+
     return Object.fromEntries(
-      Object.entries(columns).map(([key, col]) => {
+      Object.entries(columns as Columns).map(([key, col]) => {
         if (!('subColumns' in col) && col.code) {
           const items: Code[] = codes.list(col.code)
           if (items?.length) {
@@ -50,4 +52,11 @@ export const useGridExcel = (): GridExcel => {
 export const isChildCell = (grid: GridBase, cell?: number) => {
   const item = grid.getModel(cell!)
   return (item.parentId ?? -1) > -1
+}
+
+export const arrayColumns = (array: Columns): Columns => {
+  return (array as unknown as any[]).reduce((acc, [key, header, options = {}]) => {
+    acc[key] = { header, ...options }
+    return acc
+  }, {} as Columns)
 }

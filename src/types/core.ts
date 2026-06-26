@@ -28,7 +28,7 @@ export type Translator = ReturnType<typeof useI18n>['t']
 
 export interface GridProps {
   title: string
-  columns: Columns
+  columns: Columns | any // 배열형태의 컬럼정의 사용으로 어쩔 수 없이 any
   rows: Rows | PagedRows | undefined
   height?: string
   checkable?: boolean

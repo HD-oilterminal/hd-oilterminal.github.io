@@ -1,6 +1,7 @@
 :root {
   --color-realgrid-row: #fff;
   --color-realgrid-row-odd: #f3f3f3;
+  --color-realgrid-row-current: #defa;
 }
 
 .realgrid-wrapper {

@@ -13,8 +13,8 @@
   --color-primary-700: #1d4ed8;
   --spacing-sidebar: 64px;
   --spacing-sidebar-expanded: 240px;
-  --spacing-control-sm: 1.625rem;
-  --spacing-control-md: 1.875rem;
+  --spacing-control-sm: 1.325rem;
+  --spacing-control-md: 1.575rem;
   --font-size-base: 0.7rem;
   --radius-lg: var(--radius-md);
   --radius-md: var(--radius-sm);

@@ -108,6 +108,12 @@ const generate = (
   grid.setRowIndicator({ visible: false })
   grid.setStateBar({ visible: !!props.editable, errorVisible: true })
 
+  let currentItemIndex: number | undefined
+  grid.onSelectionChanged = (_grid, selection) => {
+    currentItemIndex = selection.startItem
+    _grid.refresh()
+  }
+
   if (props.editable) {
     provider.restoreMode = RestoreMode.AUTO
     grid.setContextMenu([{ label: t('수정 취소하기'), name: 'restore' }])
@@ -163,9 +169,14 @@ const generate = (
   if (grid instanceof TreeView && grid.treeOptions) {
     grid.treeOptions.expanderIconStyle = TreeExpanderIconStyle.SQUARE
     grid.treeOptions.iconVisible = false
-    grid.setRowStyleCallback((_, item) => ({
-      style: { background: `var(--color-realgrid-row${(item as TreeGridItem).parentIndex > -1 ? '-odd' : ''})` }
-    }))
+    grid.setRowStyleCallback((_, item) => {
+      if (item.itemIndex === currentItemIndex) return { style: { background: 'var(--color-realgrid-row-current)' } }
+      return { style: { background: `var(--color-realgrid-row${(item as TreeGridItem).parentIndex > -1 ? '-odd' : ''})` } }
+    })
+  } else {
+    grid.setRowStyleCallback((_, item) => {
+      if (item.itemIndex === currentItemIndex) return { style: { background: 'var(--color-realgrid-row-current)' } }
+    })
   }
 
   return {
