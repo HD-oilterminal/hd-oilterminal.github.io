@@ -13,7 +13,7 @@ export const useRealGrid = () => {
   }
 
   function resolveColumns(columns: Columns): Columns {
-    if (Array.isArray(columns?.[0])) return arrayColumns(columns)
+    if (Array.isArray(columns?.[0])) columns = arrayColumns(columns)
 
     return Object.fromEntries(
       Object.entries(columns as Columns).map(([key, col]) => {

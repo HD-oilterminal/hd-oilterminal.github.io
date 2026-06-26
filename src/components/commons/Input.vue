@@ -33,14 +33,7 @@ const input = ref<HTMLInputElement>()
 const isNumber = computed(() => props.type === 'number')
 const isTel = computed(() => props.type === 'tel')
 
-const PHONE_REGEX = /^(01[016789]|02|0[3-9]{1}[0-9]{1})-?([0-9]{3,4})-?([0-9]{4})$/
-const isTelInvalid = computed(() => {
-  if (!isTel.value) return false
-  const val = String(props.modelValue ?? '')
-  return val.length > 0 && !PHONE_REGEX.test(val)
-})
-
-function formatPhone(raw: string): string {
+const formatPhone = (raw: string): string => {
   const digits = raw.replace(/\D/g, '').slice(0, 11)
   if (!digits) return ''
 
@@ -53,7 +46,6 @@ function formatPhone(raw: string): string {
 
   if (rest.length <= 3) return `${area}-${rest}`
 
-  // 전체 자릿수로 중간 그룹 길이 결정 (3 또는 4)
   const middleLen = Math.max(3, Math.min(4, digits.length - areaLen - 4))
   const middle = rest.slice(0, middleLen)
   const last = rest.slice(middleLen)
@@ -211,18 +203,13 @@ defineExpose({ input })
 </script>
 
 <template>
-  <label class="flex min-w-0 shrink items-center gap-2" :class="disabled ? 'cursor-not-allowed' : ''">
-    <span
-      v-if="label"
-      :class="required ? 'required' : ''"
-      class="shrink-0 text-right text-gray-500"
-      :style="{ width: labelSize }"
-    >
+  <label class="field relative min-w-0 shrink" :class="{ 'cursor-not-allowed': disabled, required }">
+    <i v-if="label" :style="{ width: labelSize }">
       {{ label }}
-    </span>
+    </i>
     <span
-      class="h-control-md flex min-w-0 flex-1 shrink items-center gap-1.5 rounded-md border bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
-      :class="[disabled ? 'bg-gray-100 opacity-40' : '', isTelInvalid ? 'border-red-400' : 'border-gray-300']"
+      class="field-input h-control-md flex min-w-0 flex-1 shrink items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
+      :class="[disabled ? 'bg-gray-100 opacity-40' : '', prefix ? 'gap-0!' : '']"
     >
       <span v-if="prefix" class="shrink-0 text-sm text-gray-600">{{ prefix }}</span>
       <input
@@ -247,6 +234,15 @@ defineExpose({ input })
         :disabled="disabled"
         :readonly="readonly"
         class="min-w-0 flex-1 bg-transparent font-mono text-sm tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-400"
+        @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
+        @copy="
+          (e: ClipboardEvent) => {
+            const t = e.target as HTMLInputElement
+            const sel = t.value.slice(t.selectionStart ?? 0, t.selectionEnd ?? t.value.length)
+            e.clipboardData?.setData('text/plain', sel.replace(/\D/g, ''))
+            e.preventDefault()
+          }
+        "
       />
       <input
         v-else
@@ -270,13 +266,13 @@ defineExpose({ input })
       />
       <span v-if="suffix" class="shrink-0 text-sm text-gray-500">{{ suffix }}</span>
     </span>
+    <slot />
   </label>
 </template>
 
-<style scoped>
-span.required::before {
-  content: '*';
-  color: var(--color-red-500);
-  margin-right: var(--spacing);
+<style>
+.field-input + button {
+  position: absolute;
+  right: 0;
 }
 </style>
