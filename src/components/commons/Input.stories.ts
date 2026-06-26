@@ -110,6 +110,29 @@ export const Required: Story = {
   })
 }
 
+export const TelType: Story = {
+  name: '전화번호 입력',
+  parameters: {
+    docs: {
+      source: { code: `<Input v-model="value" type="tel" label="전화번호" placeholder="010-1234-5678" />` }
+    }
+  },
+  render: () => ({
+    components: { Input },
+    setup() {
+      const value = ref('')
+      return { value }
+    },
+    template: `
+      <div class="space-y-2">
+        <p class="text-xs text-gray-400">숫자와 하이픈만 입력 가능, 유효하지 않은 형식이면 빨간 테두리</p>
+        <Input v-model="value" type="tel" label="전화번호" placeholder="010-1234-5678" />
+        <p class="text-xs text-gray-400">입력값: {{ value || '없음' }}</p>
+      </div>
+    `
+  })
+}
+
 export const Disabled: Story = {
   name: '비활성화',
   parameters: {

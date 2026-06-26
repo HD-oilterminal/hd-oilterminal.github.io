@@ -31,6 +31,35 @@ const emit = defineEmits<{
 
 const input = ref<HTMLInputElement>()
 const isNumber = computed(() => props.type === 'number')
+const isTel = computed(() => props.type === 'tel')
+
+const PHONE_REGEX = /^(01[016789]|02|0[3-9]{1}[0-9]{1})-?([0-9]{3,4})-?([0-9]{4})$/
+const isTelInvalid = computed(() => {
+  if (!isTel.value) return false
+  const val = String(props.modelValue ?? '')
+  return val.length > 0 && !PHONE_REGEX.test(val)
+})
+
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 11)
+  if (!digits) return ''
+
+  const areaLen = digits.startsWith('02') ? 2 : 3
+  const area = digits.slice(0, areaLen)
+
+  if (digits.length <= areaLen) return area
+
+  const rest = digits.slice(areaLen)
+
+  if (rest.length <= 3) return `${area}-${rest}`
+
+  // 전체 자릿수로 중간 그룹 길이 결정 (3 또는 4)
+  const middleLen = Math.max(3, Math.min(4, digits.length - areaLen - 4))
+  const middle = rest.slice(0, middleLen)
+  const last = rest.slice(middleLen)
+
+  return `${area}-${middle}-${last}`
+}
 
 function formatRaw(raw: string): string {
   const isNegative = raw.startsWith('-')
@@ -59,6 +88,49 @@ const digit2Number = (digit?: string) => {
 }
 
 onMounted(() => {
+  if (isTel.value) {
+    const target = input.value!
+
+    if (props.modelValue) {
+      target.value = formatPhone(String(props.modelValue))
+    }
+
+    target.addEventListener('keydown', e => {
+      const start = target.selectionStart ?? 0
+      const end = target.selectionEnd
+      if (start === end) {
+        if (e.key === 'Backspace' && target.value[start - 1] === '-') {
+          target.setSelectionRange(start - 1, start - 1)
+        } else if (e.key === 'Delete' && target.value[start] === '-') {
+          target.setSelectionRange(start + 1, start + 1)
+        }
+      }
+    })
+
+    target.addEventListener('input', () => {
+      const originalValue = target.value
+      const originalCursor = target.selectionStart ?? 0
+      const digitsBeforeCursor = originalValue.slice(0, originalCursor).replace(/\D/g, '').length
+
+      const formatted = formatPhone(originalValue)
+      target.value = formatted
+
+      let newCursor = 0
+      let digitCount = 0
+      for (let i = 0; i < formatted.length; i++) {
+        if (digitCount === digitsBeforeCursor) break
+        if (formatted[i] >= '0' && formatted[i] <= '9') digitCount++
+        newCursor = i + 1
+      }
+      target.setSelectionRange(newCursor, newCursor)
+
+      emit('update:modelValue', formatted)
+    })
+
+    target.addEventListener('focus', () => input.value?.select())
+    return
+  }
+
   if (!isNumber.value) return
   const target = input.value!
 
@@ -126,8 +198,12 @@ onMounted(() => {
 watch(
   () => props.modelValue,
   newVal => {
-    if (!isNumber.value || !input.value || document.activeElement === input.value) return
-    input.value.value = newVal || newVal === 0 ? formatRaw(newVal + '') : ''
+    if (!input.value || document.activeElement === input.value) return
+    if (isTel.value) {
+      input.value.value = newVal ? formatPhone(String(newVal)) : ''
+    } else if (isNumber.value) {
+      input.value.value = newVal || newVal === 0 ? formatRaw(newVal + '') : ''
+    }
   }
 )
 
@@ -145,12 +221,12 @@ defineExpose({ input })
       {{ label }}
     </span>
     <span
-      class="h-control-md flex min-w-0 flex-1 shrink items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
-      :class="disabled ? 'bg-gray-100 opacity-40' : ''"
+      class="h-control-md flex min-w-0 flex-1 shrink items-center gap-1.5 rounded-md border bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
+      :class="[disabled ? 'bg-gray-100 opacity-40' : '', isTelInvalid ? 'border-red-400' : 'border-gray-300']"
     >
       <span v-if="prefix" class="shrink-0 text-sm text-gray-600">{{ prefix }}</span>
       <input
-        v-if="!isNumber"
+        v-if="!isNumber && !isTel"
         ref="input"
         :type="type"
         :placeholder="placeholder"
@@ -162,6 +238,17 @@ defineExpose({ input })
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       />
       <input
+        v-else-if="isTel"
+        ref="input"
+        type="text"
+        inputmode="tel"
+        :placeholder="placeholder"
+        :required="required"
+        :disabled="disabled"
+        :readonly="readonly"
+        class="min-w-0 flex-1 bg-transparent font-mono text-sm tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-400"
+      />
+      <input
         v-else
         ref="input"
         type="text"
@@ -171,6 +258,15 @@ defineExpose({ input })
         :disabled="disabled"
         :readonly="readonly"
         class="min-w-0 flex-1 bg-transparent text-right font-mono text-sm tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-400"
+        @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
+        @copy="
+          (e: ClipboardEvent) => {
+            const t = e.target as HTMLInputElement
+            const sel = t.value.slice(t.selectionStart ?? 0, t.selectionEnd ?? t.value.length)
+            e.clipboardData?.setData('text/plain', sel.replace(/,/g, ''))
+            e.preventDefault()
+          }
+        "
       />
       <span v-if="suffix" class="shrink-0 text-sm text-gray-500">{{ suffix }}</span>
     </span>
