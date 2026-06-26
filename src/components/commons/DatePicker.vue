@@ -133,6 +133,17 @@ const onFocusOut = (e: FocusEvent) => {
   }, 0)
 }
 
+const clear = (e: KeyboardEvent) => {
+  e.preventDefault()
+  yearStr.value = ''
+  monthStr.value = ''
+  dayStr.value = ''
+  if (yearInput.value) yearInput.value.value = ''
+  if (monthInput.value) monthInput.value.value = ''
+  if (dayInput.value) dayInput.value.value = ''
+  yearInput.value?.focus()
+}
+
 onMounted(() => {
   const year = yearInput.value!
   const month = monthInput.value!
@@ -192,7 +203,8 @@ onMounted(() => {
 
   // Backspace/Delete: 세그먼트 전체 삭제 후 이전 세그먼트로 이동
   year.addEventListener('keydown', e => {
-    if (e.key === 'Backspace' || e.key === 'Delete') {
+    if (e.key === 'Delete') clear(e)
+    else if (e.key === 'Backspace') {
       if (yearStr.value) {
         e.preventDefault()
         yearStr.value = ''
@@ -203,7 +215,8 @@ onMounted(() => {
   })
 
   month.addEventListener('keydown', e => {
-    if (e.key === 'Backspace' || e.key === 'Delete') {
+    if (e.key === 'Delete') clear(e)
+    else if (e.key === 'Backspace') {
       e.preventDefault()
       monthStr.value = ''
       month.value = ''
@@ -213,7 +226,8 @@ onMounted(() => {
   })
 
   day.addEventListener('keydown', e => {
-    if (e.key === 'Backspace' || e.key === 'Delete') {
+    if (e.key === 'Delete') clear(e)
+    else if (e.key === 'Backspace') {
       e.preventDefault()
       dayStr.value = ''
       day.value = ''
