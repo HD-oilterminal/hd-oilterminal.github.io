@@ -14,25 +14,11 @@
   --spacing-sidebar: 64px;
   --spacing-sidebar-expanded: 240px;
   --spacing-control-sm: 1.325rem;
-  --spacing-control-md: 1.575rem;
+  --spacing-control-md: 24px;
   --font-size-base: 0.7rem;
   --radius-lg: var(--radius-md);
   --radius-md: var(--radius-sm);
   --radius-sm: 0.2rem;
 
   --color-hdot-primary: #0369b4;
-}
-
-.mdi {
-  h3 {
-    @apply my-2 flex items-center gap-1.5 text-sm font-semibold text-gray-800 before:inline-block before:h-2 before:w-2 before:shrink-0 before:rounded-full before:bg-blue-500 before:content-[''];
-
-    > button {
-      margin-left: auto;
-    }
-  }
-
-  .btn + .btn {
-    @apply ml-1;
-  }
 }

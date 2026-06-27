@@ -14,6 +14,8 @@ export const mdiSystem = defineStore('mdi-system', () => {
   const isOpen = (id: string) => tabs.value.some(t => t.id === id)
 
   const open = (tab: MdiTab): boolean => {
+    console.info('MDI(open)', tab.id, tab.title)
+
     if (!tab.menuId) tab.menuId = tab.id
     if (!isOpen(tab.id)) tabs.value.push(tab)
 
@@ -32,6 +34,8 @@ export const mdiSystem = defineStore('mdi-system', () => {
   }
 
   const activate = (id: string) => {
+    console.info('MDI(act.)', id, tabs.value.find(m => m.id === id)?.title)
+
     activeTabId.value = id
   }
 

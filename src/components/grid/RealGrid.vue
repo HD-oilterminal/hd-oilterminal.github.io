@@ -25,7 +25,12 @@ const emit = defineEmits<{
 }>()
 
 const container = ref<HTMLDivElement>()
-const pageable = computed(() => (Array.isArray(props.rows) ? undefined : props.rows))
+const pageable = computed(() => {
+  return !Array.isArray(props.rows) && // 배열 형태
+    typeof props.rows.page === 'number' // page 속성 포함 및 숫자 타입
+    ? props.rows
+    : undefined
+})
 
 let core: GridView
 let data: LocalDataProvider

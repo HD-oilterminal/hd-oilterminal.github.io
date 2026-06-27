@@ -57,6 +57,7 @@ export interface Fixed {
 
 export interface TreeProps extends GridProps {
   treeColumnKey?: string
+  expanded?: boolean
 }
 
 export interface ColumnHeader {

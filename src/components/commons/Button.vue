@@ -1,7 +1,8 @@
 <script setup lang="ts">
 defineProps<{
   label?: string
-  variant?: 'primary' | 'secondary' | 'liner' | 'ghost' | 'none'
+  variant?: 'primary' | 'secondary' | 'liner' | 'ghost' | 'united' | 'none'
+  type?: 'button' | 'submit' | 'reset'
   size?: 'sm' | 'md' | 'lg'
   disabled?: boolean
 }>()
@@ -24,11 +25,12 @@ defineEmits<{ click: [event: MouseEvent] }>()
         secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
         liner: 'border border-gray-300 text-gray-500 hover:bg-gray-100',
         ghost: 'border border-gray-200 text-gray-700 hover:bg-gray-100',
-        none: 'px-2! text-gray-700 hover:bg-gray-200/70'
+        united: 'absolute right-0 px-2! text-gray-700 hover:bg-gray-200/70',
+        none: 'px-0!'
       }[variant ?? 'primary'],
       [disabled ? 'cursor-not-allowed' : 'cursor-pointer']
     ]"
-    type="button"
+    :type="type ?? 'button'"
     @click="$emit('click', $event)"
   >
     {{ label }}<slot />

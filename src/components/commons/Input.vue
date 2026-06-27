@@ -203,7 +203,7 @@ defineExpose({ input })
 </script>
 
 <template>
-  <label class="field relative min-w-0 shrink" :class="{ 'cursor-not-allowed': disabled, required }">
+  <label class="field field-input relative shrink" :class="{ 'cursor-not-allowed': disabled, required }" :data-name="label">
     <i v-if="label" :style="{ width: labelSize }">
       {{ label }}
     </i>
@@ -217,11 +217,10 @@ defineExpose({ input })
         ref="input"
         :type="type"
         :placeholder="placeholder"
-        :required="required"
         :disabled="disabled"
         :readonly="readonly"
         :value="modelValue as string"
-        class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400 read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-400"
+        class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400 read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-800"
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       />
       <input
@@ -230,10 +229,9 @@ defineExpose({ input })
         type="text"
         inputmode="tel"
         :placeholder="placeholder"
-        :required="required"
         :disabled="disabled"
         :readonly="readonly"
-        class="min-w-0 flex-1 bg-transparent font-mono text-sm tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-400"
+        class="min-w-0 flex-1 bg-transparent font-mono text-sm tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-800"
         @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
         @copy="
           (e: ClipboardEvent) => {
@@ -250,10 +248,9 @@ defineExpose({ input })
         type="text"
         inputmode="decimal"
         :placeholder="placeholder"
-        :required="required"
         :disabled="disabled"
         :readonly="readonly"
-        class="min-w-0 flex-1 bg-transparent text-right font-mono text-sm tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-400"
+        class="min-w-0 flex-1 bg-transparent text-right font-mono text-sm tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-800"
         @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
         @copy="
           (e: ClipboardEvent) => {
@@ -269,10 +266,3 @@ defineExpose({ input })
     <slot />
   </label>
 </template>
-
-<style>
-.field-input + button {
-  position: absolute;
-  right: 0;
-}
-</style>

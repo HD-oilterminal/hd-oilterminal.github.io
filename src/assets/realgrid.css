@@ -1,7 +1,7 @@
 :root {
   --color-realgrid-row: #fff;
   --color-realgrid-row-odd: #f3f3f3;
-  --color-realgrid-row-current: #defa;
+  --color-realgrid-row-current: #08f2;
 }
 
 .realgrid-wrapper {
@@ -62,6 +62,11 @@
 /*
 Cell align
  */
+.rg-body .rg-table tr td:hover,
+.rg-fixed-body .rg-table tr td:hover {
+  background: transparent;
+}
+
 .rg-data-cell > .rg-renderer {
   text-align: center;
 }

@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  TooltipContent,
-  TooltipPortal,
-  TooltipProvider,
-  TooltipRoot,
-  TooltipTrigger
-} from 'reka-ui'
+import { TooltipContent, TooltipPortal, TooltipProvider, TooltipRoot, TooltipTrigger } from 'reka-ui'
 
 withDefaults(
   defineProps<{
@@ -25,7 +19,7 @@ withDefaults(
 </script>
 
 <template>
-  <TooltipProvider :delay-duration="delayDuration">
+  <TooltipProvider :delay-duration="delayDuration" :disable-hoverable-content="true">
     <TooltipRoot :disabled="disabled">
       <TooltipTrigger as-child>
         <slot />
