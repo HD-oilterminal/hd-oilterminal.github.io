@@ -28,7 +28,7 @@ export type Translator = ReturnType<typeof useI18n>['t']
 
 export interface GridProps {
   title: string
-  columns: Columns | any // 배열형태의 컬럼정의 사용으로 어쩔 수 없이 any
+  columns: Columns | ArrayColumns
   rows: Rows | PagedRows | undefined
   height?: string
   checkable?: boolean
@@ -105,13 +105,15 @@ export interface Column {
 }
 
 export interface ColumnGroup {
-  header?: ColumnHeader | string | string[]
+  header?: string | string[] | ColumnHeader
   direction?: ColumnLayoutDirection
   hideChildHeaders?: boolean
   subColumns: Record<string, Column>
 }
 
 export type Columns = Record<string, Column | ColumnGroup>
+
+export type ArrayColumns = [string, (string | string[] | ColumnHeader)?, Column?][]
 
 export interface TabItem {
   value: string

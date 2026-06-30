@@ -15,7 +15,6 @@ import {
   type LiteralColumn,
   LocalDataProvider,
   LocalTreeDataProvider,
-  RestoreMode,
   SelectionMode,
   SelectionStyle,
   type SeriesColumn,
@@ -42,7 +41,7 @@ export const useGrid = () => {
 const _treeish = (title: string, container?: HTMLDivElement, props?: TreeProps, t?: (key: string) => string) => {
   if (!container) throw new Error('Container is required!')
 
-  return generate(new TreeView(container, false, { title }), new LocalTreeDataProvider(false), props!, t!) as {
+  return generate(title, new TreeView(container, false, { title }), new LocalTreeDataProvider(false), props!, t!) as {
     grid: TreeView
     provider: LocalTreeDataProvider
   }
@@ -51,13 +50,14 @@ const _treeish = (title: string, container?: HTMLDivElement, props?: TreeProps, 
 const _gridish = (title: string, container?: HTMLDivElement, props?: GridProps, t?: (key: string) => string) => {
   if (!container) throw new Error('Container is required!')
 
-  return generate(new GridView(container, false, { title }), new LocalDataProvider(false), props!, t!) as {
+  return generate(title, new GridView(container, false, { title }), new LocalDataProvider(false), props!, t!) as {
     grid: GridView
     provider: LocalDataProvider
   }
 }
 
 const generate = (
+  title: string,
   grid: GridView | TreeView,
   provider: LocalDataProvider | LocalTreeDataProvider,
   props: GridProps | TreeProps,
@@ -114,11 +114,12 @@ const generate = (
     _grid.refresh()
   }
 
-  if (props.editable) {
-    provider.restoreMode = RestoreMode.AUTO
-    grid.setContextMenu([{ label: t('수정 취소하기'), name: 'restore' }])
-    grid.onContextMenuItemClicked = (_grid, menu, data) => {
-      if (data.dataRow !== undefined && menu.name === 'restore') provider.restoreUpdatedRows(data.dataRow)
+  grid.setContextMenu([{ label: t('엑셀 다운로드'), name: 'excel' }])
+  grid.onContextMenuItemClicked = (_grid, menu, data) => {
+    if (menu.name === 'excel') {
+      _grid.exportGrid({ type: 'excel', target: 'local', fileName: title })
+    } else if (data.dataRow !== undefined && menu.name === 'restore') {
+      provider.restoreUpdatedRows(data.dataRow)
     }
   }
 

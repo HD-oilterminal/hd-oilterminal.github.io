@@ -2,7 +2,7 @@ import { GridBase } from 'realgrid'
 import { useI18n } from 'vue-i18n'
 
 import { codeSystem } from '../stores/codeSystem'
-import type { Code, Columns, GridExcel, Rows } from '../types/core'
+import type { ArrayColumns, Code, Columns, GridExcel, Rows } from '../types/core'
 
 export const useRealGrid = () => {
   const codes = codeSystem()
@@ -12,8 +12,8 @@ export const useRealGrid = () => {
     return locale.value === 'ko' ? item.name : (item.english ?? item.name)
   }
 
-  function resolveColumns(columns: Columns): Columns {
-    if (Array.isArray(columns?.[0])) columns = arrayColumns(columns)
+  function resolveColumns(columns: Columns | ArrayColumns): Columns {
+    if (Array.isArray(columns)) columns = arrayColumns(columns as ArrayColumns)
 
     return Object.fromEntries(
       Object.entries(columns as Columns).map(([key, col]) => {
@@ -41,8 +41,8 @@ export const useRealGrid = () => {
 export const useGridExcel = (): GridExcel => {
   return {
     bridge: function (postprocessor: (rows?: Rows, filename?: string) => void) {
-      this.get = function () {
-        return postprocessor()
+      this.get = function (filename?: string | null, rows?: Rows) {
+        return postprocessor(rows, filename ?? undefined)
       }
     },
     get: function () {}
@@ -54,8 +54,8 @@ export const isChildCell = (grid: GridBase, cell?: number) => {
   return (item.parentId ?? -1) > -1
 }
 
-export const arrayColumns = (array: Columns): Columns => {
-  return (array as unknown as any[]).reduce((acc, [key, header, options = {}]) => {
+export const arrayColumns = (array: ArrayColumns): Columns => {
+  return array.reduce((acc, [key, header = key, options = {}]) => {
     acc[key] = { header, ...options }
     return acc
   }, {} as Columns)
