@@ -108,6 +108,8 @@ const generate = (
   grid.setRowIndicator({ visible: false })
   grid.setStateBar({ visible: !!props.editable, errorVisible: true })
 
+  if (props.groupable && grid instanceof GridView) grid.groupPanel.visible = true
+
   let currentItemIndex: number | undefined
   grid.onSelectionChanged = (_grid, selection) => {
     currentItemIndex = selection.startItem

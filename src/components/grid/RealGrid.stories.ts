@@ -97,6 +97,54 @@ onMounted(() => load(1))
   })
 }
 
+export const Groupable: Story = {
+  name: '통계형(그룹핑)',
+  parameters: {
+    docs: {
+      source: {
+        code: `<RealGrid
+  title="입출고현황"
+  :groupable="true"
+  :columns="columns"
+  :rows="rows"
+  height="400px"
+/>`
+      }
+    }
+  },
+  render: () => ({
+    components: { RealGrid },
+    setup() {
+      const groupColumns: Columns = {
+        genre: { header: '장르', width: 100 },
+        artist: { header: '아티스트', width: 120 },
+        title: { header: '곡명', width: 180 },
+        album: { header: '앨범', width: 160 },
+        plays: { header: '재생수', width: 100, type: ValueType.NUMBER }
+      }
+
+      const groupRows = [
+        { genre: 'R&B', artist: 'BIG Naughty', title: '그래서 나는 없다', album: 'KARMA', plays: 4820000 },
+        { genre: 'R&B', artist: 'BIG Naughty', title: '서울 어딘가에', album: 'KARMA', plays: 3100000 },
+        { genre: 'R&B', artist: 'Loco', title: '주말이 지나면', album: 'Around', plays: 3150000 },
+        { genre: 'R&B', artist: 'Loco', title: 'Thinking About You', album: 'Around', plays: 2800000 },
+        { genre: 'Hiphop', artist: 'Hash Swan', title: 'Hype Boy', album: 'Swanson', plays: 2740000 },
+        { genre: 'Hiphop', artist: 'Hash Swan', title: 'Petal', album: 'Swanson', plays: 1950000 },
+        { genre: 'Hiphop', artist: 'BIG Naughty', title: 'Karma', album: 'KARMA', plays: 2200000 },
+        { genre: 'Pop', artist: 'Loco', title: 'Mountains', album: 'Solo', plays: 1600000 }
+      ]
+
+      return { groupColumns, groupRows }
+    },
+    template: `
+      <div class="flex flex-col gap-2 text-sm text-gray-500">
+        <p>컬럼 헤더를 상단 그룹핑 영역으로 드래그하면 해당 컬럼으로 그룹핑됩니다.</p>
+        <RealGrid title="장르별 재생통계" :groupable="true" :columns="groupColumns" :rows="groupRows" height="400px" />
+      </div>
+    `
+  })
+}
+
 export const WithExcelDownload: Story = {
   name: '엑셀 다운로드',
   parameters: {

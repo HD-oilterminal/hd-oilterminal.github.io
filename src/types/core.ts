@@ -33,6 +33,7 @@ export interface GridProps {
   height?: string
   checkable?: boolean
   editable?: boolean
+  groupable?: boolean
   headerHeight?: number
   fixed?: Fixed
   excel?: GridExcel
