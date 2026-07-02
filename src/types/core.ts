@@ -11,8 +11,6 @@ import type {
 } from 'realgrid'
 import type { useI18n } from 'vue-i18n'
 
-export type Opt<T> = T & { [key: string]: any }
-
 export interface Code {
   key: string
   name: string
@@ -87,7 +85,7 @@ export interface Column {
   numberFormat?: string
   prefix?: string
   suffix?: string
-  displaying?: (value: unknown, cell: CellIndex, grid: GridBase) => any
+  displaying?: (value: any, cell: CellIndex, grid: GridBase) => any
   styling?: (cell: GridCell, grid: GridBase) => string | ColumnStyleObject | ColumnSummaryStyleObject | undefined
 
   /**
@@ -116,9 +114,12 @@ export type Columns = Record<string, Column | ColumnGroup>
 
 export type ArrayColumns = [string, (string | string[] | ColumnHeader)?, Column?][]
 
-export interface TabItem {
-  value: string
+export interface Option {
   label: string
-  count?: number
+  value: string | number
   disabled?: boolean
+}
+
+export interface TabItem extends Option {
+  count?: number
 }

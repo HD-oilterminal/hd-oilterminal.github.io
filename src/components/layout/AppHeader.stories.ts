@@ -20,7 +20,7 @@ export const Default: Story = {
       setup() {
         const mdiStore = mdiSystem()
         mdiStore.tabs = [
-          { id: 'a', menuId: 'a', title: '메인', closable: false },
+          { id: 'a', menuId: 'a', title: '메인', durable: false },
           { id: 'b', menuId: 'b', title: '어떤 업무' },
           { id: 'c', menuId: 'c', title: '그런 작업' },
           { id: 'd', menuId: 'd', title: '저런 관리' }

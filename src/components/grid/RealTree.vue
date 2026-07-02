@@ -66,8 +66,6 @@ const doSearch = (reverse = false) => {
 }
 
 const excel = (filename?: string) => {
-  console.log('excel', filename || props.title)
-
   core.exportGrid({
     type: 'excel',
     target: 'local',
@@ -85,7 +83,7 @@ watch(
 )
 
 onMounted(() => {
-  ;({ grid: core, provider: data } = treeish('Sample Title', container.value, {
+  ;({ grid: core, provider: data } = treeish(props.title, container.value, {
     ...props,
     columns: resolveColumns(props.columns)
   }))
@@ -127,7 +125,7 @@ onBeforeUnmount(() => {
 })
 
 defineExpose({
-  get grid() {
+  get core() {
     return core
   },
   get data() {

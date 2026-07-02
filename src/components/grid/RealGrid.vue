@@ -67,8 +67,6 @@ const doSearch = (reverse = false) => {
 }
 
 const excel = (filename?: string) => {
-  console.log('excel', filename || props.title)
-
   core.exportGrid({
     type: 'excel',
     target: 'local',
@@ -124,7 +122,7 @@ onBeforeUnmount(() => {
 })
 
 defineExpose({
-  get grid() {
+  get core() {
     return core
   },
   get provider() {

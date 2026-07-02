@@ -17,7 +17,7 @@ const props = withDefaults(
   {
     modelValue: '',
     type: 'text',
-    labelSize: '6rem',
+    labelSize: '',
     label: '',
     placeholder: '',
     prefix: '',
@@ -204,7 +204,7 @@ defineExpose({ input })
 
 <template>
   <label class="field field-input relative shrink" :class="{ 'cursor-not-allowed': disabled, required }" :data-name="label">
-    <i v-if="label" :style="{ width: labelSize }">
+    <i v-if="label" :style="labelSize && { width: labelSize }">
       {{ label }}
     </i>
     <span

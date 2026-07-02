@@ -4,7 +4,7 @@ export interface MdiTab {
   title: string
   id: string
   menuId?: string
-  closable?: boolean
+  durable?: boolean
 }
 
 export const mdiSystem = defineStore('mdi-system', () => {
@@ -13,19 +13,20 @@ export const mdiSystem = defineStore('mdi-system', () => {
 
   const isOpen = (id: string) => tabs.value.some(t => t.id === id)
 
-  const open = (tab: MdiTab): boolean => {
-    console.info('MDI(open)', tab.id, tab.title)
-
+  const open = (tab: MdiTab) => {
     if (!tab.menuId) tab.menuId = tab.id
     if (!isOpen(tab.id)) tabs.value.push(tab)
 
     activeTabId.value = tab.id
-    return true
+
+    console.info('MDI(open)', tab.id, tab.title)
   }
 
   const close = (id: string) => {
     const idx = tabs.value.findIndex(t => t.id === id)
-    if (-1 === idx || !tabs.value[idx].closable) return
+    console.info('MDI(close)', idx, id, tabs.value.find(m => m.id === id)?.title)
+
+    if (-1 === idx || tabs.value[idx].durable) return
 
     tabs.value.splice(idx, 1)
     if (activeTabId.value === id) {

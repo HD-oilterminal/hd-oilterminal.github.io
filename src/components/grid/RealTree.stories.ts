@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import { ValueType } from 'realgrid'
-import { ref } from 'vue'
 
 import { numeric } from '../../composables/useFormat'
-import type { Columns, Rows } from '../../types/core'
+import type { Columns } from '../../types/core'
 import rows from './RealTree.data.json'
 import RealTree from './RealTree.vue'
 
@@ -144,52 +143,4 @@ export const Default: Story = {
       column: 2
     }
   }
-}
-
-export const WithExcelDownload: Story = {
-  parameters: {
-    docs: {
-      source: {
-        code: `<script setup lang="ts">
-import { ref } from 'vue'
-
-const treeRef = ref()
-
-const download = () => treeRef.value.excel(rows)
-</script>
-
-<template>
-  <div style="display:flex; flex-direction:column; gap:8px;">
-    <button @click="download">엑셀 다운로드 (전체 데이터)</button>
-    <RealTree ref="treeRef" title="엑셀 다운로드" :columns="columns" :rows="rows" treeColumnKey="chapters" height="400px" />
-  </div>
-</template>`
-      }
-    }
-  },
-  args: {
-    title: '엑셀 다운로드',
-    columns,
-    rows: rows.slice(0, 2),
-    treeColumnKey: 'chapters',
-    height: '400px',
-    headerHeight: 50,
-    fixed: { column: 2 }
-  },
-  render: args => ({
-    components: { RealTree },
-    setup() {
-      const treeRef = ref<InstanceType<typeof RealTree>>()
-
-      const download = () => treeRef.value?.excel(rows as Rows)
-
-      return { args, treeRef, download }
-    },
-    template: `
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <button @click="download">엑셀 다운로드 (전체 데이터)</button>
-        <RealTree title="샘플 트리그리드" ref="treeRef" v-bind="args" />
-      </div>
-    `
-  })
 }

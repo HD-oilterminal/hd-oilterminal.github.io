@@ -13,13 +13,8 @@ import {
   SelectViewport
 } from 'reka-ui'
 
+import type { Option } from '../../types/core'
 import IconArrowDown from './IconArrowDown.vue'
-
-export interface Option {
-  label: string
-  value: string
-  disabled?: boolean
-}
 
 withDefaults(
   defineProps<{
@@ -27,7 +22,6 @@ withDefaults(
     label?: string
     labelSize?: string
     options?: Option[]
-    placeholder?: string
     required?: boolean
     disabled?: boolean
     class?: string
@@ -35,9 +29,8 @@ withDefaults(
   {
     modelValue: undefined,
     label: '',
-    labelSize: '6rem',
+    labelSize: '',
     required: false,
-    placeholder: '',
     options: () => [],
     class: ''
   }
@@ -61,7 +54,7 @@ const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
     :data-name="label"
     :data-selected="modelValue"
   >
-    <i v-if="label" :style="{ width: labelSize }">
+    <i v-if="label" :style="labelSize && { width: labelSize }">
       {{ label }}
     </i>
 
@@ -76,7 +69,7 @@ const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
           $props.class
         ]"
       >
-        <SelectValue :placeholder="placeholder ?? '선택'" class="mr-3 whitespace-nowrap" />
+        <SelectValue class="mr-3 whitespace-nowrap" />
         <icon-arrow-down />
       </SelectTrigger>
       <SelectPortal>
@@ -103,7 +96,7 @@ const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
             <SelectItem
               v-for="option in options"
               :key="option.value"
-              :value="toInternal(option.value)"
+              :value="toInternal(option.value as string)"
               :disabled="option.disabled"
               class="relative flex cursor-pointer items-center rounded-sm px-3 py-2 pr-8 text-sm whitespace-nowrap text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-[state=checked]:font-medium"
             >

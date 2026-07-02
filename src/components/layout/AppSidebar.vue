@@ -45,15 +45,11 @@ const openUpperMenu = (menuId: string) => {
 const openPage = (sub: MenuLv2Item) => {
   isExpanded.value = false
 
-  const opened = mdi.open({
+  mdi.open({
     id: sub.menu_id,
     menuId: sub.menu_id,
     title: sub.menu_nm
   })
-
-  if (!opened) {
-    mdi.activate(sub.menu_id)
-  }
 }
 
 const close = () => {
