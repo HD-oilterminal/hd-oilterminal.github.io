@@ -54,25 +54,11 @@ const navIcons = [
 
 <template>
   <header class="flex h-12 shrink-0 items-stretch border-b border-gray-200 bg-gray-100">
-    <div
-      class="flex cursor-pointer items-center gap-2 border-r border-gray-200 px-3 hover:brightness-95"
-      @click="mdi.activate('')"
-    >
-      <img src="/images/logo.svg" alt="HDOT" class="h-5 w-auto" />
+    <div class="flex cursor-pointer items-center gap-2 border-r border-gray-200 px-3 hover:brightness-95">
+      <img src="/images/logo.svg" alt="HDOT" class="h-5 w-auto" @click="mdi.activate('')" />
       <slot name="logged-user" />
-
-      <!--
-      <button
-        class="flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] text-gray-400 hover:bg-white/60 hover:text-gray-700"
-        @click="emit('logout')"
-      >
-        <img src="/images/logout.svg" alt="" class="h-3.5 w-3.5 opacity-60" />
-        {{ t('header.myinfo_popup.logout_btn') }}
-      </button>
-      -->
     </div>
 
-    <!-- MDI 탭 바 (가로 스크롤) -->
     <div class="flex min-w-0 flex-1 items-stretch overflow-hidden">
       <button class="px-1 text-gray-400 hover:text-gray-600" @click="scrollTabs(-1)">‹</button>
       <ul ref="tabs" class="flex flex-1 scrollbar-none items-stretch gap-px overflow-x-auto text-xs">

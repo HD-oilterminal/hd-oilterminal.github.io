@@ -14,11 +14,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { codeSystem } from '../../stores/codeSystem'
-
-export interface Option {
-  label: string
-  value: string
-}
+import type { Option } from '../../types/core'
 
 const props = withDefaults(
   defineProps<{
@@ -58,7 +54,9 @@ const filteredOptions = computed(() => {
   if (!searchTerm.value) return resolvedOptions.value
 
   const lower = searchTerm.value.toLowerCase()
-  return resolvedOptions.value.filter(o => o.label.toLowerCase().includes(lower) || o.value.toLowerCase().includes(lower))
+  return resolvedOptions.value.filter(
+    o => o.label.toLowerCase().includes(lower) || String(o.value).toLowerCase().includes(lower)
+  )
 })
 </script>
 

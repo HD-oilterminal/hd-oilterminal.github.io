@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from 'reka-ui'
 
+import type { TabItem } from '../../types/core'
+
 withDefaults(
   defineProps<{
     modelValue?: string
@@ -14,11 +16,21 @@ withDefaults(
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
+  change: [value: string]
 }>()
 </script>
 
 <template>
-  <TabsRoot :model-value="modelValue" class="flex flex-col" @update:model-value="emit('update:modelValue', $event)">
+  <TabsRoot
+    :model-value="modelValue"
+    class="flex grow flex-col"
+    @update:model-value="
+      v => {
+        emit('update:modelValue', v)
+        emit('change', v)
+      }
+    "
+  >
     <TabsList class="flex shrink-0 border-b border-gray-200">
       <TabsTrigger
         v-for="tab in tabs"
