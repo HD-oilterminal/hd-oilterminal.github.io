@@ -7,7 +7,7 @@ import Button from '../../components/commons/Button.vue'
 import { useRealGrid } from '../../composables/useRealGrid'
 import type { TreeProps } from '../../types/core'
 import Pagination from '../commons/Pagination.vue'
-import { useGrid } from './RealGridOptions'
+import { useGrid, useGridSearch } from './RealGridOptions'
 
 const props = withDefaults(defineProps<TreeProps>(), {
   columns: () => ({}),
@@ -39,31 +39,10 @@ const pageable = computed(() => {
     : undefined
 })
 
-const searchText = ref('')
-const searchInput = ref<HTMLInputElement>()
-const searchPanel = ref(false)
-const searchPosition = ref({ x: 0, y: 0 })
-
-const doSearch = (reverse = false) => {
-  if (!searchText.value || !core || !data) return
-
-  const fields = data.getFieldNames()
-  const result = core.searchCell({
-    fields,
-    value: searchText.value,
-    startIndex: searchPosition.value.y,
-    startFieldIndex: searchPosition.value.x + (reverse ? -1 : 1),
-    wrap: true,
-    caseSensitive: false,
-    partialMatch: true,
-    reverse
-  })
-
-  if (result != null) {
-    core.setCurrent(result)
-    searchPosition.value = { x: result.fieldIndex, y: result.itemIndex }
-  }
-}
+const { searchText, searchInput, searchPanel, doSearch, openSearch } = useGridSearch({
+  grid: () => core,
+  data: () => data
+})
 
 const excel = (filename?: string) => {
   core.exportGrid({
@@ -107,11 +86,7 @@ onMounted(() => {
   core.onContextMenuItemClicked = (_, menu, cell) => {
     if (menu.name === 'excel') excel()
     else if (menu.name === 'search') {
-      searchText.value = ''
-      searchPanel.value = true
-      searchPosition.value = { x: cell.field ?? 0, y: cell.itemIndex ?? 0 }
-
-      setTimeout(() => searchInput.value?.select(), 50)
+      openSearch(cell)
     } else if (menu.name === 'freeze') {
       const index = core.getColumnNames(true, false).indexOf(cell.column ?? '')
       if (index >= 0) core.setFixedOptions({ colCount: index })
@@ -143,7 +118,7 @@ defineExpose({
           ref="searchInput"
           v-model="searchText"
           :placeholder="`${$t('검색어')} Enter`"
-          @keydown.enter="doSearch"
+          @keydown.enter="doSearch($event.shiftKey)"
           @keydown.esc="searchPanel = false"
         />
         <Button variant="ghost" type="button" @click="searchPanel = false">{{ $t('닫기') }}</Button>

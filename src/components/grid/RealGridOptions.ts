@@ -22,11 +22,106 @@ import {
   TreeView,
   ValueType
 } from 'realgrid'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import type { Column, ColumnGroup, ColumnHeader, GridProps, TreeProps } from '../../types/core'
 
 export type TreeGridItem = GridItem & { parentIndex: number }
+
+export type SearchPosition = { x: number; y: number }
+
+const compare = (v1: string, v2: string, caseSensitive: boolean, partialMatch: boolean) => {
+  let s1 = String(v1 ?? '')
+  let s2 = v2 == null ? '' : String(v2)
+  if (!s1 && !s2) return true
+  if (!s1 || !s2) return false
+  if (!caseSensitive) {
+    s1 = s1.toLowerCase()
+    s2 = s2.toLowerCase()
+  }
+  return partialMatch ? s2.indexOf(s1) >= 0 : s1 === s2
+}
+
+// lookup 컬럼(values/labels)은 그리드 생성 시 고정이므로 최초 검색 때 한 번만 만들어 그리드별로 캐시
+const labelMapsCache = new WeakMap<GridBase, Map<string, Map<string, string>>>()
+
+const getLabelMaps = (grid: GridBase, fields: string[]) => {
+  let labelMaps = labelMapsCache.get(grid)
+  if (!labelMaps) {
+    // compareCallback 이 넘겨주는 fieldName 은 소문자로 정규화되므로 키도 소문자로 맞춘다
+    labelMaps = new Map()
+    for (const fieldName of fields) {
+      const { values, labels } = grid.columnByField(fieldName) ?? {}
+      if (values?.length && labels?.length) {
+        labelMaps.set(fieldName.toLowerCase(), new Map(values.map((v, i) => [String(v), labels[i] ?? String(v)])))
+      }
+    }
+    labelMapsCache.set(grid, labelMaps)
+  }
+  return labelMaps
+}
+
+/**
+ * 그리드 내부 검색. labels/values 로 표현되는 lookup 컬럼은 value 대신 label 로 검색한다.
+ * @returns 검색된 셀의 위치. 없으면 undefined
+ */
+export const searchGrid = (
+  grid: GridBase,
+  provider: DataProviderBase,
+  options: { value: string; position: SearchPosition; reverse?: boolean }
+): SearchPosition | undefined => {
+  const { value, position, reverse = false } = options
+  if (!value) return
+
+  const fields = provider.getFieldNames()
+  const labelMaps = getLabelMaps(grid, fields)
+
+  const result = grid.searchCell({
+    fields,
+    value,
+    startIndex: position.y,
+    startFieldIndex: position.x + (reverse ? -1 : 1),
+    wrap: true,
+    caseSensitive: false,
+    partialMatch: true,
+    reverse,
+    compareCallback: (v1, v2, caseSensitive, partialMatch, _dataRow, fieldName) =>
+      compare(v1, labelMaps.get(fieldName)?.get(String(v2)) ?? v2, caseSensitive, partialMatch)
+  })
+
+  if (result != null) {
+    grid.setCurrent(result)
+    return { x: result.fieldIndex, y: result.itemIndex }
+  }
+  return undefined
+}
+
+export const useGridSearch = (context: { grid: () => GridBase | undefined; data: () => DataProviderBase | undefined }) => {
+  const searchText = ref('')
+  const searchInput = ref<HTMLInputElement>()
+  const searchPanel = ref(false)
+  const searchPosition = ref<SearchPosition>({ x: 0, y: 0 })
+
+  const doSearch = (reverse = false) => {
+    const grid = context.grid()
+    const provider = context.data()
+    if (!grid || !provider) return
+
+    const next = searchGrid(grid, provider, { value: searchText.value, position: searchPosition.value, reverse })
+    if (next) searchPosition.value = next
+  }
+
+  const openSearch = (cell: { field?: number; itemIndex?: number }) => {
+    searchText.value = ''
+    searchPanel.value = true
+    searchPosition.value = { x: cell.field ?? 0, y: cell.itemIndex ?? 0 }
+
+    setTimeout(() => searchInput.value?.select(), 50)
+  }
+
+  return { searchText, searchInput, searchPanel, doSearch, openSearch }
+}
 
 //
 export const useGrid = () => {
@@ -231,6 +326,8 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
         def.editButtonVisibility = 'hidden'
       }
     }
+
+    if (column.renderer) def.renderer = column.renderer
 
     if (column.displaying) {
       const displaying = column.displaying

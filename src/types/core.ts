@@ -62,6 +62,10 @@ export interface TreeProps extends GridProps {
 export interface ColumnHeader {
   template?: string
   values?: Record<string, string>
+  templateEvents?: Array<{
+    selector: string
+    event: Record<string, (event: Event) => void>
+  }>
 }
 
 export enum TextAlign {
@@ -85,6 +89,7 @@ export interface Column {
   numberFormat?: string
   prefix?: string
   suffix?: string
+  renderer?: Record<string, unknown>
   displaying?: (value: any, cell: CellIndex, grid: GridBase) => any
   styling?: (cell: GridCell, grid: GridBase) => string | ColumnStyleObject | ColumnSummaryStyleObject | undefined
 

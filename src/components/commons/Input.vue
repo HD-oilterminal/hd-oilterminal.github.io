@@ -208,8 +208,8 @@ defineExpose({ input })
       {{ label }}
     </i>
     <span
-      class="field-input h-control-md flex min-w-0 flex-1 shrink items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
-      :class="[disabled ? 'bg-gray-100 opacity-40' : '', prefix ? 'gap-0!' : '']"
+      class="h-control-md flex max-w-50 min-w-20 flex-1 shrink items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
+      :class="[disabled ? 'bg-gray-200! opacity-50' : '', required ? 'bg-[#fff9f0]!' : '', prefix ? 'gap-0!' : '']"
     >
       <span v-if="prefix" class="shrink-0 text-sm text-gray-600">{{ prefix }}</span>
       <input
