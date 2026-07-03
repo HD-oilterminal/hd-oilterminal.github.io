@@ -329,6 +329,26 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
 
     if (column.renderer) def.renderer = column.renderer
 
+    if (column.summary) {
+      const { summary, displaying } = column
+      def.groupFooter = {
+        styleName: def.styleName,
+        valueCallback: (grid: GridBase, col: { fieldName: string }, _index: number, group: { rows: number[] }) => {
+          const provider = grid.getDataSource() as LocalDataProvider
+          const rows = group.rows.filter(row => row !== -1)
+
+          let value: unknown
+          if (typeof summary === 'function') {
+            value = summary(rows.map(row => provider.getJsonRow(row)))
+          } else {
+            const sum = rows.reduce((acc, row) => acc + (Number(provider.getValue(row, col.fieldName)) || 0), 0)
+            value = summary === 'avg' ? (rows.length ? sum / rows.length : 0) : sum
+          }
+          return displaying ? displaying(value, undefined as unknown as CellIndex, grid) : value
+        }
+      }
+    }
+
     if (column.displaying) {
       const displaying = column.displaying
       def.displayCallback = (_: GridBase, __: CellIndex, ___: unknown) => {

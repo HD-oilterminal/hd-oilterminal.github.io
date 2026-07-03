@@ -3,7 +3,7 @@ import { ValueType } from 'realgrid'
 import { ref } from 'vue'
 
 import { useGridExcel } from '../../composables/useRealGrid'
-import { Columns, TextAlign } from '../../types/core'
+import { Columns } from '../../types/core'
 import rows from './ReadGrid.data.json'
 import RealGrid from './RealGrid.vue'
 
@@ -23,7 +23,7 @@ type Story = StoryObj<typeof RealGrid>
 const columns: Columns = {
   artist: { header: '아티스트', width: 120 },
   title: { header: '곡명', width: 180 },
-  album: { header: '앨범', width: 160, code: 'ALBUM', align: TextAlign.CENTER },
+  album: { header: '앨범', width: 160, code: 'ALBUM', align: 'center' },
   plays: { header: '재생수', width: 90, type: ValueType.NUMBER }
 }
 

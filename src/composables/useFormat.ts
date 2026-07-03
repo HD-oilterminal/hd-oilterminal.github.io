@@ -6,10 +6,10 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
 export const numeric = (value: any, minimumFractionDigits = 3): string => {
-  const number = String(value).replace(/(?!^-)[^0-9]/g, '')
-  if ('' === number) return number
+  const number = String(value).replace(/(?!^-)[^0-9.]/g, '')
+  if ('' === number || isNaN(Number(number))) return ''
 
-  return Number(number).toLocaleString('ko', { minimumFractionDigits })
+  return Number(number).toLocaleString('ko', { minimumFractionDigits, maximumFractionDigits: minimumFractionDigits })
 }
 
 export const temporal = (value: any) => {

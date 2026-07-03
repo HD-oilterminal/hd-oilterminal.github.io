@@ -68,12 +68,6 @@ export interface ColumnHeader {
   }>
 }
 
-export enum TextAlign {
-  LEFT = 'left',
-  RIGHT = 'right',
-  CENTER = 'center'
-}
-
 export interface Column {
   key?: string
   width?: number
@@ -85,12 +79,19 @@ export interface Column {
   code?: string
   values?: string[]
   labels?: string[]
-  align?: TextAlign
+  align?: 'left' | 'right' | 'center'
   numberFormat?: string
   prefix?: string
   suffix?: string
   renderer?: Record<string, unknown>
   displaying?: (value: any, cell: CellIndex, grid: GridBase) => any
+
+  /**
+   * 그룹핑(groupable) 시 그룹 푸터에 표시할 요약 값.
+   * 'sum' | 'avg' 또는 그룹에 속한 행들을 받아 직접 계산하는 함수.
+   * displaying 이 지정돼 있으면 계산 결과에도 동일하게 적용
+   */
+  summary?: 'sum' | 'avg' | ((rows: Rows) => any)
   styling?: (cell: GridCell, grid: GridBase) => string | ColumnStyleObject | ColumnSummaryStyleObject | undefined
 
   /**

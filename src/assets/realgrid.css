@@ -90,16 +90,23 @@ Cell align
   background: none;
 }
 
-.rg-data-cell > .rg-renderer {
+.rg-data-cell > .rg-renderer,
+.rg-rowgroup-footer-renderer {
   text-align: center;
 }
 
-.rg-data-cell-left > .rg-renderer {
-  text-align: left;
+.rg-data-cell-left {
+  > .rg-renderer,
+  > .rg-rowgroup-footer-renderer {
+    text-align: left;
+  }
 }
 
-.rg-data-cell-right > .rg-renderer {
-  text-align: right;
+.rg-data-cell-right {
+  > .rg-renderer,
+  > .rg-rowgroup-footer-renderer {
+    text-align: right;
+  }
 }
 
 .rg-tree-collapsed.square,

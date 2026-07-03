@@ -16,6 +16,8 @@ const ICONS = [
 
 //
 const mdi = mdiSystem()
+const { alert } = useAlert()
+const { t } = useI18n()
 
 //
 const tabs = ref()
@@ -33,12 +35,12 @@ onMounted(() => {
 
     setTimeout(function tick() {
       const elapsed = SESSION_TIMEOUT - Math.floor((Date.now() - started) / 1000)
-      if (elapsed <= 0) alert('logout!')
+      if (elapsed < 0) return alert(t('자동 로그아웃 되었습니다.'), { title: '사용시간 만료' })
 
       const hrs = Math.floor(elapsed / 3600)
-      const min = String(Math.floor((elapsed / 60) % 60)).padStart(2, '0')
+      const min = String(Math.floor((elapsed / 60) % 60))
       const sec = String(Math.round(elapsed % 60)).padStart(2, '0')
-      sessionTime.value = `${hrs}:${min}:${sec}`
+      sessionTime.value = `${hrs ? hrs + ':' : ''}${min ? min + ':' : ''}${sec}`
 
       setTimeout(tick, 1000)
     }, 1000)

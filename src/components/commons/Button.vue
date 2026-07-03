@@ -8,10 +8,15 @@ defineProps<{
 }>()
 
 defineEmits<{ click: [event: MouseEvent] }>()
+
+const el = ref<HTMLButtonElement>()
+
+defineExpose({ focus: () => el.value?.focus() })
 </script>
 
 <template>
   <button
+    ref="el"
     :disabled="disabled"
     :class="[
       'btn inline-flex items-center justify-center rounded font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-50',
