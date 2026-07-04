@@ -88,7 +88,7 @@ function onKeydown(e: KeyboardEvent) {
             {{ _dialogState.title }}
           </h3>
 
-          <p class="text-center text-sm leading-relaxed whitespace-pre-wrap text-gray-500">
+          <p class="text-center leading-relaxed whitespace-pre-wrap text-gray-500">
             {{ _dialogState.message }}
           </p>
 
@@ -98,7 +98,7 @@ function onKeydown(e: KeyboardEvent) {
             v-model="inputValue"
             type="text"
             :placeholder="_dialogState.placeholder"
-            class="h-control-md mt-4 w-full rounded-lg border border-gray-300 px-3 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            class="h-control-md mt-4 w-full rounded-lg border border-gray-300 px-3 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             @keydown.enter="onConfirm"
             @keydown.esc="onCancel"
           />

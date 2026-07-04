@@ -71,7 +71,7 @@ const filteredOptions = computed(() => {
     @update:model-value="emit('update:modelValue', $event as string | undefined)"
   >
     <ComboboxAnchor
-      class="h-control-md inline-flex w-full items-center gap-2 rounded-md border border-gray-300 bg-white px-3 text-sm focus-within:ring-2 focus-within:ring-blue-500"
+      class="h-control-md inline-flex w-full items-center gap-2 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
       :class="disabled ? 'cursor-not-allowed bg-gray-100 opacity-50' : ''"
     >
       <svg
@@ -104,12 +104,12 @@ const filteredOptions = computed(() => {
         class="z-50 w-(--reka-combobox-trigger-width) rounded-md border border-gray-200 bg-white shadow-lg"
       >
         <ComboboxViewport class="max-h-60 overflow-y-auto p-1">
-          <ComboboxEmpty class="py-6 text-center text-sm text-gray-500">{{ $t('결과 없음') }}</ComboboxEmpty>
+          <ComboboxEmpty class="py-6 text-center text-gray-500">{{ $t('결과 없음') }}</ComboboxEmpty>
           <ComboboxItem
             v-for="option in filteredOptions"
             :key="option.value"
             :value="option.value"
-            class="relative flex cursor-pointer items-center rounded-sm px-3 py-2 pr-8 text-sm text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700"
+            class="relative flex cursor-pointer items-center rounded-sm px-3 py-2 pr-8 text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700"
           >
             {{ option.label }}
             <ComboboxItemIndicator class="absolute right-3 flex items-center">

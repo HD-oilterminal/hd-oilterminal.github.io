@@ -14,6 +14,8 @@ const ICONS = [
   { code: 'MNU92030', icon: 'notice', label: '알림' }
 ]
 
+const emit = defineEmits<{ navi: [code: string] }>()
+
 //
 const mdi = mdiSystem()
 const { alert } = useAlert()
@@ -50,14 +52,14 @@ onMounted(() => {
 
 <template>
   <header class="flex h-12 shrink-0 items-stretch border-b border-gray-200 bg-gray-100">
-    <div class="flex cursor-pointer items-center gap-2 border-r border-gray-200 px-3 hover:brightness-95">
+    <div class="flex cursor-pointer items-center gap-4 border-r border-gray-200 px-3 hover:brightness-95">
       <img src="/images/logo.svg" alt="HDOT" class="h-5 w-auto" @click="mdi.activate('')" />
       <slot name="logged-user" />
     </div>
 
     <div class="flex min-w-0 flex-1 items-stretch overflow-hidden">
       <button class="px-1 text-gray-400 hover:text-gray-600" @click="onMDIBarScroll(-1)">‹</button>
-      <ul ref="tabs" class="flex flex-1 scrollbar-none items-stretch gap-px overflow-x-auto text-sm">
+      <ul ref="tabs" class="flex flex-1 scrollbar-none items-stretch gap-px overflow-x-auto">
         <li
           v-for="tab in mdi.tabs"
           :key="tab.id"
@@ -67,15 +69,13 @@ onMounted(() => {
               ? 'border-b-2 bg-white font-semibold'
               : 'border-transparent text-gray-500 hover:bg-white/60 hover:text-gray-700'
           "
-          :style="
-            tab.id === mdi.activeTabId ? 'border-bottom-color:var(--color-hdot-primary); color:var(--color-hdot-primary)' : ''
-          "
+          :style="tab.id === mdi.activeTabId ? 'border-bottom-color:var(--color-hdot); color:var(--color-hdot)' : ''"
           @click="mdi.activate(tab.id)"
         >
           <span class="max-w-40 truncate">{{ tab.title }}</span>
           <button
             v-if="!tab.durable"
-            class="absolute -right-2.5 z-10 hidden h-4 w-4 cursor-pointer items-center justify-center rounded-full border-4 border-white bg-gray-200 p-2 text-xs font-bold group-hover:flex"
+            class="absolute -right-3 z-10 hidden h-4 w-4 cursor-pointer items-center justify-center rounded-full border-4 border-white p-2 text-xs font-bold group-hover:flex hover:bg-gray-200"
             @click.stop="mdi.close(tab.id)"
           >
             ✕
@@ -94,6 +94,7 @@ onMounted(() => {
             type="button"
             class="navi flex flex-col items-center gap-0.5 opacity-60 hover:opacity-100"
             :data-open_popup_code="nav.code"
+            @click="emit('navi', nav.code)"
           >
             <img :src="`/images/${nav.icon}.svg`" :alt="nav.label" class="h-5 w-5" />
           </button>

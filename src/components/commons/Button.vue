@@ -21,8 +21,8 @@ defineExpose({ focus: () => el.value?.focus() })
     :class="[
       'btn inline-flex items-center justify-center rounded font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-50',
       {
-        sm: 'h-control-sm px-2 text-sm',
-        md: 'h-control-md px-3 text-sm',
+        sm: 'h-control-sm px-2',
+        md: 'h-control-md px-3',
         lg: 'h-12 px-5 text-base'
       }[size ?? 'md'],
       {

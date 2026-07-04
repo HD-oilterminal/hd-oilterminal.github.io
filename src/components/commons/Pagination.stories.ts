@@ -46,7 +46,7 @@ export const Interactive: Story = {
     template: `
       <div class="space-y-3">
         <Pagination v-model="page" :total="200" :items-per-page="10" />
-        <p class="text-sm text-gray-500">현재 페이지: {{ page }}</p>
+        <p class="text-gray-500">현재 페이지: {{ page }}</p>
       </div>
     `
   })

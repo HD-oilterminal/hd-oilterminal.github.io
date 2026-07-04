@@ -38,7 +38,7 @@ const emit = defineEmits<{
         :value="tab.value"
         :disabled="tab.disabled"
         :class="[tab.disabled ? 'cursor-not-allowed' : 'cursor-pointer']"
-        class="group -mb-px rounded-t px-4 py-2 text-sm text-gray-500 transition-colors hover:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 data-[state=active]:border data-[state=active]:border-b data-[state=active]:border-blue-600 data-[state=active]:border-b-white data-[state=active]:font-bold data-[state=active]:text-blue-600"
+        class="group -mb-px rounded-t px-4 py-2 text-gray-500 transition-colors hover:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 data-[state=active]:border data-[state=active]:border-b data-[state=active]:border-blue-600 data-[state=active]:border-b-white data-[state=active]:font-bold data-[state=active]:text-blue-600"
       >
         {{ tab.label }}
         <span

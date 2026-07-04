@@ -139,7 +139,7 @@ watch(keyword, ({ extern }) => {
               :ref="e => (keyword.ref[1] = e as HTMLInputElement)"
               v-model="keyword.intern"
               type="text"
-              class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
+              class="min-w-0 flex-1 bg-transparent outline-none placeholder:text-gray-400"
             />
           </span>
           <button

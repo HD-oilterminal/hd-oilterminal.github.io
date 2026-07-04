@@ -40,7 +40,7 @@ export const Interactive: Story = {
     template: `
       <div class="space-y-4 p-4">
         <YearPicker v-model="year" />
-        <p class="text-sm text-gray-600">
+        <p class="text-gray-600">
           선택된 연도: <span class="font-medium text-gray-900">{{ year ?? '없음' }}</span>
         </p>
       </div>

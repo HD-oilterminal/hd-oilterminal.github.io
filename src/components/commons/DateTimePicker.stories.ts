@@ -40,7 +40,7 @@ export const Interactive: Story = {
     template: `
       <div class="space-y-4 p-4">
         <DateTimePicker v-model="datetime" />
-        <p class="text-sm text-gray-600">
+        <p class="text-gray-600">
           선택된 날짜시간: <span class="font-medium text-gray-900">{{ datetime ?? '없음' }}</span>
         </p>
       </div>

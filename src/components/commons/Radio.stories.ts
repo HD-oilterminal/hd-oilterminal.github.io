@@ -36,7 +36,7 @@ export const Default: Story = {
     },
     template: `
       <Radio v-model="selected" :items="items" />
-      <p class="mt-3 text-sm text-gray-500">선택: {{ selected }}</p>
+      <p class="mt-3 text-gray-500">선택: {{ selected }}</p>
     `
   })
 }

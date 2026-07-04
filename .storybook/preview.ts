@@ -1,3 +1,5 @@
+import 'material-symbols/outlined.css'
+import 'realgrid/dist/realgrid-style.css'
 import '../src/assets/tailwind.css'
 
 import type { Preview } from '@storybook/vue3'

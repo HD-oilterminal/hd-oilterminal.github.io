@@ -44,7 +44,7 @@ export const Interactive: Story = {
     template: `
       <div class="space-y-2 w-48">
         <Select v-model="value" :options="options" placeholder="선택하세요" />
-        <p class="text-sm text-gray-500">선택: {{ value || '없음' }}</p>
+        <p class="text-gray-500">선택: {{ value || '없음' }}</p>
       </div>
     `
   })

@@ -43,7 +43,7 @@ export const Default: Story = {
           searchColumn: 'name',
           rows: ROWS
         }" />
-        <p class="text-sm text-gray-500">선택된 value(room): {{ value ?? '없음' }}</p>
+        <p class="text-gray-500">선택된 value(room): {{ value ?? '없음' }}</p>
       </div>
     `
   })
@@ -71,7 +71,7 @@ export const WithExpandableHead: Story = {
           rows: ROWS.filter(row => ['-', row.use].includes(terms.use) && terms.room[row.room])
         }">
           <template #head>
-            <div class="flex items-center gap-2 text-sm">
+            <div class="flex items-center gap-2">
               <b>Room</b>
               <Checkbox v-model="terms.room.A" label="A" />
               <Checkbox v-model="terms.room.B" label="B" />
@@ -83,7 +83,7 @@ export const WithExpandableHead: Story = {
             </div>
           </template>
         </InputFinder>
-        <p class="text-sm text-gray-500">선택된 value(room): {{ value ?? '없음' }}</p>
+        <p class="text-gray-500">선택된 value(room): {{ value ?? '없음' }}</p>
       </div>
     `
   })

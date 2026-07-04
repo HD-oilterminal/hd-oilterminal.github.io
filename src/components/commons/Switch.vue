@@ -21,12 +21,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <label
-    :class="[
-      'inline-flex items-center gap-2 select-none',
-      disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-    ]"
-  >
+  <label :class="['inline-flex items-center gap-2 select-none', disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer']">
     <SwitchRoot
       :id="id"
       :checked="modelValue"
@@ -38,6 +33,6 @@ const emit = defineEmits<{
         class="block h-4 w-4 rounded-full bg-white shadow-sm transition-transform data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0"
       />
     </SwitchRoot>
-    <span v-if="label" class="text-sm text-gray-900">{{ label }}</span>
+    <span v-if="label" class="text-gray-900">{{ label }}</span>
   </label>
 </template>

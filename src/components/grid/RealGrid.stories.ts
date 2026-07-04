@@ -137,7 +137,7 @@ export const Groupable: Story = {
       return { groupColumns, groupRows }
     },
     template: `
-      <div class="flex flex-col gap-2 text-sm text-gray-500">
+      <div class="flex flex-col gap-2 text-gray-500">
         <p>컬럼 헤더를 상단 그룹핑 영역으로 드래그하면 해당 컬럼으로 그룹핑됩니다.</p>
         <RealGrid title="장르별 재생통계" :groupable="true" :columns="groupColumns" :rows="groupRows" height="400px" />
       </div>

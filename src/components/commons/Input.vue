@@ -211,7 +211,7 @@ defineExpose({ input })
       class="h-control-md flex max-w-50 min-w-20 flex-1 shrink items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
       :class="[disabled ? 'bg-gray-200! opacity-50' : '', required ? 'bg-[#fff9f0]!' : '', prefix ? 'gap-0!' : '']"
     >
-      <span v-if="prefix" class="shrink-0 text-sm text-gray-600">{{ prefix }}</span>
+      <span v-if="prefix" class="shrink-0 text-gray-600">{{ prefix }}</span>
       <input
         v-if="!isNumber && !isTel"
         ref="input"
@@ -220,7 +220,7 @@ defineExpose({ input })
         :disabled="disabled"
         :readonly="readonly"
         :value="modelValue as string"
-        class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400 read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-800"
+        class="min-w-0 flex-1 bg-transparent outline-none placeholder:text-gray-400 read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-800"
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       />
       <input
@@ -231,7 +231,7 @@ defineExpose({ input })
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
-        class="min-w-0 flex-1 bg-transparent font-mono text-sm tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-800"
+        class="min-w-0 flex-1 bg-transparent font-mono tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-800"
         @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
         @copy="
           (e: ClipboardEvent) => {
@@ -250,7 +250,7 @@ defineExpose({ input })
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
-        class="min-w-0 flex-1 bg-transparent text-right font-mono text-sm tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-800"
+        class="min-w-0 flex-1 bg-transparent text-right font-mono tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-800"
         @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
         @copy="
           (e: ClipboardEvent) => {
@@ -261,7 +261,7 @@ defineExpose({ input })
           }
         "
       />
-      <span v-if="suffix" class="shrink-0 text-sm text-gray-500">{{ suffix }}</span>
+      <span v-if="suffix" class="shrink-0 text-gray-500">{{ suffix }}</span>
     </span>
     <slot />
   </label>

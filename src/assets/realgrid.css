@@ -4,11 +4,31 @@
   --color-realgrid-row-current: #f7ddd0;
 }
 
+.rg-root {
+  font-family: var(--font-sans), sans-serif !important;
+  font-weight: 300;
+}
+
+.rg-tree-collapsed.square,
+.rg-tree-expanded.square {
+  margin-right: 4px;
+}
+
+.realgrid-container {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  width: 100%;
+}
+
 .realgrid-wrapper {
   position: relative;
   display: flex;
   flex-direction: column;
   @apply grow;
+
+  &:not(:last-child) {
+    @apply mb-4;
+  }
 }
 
 .realgrid-container {
@@ -19,7 +39,7 @@
 }
 
 .realgrid-search-layer {
-  @apply absolute top-6 right-4 rounded border bg-white p-2 text-sm shadow-lg shadow-gray-500;
+  @apply absolute top-6 right-4 rounded border bg-white p-2 shadow-lg shadow-gray-500;
 
   > input {
     @apply mr-2 outline-none;
@@ -44,7 +64,7 @@
 
 .rg-header-renderer span > i,
 .rg-header-group-cell span > i {
-  color: var(--color-hdot-primary);
+  color: var(--color-hdot);
   display: block;
   font-style: normal;
   line-height: 0.8rem;
@@ -75,7 +95,7 @@
 
 .grid-cell-pointer-text-blue {
   cursor: pointer;
-  color: var(--color-hdot-primary);
+  color: var(--color-hdot);
 }
 
 /*
@@ -86,7 +106,8 @@ Cell align
   background: transparent;
 }
 
-.rg-header-focus {
+.rg-header-focus,
+.rg-header-select {
   background: none;
 }
 
@@ -109,11 +130,6 @@ Cell align
   }
 }
 
-.rg-tree-collapsed.square,
-.rg-tree-expanded.square {
-  margin-right: 0.4rem;
-}
-
 /* Context menu */
 .rg-popup-menu {
   padding: 0.4rem 0;
@@ -123,7 +139,6 @@ Cell align
     height: 1.6rem;
     padding-left: 0.8rem;
     padding-right: 0.8rem;
-    font-size: var(--text-sm);
 
     .rg-popup-content {
       margin: 0;

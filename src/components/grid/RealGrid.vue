@@ -54,6 +54,15 @@ const excel = (filename?: string) => {
   })
 }
 
+const onSearch = (e: KeyboardEvent) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toUpperCase() === 'F') {
+    e.preventDefault()
+
+    const current = core.getCurrent()
+    openSearch({ field: current.fieldIndex, itemIndex: current.itemIndex })
+  }
+}
+
 watch(
   () => props.rows,
   rows => data?.setRows(Array.isArray(rows) ? rows : rows.list)
@@ -108,7 +117,7 @@ defineExpose({
 
 <template>
   <div class="realgrid-wrapper" :style="{ height }">
-    <div ref="container" class="realgrid-container" />
+    <div ref="container" class="realgrid-container" @keydown="onSearch" />
     <Transition name="fade">
       <div v-if="searchPanel" class="realgrid-search-layer">
         <input

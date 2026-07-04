@@ -47,10 +47,10 @@ export const WithCount: Story = {
     },
     template: `
       <Tabs v-model="active" :tabs="tabs">
-        <template #work><p class="text-sm text-gray-700">오늘의 작업 내용입니다.</p></template>
-        <template #req><p class="text-sm text-gray-700">오더요청 내용입니다.</p></template>
-        <template #doc><p class="text-sm text-gray-700">서류완료대기 내용입니다.</p></template>
-        <template #vetting><p class="text-sm text-gray-700">선박베팅 요청 내용입니다.</p></template>
+        <template #work><p class="text-gray-700">오늘의 작업 내용입니다.</p></template>
+        <template #req><p class="text-gray-700">오더요청 내용입니다.</p></template>
+        <template #doc><p class="text-gray-700">서류완료대기 내용입니다.</p></template>
+        <template #vetting><p class="text-gray-700">선박베팅 요청 내용입니다.</p></template>
       </Tabs>
     `
   })
@@ -77,10 +77,10 @@ export const Default: Story = {
     },
     template: `
       <Tabs v-model="active" :tabs="tabs">
-        <template #overview><p class="text-sm text-gray-700">개요 탭 내용입니다.</p></template>
-        <template #details><p class="text-sm text-gray-700">상세 탭 내용입니다.</p></template>
-        <template #history><p class="text-sm text-gray-700">이력 탭 내용입니다.</p></template>
-        <template #settings><p class="text-sm text-gray-700">설정 탭 내용입니다.</p></template>
+        <template #overview><p class="text-gray-700">개요 탭 내용입니다.</p></template>
+        <template #details><p class="text-gray-700">상세 탭 내용입니다.</p></template>
+        <template #history><p class="text-gray-700">이력 탭 내용입니다.</p></template>
+        <template #settings><p class="text-gray-700">설정 탭 내용입니다.</p></template>
       </Tabs>
     `
   })

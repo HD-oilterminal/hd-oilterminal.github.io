@@ -121,7 +121,7 @@ const onKeydown = (e: KeyboardEvent) => {
 <template>
   <div class="relative inline-block" @focusout="onFocusOut" @keydown="onKeydown">
     <div
-      class="h-control-md inline-flex items-center rounded-md border border-gray-300 px-2 text-sm focus-within:ring-2 focus-within:ring-blue-500"
+      class="h-control-md inline-flex items-center rounded-md border border-gray-300 px-2 focus-within:ring-2 focus-within:ring-blue-500"
       :class="disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 opacity-50' : ''"
     >
       <svg
@@ -180,7 +180,7 @@ const onKeydown = (e: KeyboardEvent) => {
             <path d="m15 18-6-6 6-6" />
           </svg>
         </button>
-        <span class="text-sm font-semibold text-gray-900">{{ viewPageStart }} – {{ viewPageStart + 11 }}</span>
+        <span class="font-semibold text-gray-900">{{ viewPageStart }} – {{ viewPageStart + 11 }}</span>
         <button
           type="button"
           tabindex="-1"
@@ -209,7 +209,7 @@ const onKeydown = (e: KeyboardEvent) => {
           type="button"
           tabindex="-1"
           :class="[
-            'rounded px-1 py-1.5 text-sm transition-colors',
+            'rounded px-1 py-1.5 transition-colors',
             internalValue?.year === year ? 'bg-blue-600 text-white hover:bg-blue-700' : 'hover:bg-gray-100'
           ]"
           @mousedown.prevent

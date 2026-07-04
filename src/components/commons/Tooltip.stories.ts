@@ -23,7 +23,7 @@ export const Default: Story = {
     template: `
       <div class="flex justify-center pt-12">
         <Tooltip v-bind="args">
-          <button class="inline-flex h-10 items-center rounded-md border border-gray-300 bg-white px-4 text-sm hover:bg-gray-50">
+          <button class="inline-flex h-10 items-center rounded-md border border-gray-300 bg-white px-4 hover:bg-gray-50">
             마우스를 올려보세요
           </button>
         </Tooltip>
@@ -38,7 +38,7 @@ export const Default: Story = {
       source: {
         code: `
 <Tooltip content="도움말 텍스트입니다">
-  <button class="inline-flex h-10 items-center rounded-md border border-gray-300 bg-white px-4 text-sm hover:bg-gray-50">
+  <button class="inline-flex h-10 items-center rounded-md border border-gray-300 bg-white px-4 hover:bg-gray-50">
     마우스를 올려보세요
   </button>
 </Tooltip>`.trim()
@@ -53,16 +53,16 @@ export const Sides: Story = {
     template: `
       <div class="flex justify-center gap-4 py-16">
         <Tooltip content="위쪽" side="top">
-          <button class="h-9 rounded-md border border-gray-300 px-3 text-sm hover:bg-gray-50">위</button>
+          <button class="h-9 rounded-md border border-gray-300 px-3 hover:bg-gray-50">위</button>
         </Tooltip>
         <Tooltip content="오른쪽" side="right">
-          <button class="h-9 rounded-md border border-gray-300 px-3 text-sm hover:bg-gray-50">오른쪽</button>
+          <button class="h-9 rounded-md border border-gray-300 px-3 hover:bg-gray-50">오른쪽</button>
         </Tooltip>
         <Tooltip content="아래쪽" side="bottom">
-          <button class="h-9 rounded-md border border-gray-300 px-3 text-sm hover:bg-gray-50">아래</button>
+          <button class="h-9 rounded-md border border-gray-300 px-3 hover:bg-gray-50">아래</button>
         </Tooltip>
         <Tooltip content="왼쪽" side="left">
-          <button class="h-9 rounded-md border border-gray-300 px-3 text-sm hover:bg-gray-50">왼쪽</button>
+          <button class="h-9 rounded-md border border-gray-300 px-3 hover:bg-gray-50">왼쪽</button>
         </Tooltip>
       </div>
     `
@@ -92,7 +92,7 @@ export const CustomContent: Story = {
               <p class="mt-0.5 text-gray-300">슬롯으로 커스텀 내용 삽입</p>
             </div>
           </template>
-          <button class="h-9 rounded-md border border-gray-300 px-3 text-sm hover:bg-gray-50">커스텀 툴팁</button>
+          <button class="h-9 rounded-md border border-gray-300 px-3 hover:bg-gray-50">커스텀 툴팁</button>
         </Tooltip>
       </div>
     `
@@ -108,7 +108,7 @@ export const CustomContent: Story = {
       <p class="mt-0.5 text-gray-300">슬롯으로 커스텀 내용 삽입</p>
     </div>
   </template>
-  <button class="h-9 rounded-md border border-gray-300 px-3 text-sm hover:bg-gray-50">
+  <button class="h-9 rounded-md border border-gray-300 px-3 hover:bg-gray-50">
     커스텀 툴팁
   </button>
 </Tooltip>`.trim()

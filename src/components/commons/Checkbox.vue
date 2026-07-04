@@ -21,9 +21,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <label
-    :class="['inline-flex shrink-0 items-center gap-1 text-sm select-none', disabled ? 'cursor-not-allowed opacity-50' : '']"
-  >
+  <label :class="['inline-flex shrink-0 items-center gap-1 select-none', disabled ? 'cursor-not-allowed opacity-50' : '']">
     <CheckboxRoot
       :id="id"
       :model-value="modelValue"

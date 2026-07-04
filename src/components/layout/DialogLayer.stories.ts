@@ -35,9 +35,9 @@ const Wrapper = defineComponent({
   },
   template: `
     <div class="flex flex-col items-start gap-3 p-6">
-      <button class="rounded border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50" @click="runConfirm">confirm 열기</button>
-      <button class="rounded border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50" @click="runPrompt">prompt 열기</button>
-      <p class="text-sm text-gray-500">결과: {{ result }}</p>
+      <button class="rounded border border-gray-300 px-3 py-1.5 hover:bg-gray-50" @click="runConfirm">confirm 열기</button>
+      <button class="rounded border border-gray-300 px-3 py-1.5 hover:bg-gray-50" @click="runPrompt">prompt 열기</button>
+      <p class="text-gray-500">결과: {{ result }}</p>
 
       <DialogLayer />
     </div>

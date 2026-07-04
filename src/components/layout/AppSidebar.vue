@@ -62,7 +62,7 @@ const close = () => {
     <Transition name="slide">
       <div v-if="isExpanded && activeUpperId" class="fixed left-12 h-full w-52 border-r border-gray-200 bg-white shadow-lg">
         <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-          <span class="text-sm font-semibold text-gray-900">
+          <span class="font-semibold text-gray-900">
             {{ menus.menuLv1.find((m: MenuLv1Item) => m.menu_id === activeUpperId)?.menu_nm }}
           </span>
           <button class="text-gray-400 hover:text-gray-700" @click="close">✕</button>
@@ -71,7 +71,7 @@ const close = () => {
           <li
             v-for="sub in menus.getSubMenus(activeUpperId)"
             :key="sub.menu_id"
-            class="cursor-pointer px-4 py-2.5 text-sm text-gray-700 hover:text-blue-700"
+            class="cursor-pointer px-4 py-2.5 text-gray-700 hover:text-blue-700"
             :class="mdi.isOpen(sub.menu_id) ? 'font-medium text-blue-600' : 'hover:bg-blue-50'"
             style="transition: background 0.1s"
             @click="openPage(sub)"

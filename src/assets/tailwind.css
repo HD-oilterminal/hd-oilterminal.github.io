@@ -1,10 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap');
 @import 'tailwindcss';
-@import 'realgrid/dist/realgrid-style.css';
 @import 'realgrid.css';
 
 @theme {
-  --font-sans: 'pretendard', sans-serif;
-  --font-weight-medium: 300;
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
@@ -15,10 +13,20 @@
   --spacing-sidebar-expanded: 240px;
   --spacing-control-sm: 1.325rem;
   --spacing-control-md: 24px;
-  --font-size-base: 0.7rem;
+  --font-weight-medium: 300;
+  --text-base: 13px;
+  --text-base--line-height: 1.5;
+  --font-sans: 'pretendard', sans-serif;
+  --font-mono: 'Fira Code', monospace;
   --radius-lg: var(--radius-md);
   --radius-md: var(--radius-sm);
   --radius-sm: 0.2rem;
 
-  --color-hdot-primary: #0369b4;
+  --color-hdot: #0369b4;
+}
+
+@layer base {
+  body {
+    font-size: 13px;
+  }
 }

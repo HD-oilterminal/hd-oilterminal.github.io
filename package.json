@@ -66,6 +66,7 @@
   },
   "dependencies": {
     "jszip": "^3.10.1",
+    "material-symbols": "^0.45.5",
     "pinia-plugin-persistedstate": "^4.7.1",
     "realgrid": "2.8.7"
   }

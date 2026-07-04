@@ -339,7 +339,7 @@ const onKeydown = (e: KeyboardEvent) => {
       @update:model-value="onUpdate"
     >
       <div
-        class="h-control-md inline-flex items-center rounded-md border border-gray-300 px-2 text-sm focus-within:ring-2 focus-within:ring-blue-500"
+        class="h-control-md inline-flex items-center rounded-md border border-gray-300 px-2 focus-within:ring-2 focus-within:ring-blue-500"
         :class="disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 opacity-50' : ''"
       >
         <svg
@@ -432,7 +432,7 @@ const onKeydown = (e: KeyboardEvent) => {
                 <path d="m15 18-6-6 6-6" />
               </svg>
             </DatePickerPrev>
-            <DatePickerHeading class="text-sm font-semibold text-gray-900" />
+            <DatePickerHeading class="font-semibold text-gray-900" />
             <DatePickerNext
               ref="next"
               tabindex="-1"
@@ -473,7 +473,7 @@ const onKeydown = (e: KeyboardEvent) => {
                       :day="day"
                       :month="month.value"
                       tabindex="-1"
-                      class="inline-flex h-9 w-9 items-center justify-center rounded-md text-sm transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-disabled:pointer-events-none data-disabled:opacity-40 data-outside-view:text-gray-300 data-selected:bg-blue-600 data-selected:text-white data-selected:hover:bg-blue-700 data-today:font-semibold data-today:text-blue-600 data-selected:data-today:text-white"
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-disabled:pointer-events-none data-disabled:opacity-40 data-outside-view:text-gray-300 data-selected:bg-blue-600 data-selected:text-white data-selected:hover:bg-blue-700 data-today:font-semibold data-today:text-blue-600 data-selected:data-today:text-white"
                     />
                   </DatePickerCell>
                 </DatePickerGridRow>

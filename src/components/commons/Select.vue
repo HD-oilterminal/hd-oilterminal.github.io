@@ -65,7 +65,7 @@ const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
     >
       <SelectTrigger
         :class="[
-          'h-control-md inline-flex items-center justify-between gap-2 rounded-md border border-gray-300 bg-white pr-1.5 pl-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50 data-placeholder:text-gray-400',
+          'h-control-md inline-flex items-center justify-between gap-2 rounded-md border border-gray-300 bg-white pr-1.5 pl-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50 data-placeholder:text-gray-400',
           required ? 'bg-[#fff9f0]!' : '',
           $props.class
         ]"
@@ -99,7 +99,7 @@ const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
               :key="option.value"
               :value="toInternal(option.value as string)"
               :disabled="option.disabled"
-              class="relative flex cursor-pointer items-center rounded-sm px-3 py-1 pr-8 text-sm whitespace-nowrap text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-[state=checked]:font-medium"
+              class="relative flex cursor-pointer items-center rounded-sm px-3 py-1 pr-8 whitespace-nowrap text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-[state=checked]:font-medium"
             >
               <SelectItemText>{{ option.label || '&nbsp;' }}</SelectItemText>
               <SelectItemIndicator class="absolute right-3 flex items-center">

@@ -49,7 +49,7 @@ const onKeydown = (e: KeyboardEvent) => {
               {{ state.title }}
             </h3>
 
-            <p class="text-center text-sm leading-relaxed whitespace-pre-wrap text-gray-500">
+            <p class="text-center leading-relaxed whitespace-pre-wrap text-gray-500">
               {{ state.message }}
             </p>
           </div>

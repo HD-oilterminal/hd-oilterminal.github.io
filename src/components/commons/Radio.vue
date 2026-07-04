@@ -34,10 +34,7 @@ const emit = defineEmits<{
     <label
       v-for="({ value, label }, i) in items"
       :key="i"
-      :class="[
-        'inline-flex shrink-0 items-center gap-1 text-sm',
-        disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-      ]"
+      :class="['inline-flex shrink-0 items-center gap-1', disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer']"
     >
       <RadioGroupItem
         :id="'Radio-' + label"
