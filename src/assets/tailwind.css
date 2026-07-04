@@ -16,6 +16,10 @@
   --font-weight-medium: 300;
   --text-base: 13px;
   --text-base--line-height: 1.5;
+  --text-lg: 16px;
+  --text-md: 14px;
+  --text-sm: 12px;
+  --text-xs: 10px;
   --font-sans: 'pretendard', sans-serif;
   --font-mono: 'Fira Code', monospace;
   --radius-lg: var(--radius-md);
@@ -28,5 +32,10 @@
 @layer base {
   body {
     font-size: 13px;
+    font-weight: 300;
+  }
+
+  .font-mono {
+    font-weight: 700;
   }
 }

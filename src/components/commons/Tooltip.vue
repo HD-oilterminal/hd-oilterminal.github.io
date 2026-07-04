@@ -28,7 +28,7 @@ withDefaults(
         <TooltipContent
           :side="side"
           :side-offset="sideOffset"
-          class="z-50 rounded-md bg-gray-900 px-2.5 py-1.5 text-xs text-white shadow-md"
+          class="z-50 rounded-md bg-gray-900 px-2.5 py-1.5 text-sm text-white shadow-md"
         >
           <slot name="content">{{ content }}</slot>
         </TooltipContent>

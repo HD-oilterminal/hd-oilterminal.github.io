@@ -392,7 +392,7 @@ const onKeydown = (e: KeyboardEvent) => {
                   <DatePickerHeadCell
                     v-for="day in weekDays"
                     :key="day"
-                    class="w-9 pb-1 text-center text-xs font-medium text-gray-400"
+                    class="w-9 pb-1 text-center text-sm font-medium text-gray-400"
                   >
                     {{ day }}
                   </DatePickerHeadCell>

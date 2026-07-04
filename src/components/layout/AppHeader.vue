@@ -1,20 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import Tooltip from '../../components/commons/Tooltip.vue'
-
 const SESSION_TIMEOUT = 5 * 60 * 60
-const ICONS = [
-  { code: 'MNU92040', icon: 'tank-map', label: '공장 배치도' },
-  { code: 'MNU92050', icon: 'skd_ship', label: '해상 스케줄' },
-  { code: 'MNU92060', icon: 'calculator', label: '탱크 물량계산기' },
-  { code: 'MNU92070', icon: 'tasks', label: 'TLG 모니터' },
-  { code: 'MNU92080', icon: 'cargo', label: '탱크별 성적' },
-  { code: 'MNU92020', icon: 'handover', label: '인수인계' },
-  { code: 'MNU92030', icon: 'notice', label: '알림' }
-]
-
-const emit = defineEmits<{ navi: [code: string] }>()
 
 //
 const mdi = mdiSystem()
@@ -75,7 +62,7 @@ onMounted(() => {
           <span class="max-w-40 truncate">{{ tab.title }}</span>
           <button
             v-if="!tab.durable"
-            class="absolute -right-3 z-10 hidden h-4 w-4 cursor-pointer items-center justify-center rounded-full border-4 border-white p-2 text-xs font-bold group-hover:flex hover:bg-gray-200"
+            class="absolute -right-3 z-10 hidden h-4 w-4 cursor-pointer items-center justify-center rounded-full border-4 border-white bg-white p-2 font-bold group-hover:flex hover:bg-gray-200"
             @click.stop="mdi.close(tab.id)"
           >
             ✕
@@ -86,19 +73,10 @@ onMounted(() => {
     </div>
 
     <div class="flex items-center gap-4 border-l border-gray-200 px-3">
-      <span class="font-mono text-xs text-gray-500 tabular-nums">{{ sessionTime }}</span>
+      <span class="font-mono text-gray-500">{{ sessionTime }}</span>
 
-      <div class="flex items-center gap-3">
-        <Tooltip v-for="nav in ICONS" :key="nav.code" :content="nav.label" side="bottom">
-          <button
-            type="button"
-            class="navi flex flex-col items-center gap-0.5 opacity-60 hover:opacity-100"
-            :data-open_popup_code="nav.code"
-            @click="emit('navi', nav.code)"
-          >
-            <img :src="`/images/${nav.icon}.svg`" :alt="nav.label" class="h-5 w-5" />
-          </button>
-        </Tooltip>
+      <div class="flex items-center gap-2">
+        <slot name="utility" />
       </div>
     </div>
   </header>

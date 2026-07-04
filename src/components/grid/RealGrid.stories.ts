@@ -3,6 +3,7 @@ import { ValueType } from 'realgrid'
 import { ref } from 'vue'
 
 import { useGridExcel } from '../../composables/useRealGrid'
+import { codeSystem } from '../../stores/codeSystem'
 import { Columns } from '../../types/core'
 import rows from './ReadGrid.data.json'
 import RealGrid from './RealGrid.vue'
@@ -14,7 +15,21 @@ const meta: Meta<typeof RealGrid> = {
   argTypes: {
     height: { control: 'text' },
     editable: { control: 'boolean' }
-  }
+  },
+  decorators: [
+    story => {
+      // 스토리 전용 공통코드 (실제 앱에서는 API 응답을 codeSystem().load 로 주입)
+      codeSystem().load({
+        ALBUM: [
+          { key: 'KARMA', name: '카르마', english: 'k-a-r-m-a' },
+          { key: 'Around', name: '어라운드', english: 'a-r-o-u-n-d' },
+          { key: 'Swanson', name: '스완쓴', english: 's-w-a-n-s-o-n' },
+          { key: 'BTS', name: '윙즈', english: 'b-t-s' }
+        ]
+      })
+      return { components: { story }, template: '<story />' }
+    }
+  ]
 }
 
 export default meta

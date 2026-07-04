@@ -54,7 +54,7 @@ function onKeydown(e: KeyboardEvent) {
         <div class="relative z-10 w-88 rounded-2xl bg-white px-8 pt-6 pb-8 shadow-2xl" @click.stop>
           <button
             ref="cancelBtnRef"
-            class="absolute top-4 right-4 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-xs text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
+            class="absolute top-4 right-4 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-sm text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
             @click="onCancel"
           >
             ✕

@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "lib": ["ES2022", "DOM"],
-    "types": ["vite/client"],
+    "types": ["vite/client", "pinia-plugin-persistedstate"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],

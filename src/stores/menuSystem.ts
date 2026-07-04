@@ -23,20 +23,26 @@ export interface TotalMenuContent {
   menu_lv2_list: MenuLv2Item[]
 }
 
-export const menuSystem = defineStore('menu-system', () => {
-  const menuLv1 = ref<MenuLv1Item[]>([])
-  const menuLv2 = ref<MenuLv2Item[]>([])
-  const activeUpperMenuId = ref('')
+export const menuSystem = defineStore(
+  'menu-system',
+  () => {
+    const menuLv1 = ref<MenuLv1Item[]>([])
+    const menuLv2 = ref<MenuLv2Item[]>([])
+    const activeUpperMenuId = ref('')
 
-  const load = async (_menus?: TotalMenuContent) => {
-    menuLv1.value = _menus?.menu_lv1_list ?? []
-    menuLv2.value = _menus?.menu_lv2_list ?? []
+    const load = async (_menus?: TotalMenuContent) => {
+      menuLv1.value = _menus?.menu_lv1_list ?? []
+      menuLv2.value = _menus?.menu_lv2_list ?? []
+    }
+
+    const getSubMenus = (upperMenuId: string): MenuLv2Item[] => menuLv2.value.filter(m => m.upper_menu_id === upperMenuId)
+
+    const hasAccess = (menuId: string): boolean =>
+      menuLv1.value.some(m => m.menu_id === menuId) || menuLv2.value.some(m => m.menu_id === menuId)
+
+    return { menuLv1, menuLv2, activeUpperMenuId, load, getSubMenus, hasAccess }
+  },
+  {
+    persist: { pick: ['menuLv1', 'menuLv2'], storage: sessionStorage }
   }
-
-  const getSubMenus = (upperMenuId: string): MenuLv2Item[] => menuLv2.value.filter(m => m.upper_menu_id === upperMenuId)
-
-  const hasAccess = (menuId: string): boolean =>
-    menuLv1.value.some(m => m.menu_id === menuId) || menuLv2.value.some(m => m.menu_id === menuId)
-
-  return { menuLv1, menuLv2, activeUpperMenuId, load, getSubMenus, hasAccess }
-})
+)

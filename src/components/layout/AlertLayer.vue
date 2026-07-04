@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { state } from '../../composables/useAlert'
 import Button from '../commons/Button.vue'
+import Icon from '../commons/Icon.vue'
 
 const btnRef = ref()
 const isExpanded = ref(false)
@@ -37,8 +38,12 @@ const onKeydown = (e: KeyboardEvent) => {
         >
           <div class="shrink-0">
             <div class="mb-5 flex justify-center">
-              <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
-                <svg class="h-10 w-10" viewBox="0 0 40 40" fill="none">
+              <div
+                class="flex h-16 w-16 items-center justify-center rounded-full"
+                :class="state.icon ? state.iconClass || 'bg-gray-100 text-black' : 'bg-red-50'"
+              >
+                <Icon v-if="state.icon" :name="state.icon" :size="40" />
+                <svg v-else class="h-10 w-10" viewBox="0 0 40 40" fill="none">
                   <circle cx="20" cy="20" r="18" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5" />
                   <path d="M14 14L26 26M26 14L14 26" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" />
                 </svg>
@@ -56,12 +61,12 @@ const onKeydown = (e: KeyboardEvent) => {
 
           <div v-if="state.detail" class="mt-3 flex min-h-0 flex-col" :class="isExpanded ? 'flex-1' : 'shrink-0'">
             <pre
-              class="rounded-lg bg-gray-50 px-3 py-2.5 font-mono text-xs leading-relaxed text-gray-600"
+              class="rounded-lg bg-gray-50 px-3 py-2.5 font-mono text-sm leading-relaxed text-gray-600"
               :class="isExpanded ? 'min-h-0 flex-1 overflow-y-auto' : 'line-clamp-1 overflow-hidden'"
               >{{ state.detail }}</pre
             >
             <button
-              class="m-2 shrink-0 text-right text-xs text-blue-500 transition-colors hover:text-blue-700"
+              class="m-2 shrink-0 text-right text-sm text-blue-500 transition-colors hover:text-blue-700"
               @click="isExpanded = !isExpanded"
             >
               {{ $t(isExpanded ? '접기' : '펼치기') }}

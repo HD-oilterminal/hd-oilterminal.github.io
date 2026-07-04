@@ -6,6 +6,8 @@ type AlertState = {
   detail?: string
   readonly?: boolean
   confirmLabel?: string
+  icon?: string
+  iconClass?: string
   resolve: () => void
 }
 
@@ -16,7 +18,14 @@ export const state = shallowRef<AlertState | null>(null)
 export const useAlert = () => {
   function alert(
     message: string,
-    options?: { title?: string; detail?: string; readonly?: boolean; confirmLabel?: string }
+    options?: {
+      title?: string
+      detail?: string
+      readonly?: boolean
+      confirmLabel?: string
+      icon?: string
+      iconClass?: string
+    }
   ): Promise<void> {
     return new Promise(resolve => {
       state.value = {
@@ -25,6 +34,8 @@ export const useAlert = () => {
         detail: options?.detail,
         readonly: options?.readonly,
         confirmLabel: options?.confirmLabel,
+        icon: options?.icon,
+        iconClass: options?.iconClass,
         resolve
       }
     })
