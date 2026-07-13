@@ -13,7 +13,7 @@
   --spacing-sidebar-expanded: 240px;
   --spacing-control-sm: 1.325rem;
   --spacing-control-md: 24px;
-  --font-weight-medium: 300;
+  --font-weight-medium: 400;
   --text-base: 13px;
   --text-base--line-height: 1.5;
   --text-lg: 16px;
@@ -32,7 +32,6 @@
 @layer base {
   body {
     font-size: 13px;
-    font-weight: 300;
   }
 
   .font-mono {

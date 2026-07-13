@@ -315,7 +315,7 @@ const onKeydown = (e: KeyboardEvent) => {
           class="w-11 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
           @focusin="isOpen = true"
         />
-        <span class="mx-[-2px] text-gray-500 select-none">-</span>
+        <span class="mx-[-6px] text-gray-500 select-none">-</span>
         <input
           ref="monthInput"
           type="text"
@@ -324,7 +324,7 @@ const onKeydown = (e: KeyboardEvent) => {
           class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
           @focusin="isOpen = true"
         />
-        <span class="mx-[-2px] text-gray-500 select-none">-</span>
+        <span class="mx-[-6px] text-gray-500 select-none">-</span>
         <input
           ref="dayInput"
           type="text"
