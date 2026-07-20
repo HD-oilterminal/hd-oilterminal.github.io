@@ -24,7 +24,10 @@ onMounted(() => {
 
     setTimeout(function tick() {
       const elapsed = SESSION_TIMEOUT - Math.floor((Date.now() - started) / 1000)
-      if (elapsed < 0) return alert(t('자동 로그아웃 되었습니다.'), { title: '사용시간 만료' })
+      if (elapsed < 0) {
+        sessionTime.value = '-'
+        return alert(t('자동 로그아웃 되었습니다.'), { title: '사용시간 만료' })
+      }
 
       const hrs = Math.floor(elapsed / 3600)
       const min = String(Math.floor((elapsed / 60) % 60))
