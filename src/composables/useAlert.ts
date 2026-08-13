@@ -16,7 +16,7 @@ export type { AlertState }
 export const state = shallowRef<AlertState | null>(null)
 
 export const useAlert = () => {
-  function alert(
+  const alert = async (
     message: string,
     options?: {
       title?: string
@@ -26,7 +26,7 @@ export const useAlert = () => {
       icon?: string
       iconClass?: string
     }
-  ): Promise<void> {
+  ): Promise<void> => {
     return new Promise(resolve => {
       state.value = {
         message,

@@ -30,6 +30,6 @@ export const codeSystem = defineStore(
     }
   },
   {
-    persist: { pick: ['all'], storage: sessionStorage }
+    persist: { storage: sessionStorage }
   }
 )
