@@ -11,8 +11,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "hdot-tmaster-front/*": ["../hdot-tmaster-front/*"]
+      "hdot-tmaster-front/*": ["../tmaster/fe/*"]
     }
   },
-  "include": ["src", ".storybook", "../hdot-tmaster-front/.nuxt/types/imports.d.ts"]
+  "include": ["src", ".storybook", "../tmaster/fe/.nuxt/types/imports.d.ts"]
 }

@@ -2,7 +2,6 @@ import { CalendarDate, type DateValue, getLocalTimeZone } from '@internationaliz
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
-// strict 모드(세 번째 인자 true) 포맷 파싱 + 실제 존재하지 않는 날짜(예: 2026-04-31) 거부에 필요
 dayjs.extend(customParseFormat)
 
 export const numeric = (value: any, minimumFractionDigits = 3): string => {

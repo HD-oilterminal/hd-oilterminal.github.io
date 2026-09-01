@@ -4,25 +4,25 @@
 
 ## 프로젝트 개요
 
-HDOT 디자인시스템 Storybook. `hdot-tmaster-front`의 공통 컴포넌트를 문서화하고 GitHub Pages로 배포
+HDOT 디자인시스템 Storybook. `../tmaster/fe`의 공통 컴포넌트를 문서화하고 GitHub Pages로 배포
 
 - **배포 URL**: `https://hd-oilterminal.github.io/`
-- **소스**: `hdot-tmaster-front`의 컴포넌트를 이식 (Nuxt 의존성 제거)
+- **소스**: `tmaster/fe`의 컴포넌트를 이식 (Nuxt 의존성 제거)
 - **배포 방식**: `main` 브랜치 push → GitHub Actions → GitHub Pages
 
 ---
 
 ## 기술 스택
 
-| 항목 | 버전 |
-|------|------|
-| Storybook | 8.x |
-| Vue | 3.x |
-| Vite | 6.x |
-| TailwindCSS | 3.x |
-| Pinia | 3.x |
-| vue-i18n | 11.x |
-| TypeScript | 5.x |
+| 항목        | 버전 |
+| ----------- | ---- |
+| Storybook   | 8.x  |
+| Vue         | 3.x  |
+| Vite        | 6.x  |
+| TailwindCSS | 3.x  |
+| Pinia       | 3.x  |
+| vue-i18n    | 11.x |
+| TypeScript  | 5.x  |
 
 ---
 
@@ -60,21 +60,23 @@ hd-oilterminal.github.io/
 ├── tsconfig.json
 └── package.json
 ```
+
 > 대략적 구조로 최신화 하지 않음  
 > 위 기준으로 적당한 배치 진행
+
 ---
 
-## 컴포넌트 이식 규칙 (hdot-tmaster-front → 이 프로젝트)
+## 컴포넌트 이식 규칙 (../tmaster/fe → 이 프로젝트)
 
 Nuxt 자동 import를 제거하고 명시적 import로 변환
 
-| 원본 (Nuxt) | 이식 후 |
-|-------------|---------|
-| `useI18n()` 자동 import | `import { useI18n } from 'vue-i18n'` |
+| 원본 (Nuxt)                      | 이식 후                               |
+| -------------------------------- | ------------------------------------- |
+| `useI18n()` 자동 import          | `import { useI18n } from 'vue-i18n'`  |
 | `ref`, `computed` 등 자동 import | `import { ref, computed } from 'vue'` |
-| `navigateTo('/login')` | `emit('logout')` 으로 교체 |
-| `useAuthApi().logout()` | 제거, emit으로 위임 |
-| `~/types/...` | `@/types/...` |
+| `navigateTo('/login')`           | `emit('logout')` 으로 교체            |
+| `useAuthApi().logout()`          | 제거, emit으로 위임                   |
+| `~/types/...`                    | `@/types/...`                         |
 
 **AppHeader**의 `logout` emit: 부모(Story decorator)에서 처리
 
@@ -96,15 +98,15 @@ Nuxt 자동 import를 제거하고 명시적 import로 변환
 
 ```ts
 decorators: [
-  (story) => ({
+  story => ({
     setup() {
       const mdiStore = useMdiStore()
       mdiStore.tabs = ['main', 'codes', 'users']
       mdiStore.activeTabId = 'main'
       return {}
     },
-    template: '<story />',
-  }),
+    template: '<story />'
+  })
 ]
 ```
 
@@ -122,6 +124,6 @@ pnpm lint               # ESLint (Storybook 규칙)
 
 ## 이미지 파일
 
-- 컴포넌트가 `/images/*.svg` 경로를 참조  
+- 컴포넌트가 `/images/*.svg` 경로를 참조
 - Storybook에서 표시하려면 `public/images/`에 파일을 복사  
-  (`hdot-tmaster-front/public/images/` ---> `public/images/`)
+  (`../tmaster/fe/public/images/` ---> `public/images/`)

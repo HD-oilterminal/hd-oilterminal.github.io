@@ -1,4 +1,4 @@
-import { shallowRef } from 'vue'
+import { shallowRef, watch } from 'vue'
 
 type AlertState = {
   title?: string
@@ -15,6 +15,14 @@ export type { AlertState }
 
 export const state = shallowRef<AlertState | null>(null)
 
+const queue: AlertState[] = []
+
+watch(state, value => {
+  if (!value && queue.length) {
+    state.value = queue.shift()!
+  }
+})
+
 export const useAlert = () => {
   const alert = async (
     message: string,
@@ -28,7 +36,7 @@ export const useAlert = () => {
     }
   ): Promise<void> => {
     return new Promise(resolve => {
-      state.value = {
+      const next: AlertState = {
         message,
         title: options?.title,
         detail: options?.detail,
@@ -37,6 +45,12 @@ export const useAlert = () => {
         icon: options?.icon,
         iconClass: options?.iconClass,
         resolve
+      }
+
+      if (state.value) {
+        queue.push(next)
+      } else {
+        state.value = next
       }
     })
   }

@@ -5,7 +5,8 @@
 }
 
 .rg-root {
-  font-family: var(--font-sans), sans-serif !important;
+  /*font-family: var(--font-sans), sans-serif !important;*/
+  font-family: 'Malgun Gothic', '맑은 고딕', AppleSDGothicNeo-Light, sans-serif;
   font-weight: 300;
 }
 

@@ -111,7 +111,7 @@ onMounted(() => {
       let digitCount = 0
       for (let i = 0; i < formatted.length; i++) {
         if (digitCount === digitsBeforeCursor) break
-        if (formatted[i] >= '0' && formatted[i] <= '9') digitCount++
+        if (formatted.charAt(i) >= '0' && formatted.charAt(i) <= '9') digitCount++
         newCursor = i + 1
       }
       target.setSelectionRange(newCursor, newCursor)
@@ -174,7 +174,11 @@ onMounted(() => {
 
     for (let i = 0; i < formattedValue.length; i++) {
       if (validCharCount === validCharsBeforeCursor) break
-      if ((formattedValue[i] >= '0' && formattedValue[i] <= '9') || formattedValue[i] === '.' || formattedValue[i] === '-') {
+      if (
+        (formattedValue.charAt(i) >= '0' && formattedValue.charAt(i) <= '9') ||
+        formattedValue[i] === '.' ||
+        formattedValue[i] === '-'
+      ) {
         validCharCount++
       }
       newCursor = i + 1
@@ -220,7 +224,7 @@ defineExpose({ input })
         :disabled="disabled"
         :readonly="readonly"
         :value="modelValue as string"
-        class="min-w-0 flex-1 bg-transparent outline-none placeholder:text-gray-400 read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-800"
+        class="min-w-0 flex-1 bg-transparent outline-none disabled:cursor-not-allowed disabled:text-gray-800"
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       />
       <input
@@ -231,7 +235,7 @@ defineExpose({ input })
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
-        class="min-w-0 flex-1 bg-transparent font-mono tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-800"
+        class="min-w-0 flex-1 bg-transparent font-mono tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800"
         @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
         @copy="
           (e: ClipboardEvent) => {
@@ -250,7 +254,7 @@ defineExpose({ input })
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
-        class="min-w-0 flex-1 bg-transparent text-right font-mono tabular-nums outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:text-gray-800"
+        class="min-w-0 flex-1 bg-transparent text-right font-mono tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800"
         @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
         @copy="
           (e: ClipboardEvent) => {

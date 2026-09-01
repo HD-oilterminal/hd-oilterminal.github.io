@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 
 import { mdiSystem } from '../../stores/mdiSystem'
+import AlertLayer from './AlertLayer.vue'
 import AppHeader from './AppHeader.vue'
 
 type Story = StoryObj<typeof AppHeader>
@@ -17,6 +18,7 @@ export default {
 export const Default: Story = {
   decorators: [
     _ => ({
+      components: { AlertLayer },
       setup() {
         const mdiStore = mdiSystem()
         mdiStore.tabs = [
@@ -28,7 +30,7 @@ export const Default: Story = {
         mdiStore.activeTabId = 'a'
         return {}
       },
-      template: '<story />'
+      template: '<story /><AlertLayer />'
     })
   ]
 }
