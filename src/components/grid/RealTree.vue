@@ -21,6 +21,8 @@ const emit = defineEmits<{
   currentChanged: [row: number, column: string]
   cellClicked: [clickData: ClickData, grid: GridBase]
   rowClicked: [row: RowObject, data: ClickData, grid: GridBase]
+  cellDblclicked: [data: ClickData, grid: GridBase]
+  rowDblclicked: [row: RowObject, data: ClickData, grid: GridBase]
   paging: [page: number]
 }>()
 
@@ -39,7 +41,7 @@ const pageable = computed(() => {
     : undefined
 })
 
-const { searchText, searchInput, searchPanel, doSearch, openSearch } = useGridSearch({
+const { searchText, searchPanel, doSearch, openSearch } = useGridSearch({
   grid: () => core,
   data: () => data
 })
@@ -77,6 +79,12 @@ onMounted(() => {
     if (value.dataRow != undefined) emit('rowClicked', data.getJsonRow(value.dataRow), value, grid)
   }
 
+  core.onCellDblClicked = (grid, value) => {
+    emit('cellDblclicked', value, grid)
+
+    if (value.dataRow != undefined) emit('rowDblclicked', data.getJsonRow(value.dataRow), value, grid)
+  }
+
   core.setContextMenu([
     { label: t('엑셀 다운로드'), name: 'excel' },
     { label: t('검색'), name: 'search' },
@@ -105,6 +113,12 @@ defineExpose({
   },
   get data() {
     return data
+  },
+  remove() {
+    let target = core.getCheckedRows(true)
+    if (!target.length) target = core.getSelectedRows()
+
+    if (target.length) data.removeRows(target, true)
   }
 })
 </script>

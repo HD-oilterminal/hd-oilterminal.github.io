@@ -22,6 +22,8 @@ const emit = defineEmits<{
   currentChanged: [row: number, column: string]
   cellClicked: [data: ClickData, grid: GridBase]
   rowClicked: [row: RowObject, data: ClickData, grid: GridBase]
+  cellDblclicked: [data: ClickData, grid: GridBase]
+  rowDblclicked: [row: RowObject, data: ClickData, grid: GridBase]
   paging: [page: number]
 }>()
 
@@ -40,7 +42,7 @@ const pageable = computed(() => {
     : undefined
 })
 
-const { searchText, searchInput, searchPanel, doSearch, openSearch } = useGridSearch({
+const { searchText, searchPanel, doSearch, openSearch } = useGridSearch({
   grid: () => core,
   data: () => data
 })
@@ -80,7 +82,14 @@ onMounted(() => {
 
   core.onCellClicked = (grid, value) => {
     emit('cellClicked', value, grid)
+
     if (value.dataRow != undefined) emit('rowClicked', data.getJsonRow(value.dataRow), value, grid)
+  }
+
+  core.onCellDblClicked = (grid, value) => {
+    emit('cellDblclicked', value, grid)
+
+    if (value.dataRow != undefined) emit('rowDblclicked', data.getJsonRow(value.dataRow), value, grid)
   }
 
   core.setContextMenu([
@@ -111,6 +120,12 @@ defineExpose({
   },
   get data() {
     return data
+  },
+  remove() {
+    let target = core.getCheckedRows()
+    if (!target.length) target = core.getSelectedRows()
+
+    if (target.length) data.removeRows(target)
   }
 })
 </script>

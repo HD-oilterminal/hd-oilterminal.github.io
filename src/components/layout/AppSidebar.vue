@@ -60,7 +60,7 @@ const close = () => {
 </script>
 
 <template>
-  <aside id="hdot-aside-nav" class="z-50 flex h-full flex-col" @mouseleave="close">
+  <aside id="hdot-aside-nav" class="flex h-full flex-col" @mouseleave="close">
     <Transition name="slide">
       <div v-if="isExpanded && selectedId" class="fixed left-12 h-full w-52 border-r border-gray-200 bg-white shadow-lg">
         <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">

@@ -25,6 +25,9 @@ export type CodeSystem = ReturnType<typeof codeSystem>
 export type Translator = ReturnType<typeof useI18n>['t']
 
 export interface GridProps {
+  /**
+   * 그리드 제목 (엑셀 다운로드 파일명으로 사용)
+   */
   title: string
   columns: Columns | ArrayColumns
   rows: Rows | PagedRows | undefined
