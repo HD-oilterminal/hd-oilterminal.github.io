@@ -99,7 +99,7 @@ const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
               :key="option.value"
               :value="toInternal(option.value as string)"
               :disabled="option.disabled"
-              class="relative flex cursor-pointer items-center rounded-sm px-3 py-1 pr-8 whitespace-nowrap text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-[state=checked]:font-medium"
+              class="relative flex cursor-pointer items-center rounded-sm px-3 py-1 pr-8 whitespace-nowrap outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-[state=checked]:font-medium"
             >
               <SelectItemText>{{ option.label || '&nbsp;' }}</SelectItemText>
               <SelectItemIndicator class="absolute right-3 flex items-center">

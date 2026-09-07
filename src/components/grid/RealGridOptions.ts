@@ -193,7 +193,7 @@ const generate = (
     fitStyle: GridFitStyle.EVEN,
     selectionMode: SelectionMode.EXTENDED,
     selectionStyle: SelectionStyle.BLOCK,
-    rowHeight: 30
+    rowHeight: 28
   })
   grid.setCopyOptions({ copyDisplayText: true, singleMode: false })
   grid.setFooter({ visible: false })
@@ -267,14 +267,6 @@ const generate = (
   if (grid instanceof TreeView && grid.treeOptions) {
     grid.treeOptions.expanderIconStyle = TreeExpanderIconStyle.SQUARE
     grid.treeOptions.iconVisible = false
-    grid.setRowStyleCallback((_, item) => {
-      if (item.itemIndex === currentItemIndex) return { style: { background: 'var(--color-realgrid-row-current)' } }
-      return { style: { background: `var(--color-realgrid-row${(item as TreeGridItem).parentIndex > -1 ? '-odd' : ''})` } }
-    })
-  } else {
-    grid.setRowStyleCallback((_, item) => {
-      if (item.itemIndex === currentItemIndex) return { style: { background: 'var(--color-realgrid-row-current)' } }
-    })
   }
 
   return {

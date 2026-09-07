@@ -30,7 +30,7 @@ export interface GridProps {
    */
   title: string
   columns: Columns | ArrayColumns
-  rows: Rows | PagedRows | undefined
+  rows?: Rows | PagedRows
   height?: string
   checkable?: boolean
   editable?: boolean
@@ -38,6 +38,10 @@ export interface GridProps {
   headerHeight?: number
   fixed?: Fixed
   excel?: GridExcel
+  /**
+   * 페이지당 표출되는 행의 개수
+   */
+  size?: number
 }
 
 export type Row = RowObject
@@ -47,6 +51,7 @@ export type PagedRows = {
   totalCount: number
   total_page: number
   page: number
+  size?: number
   list: Rows
 }
 

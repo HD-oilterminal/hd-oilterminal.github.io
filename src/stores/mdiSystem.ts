@@ -19,12 +19,12 @@ export const mdiSystem = defineStore('mdi-system', () => {
 
     activeTabId.value = tab.id
 
-    console.info('MDI(open)', tab.id, tab.title)
+    console.debug('MDI(open)', tab.id, tab.title)
   }
 
   const close = (id: string) => {
     const idx = tabs.value.findIndex(t => t.id === id)
-    console.info('MDI(close)', idx, id, tabs.value.find(m => m.id === id)?.title)
+    console.debug('MDI(close)', idx, id, tabs.value.find(m => m.id === id)?.title)
 
     if (-1 === idx || tabs.value[idx].durable) return
 
@@ -35,7 +35,7 @@ export const mdiSystem = defineStore('mdi-system', () => {
   }
 
   const activate = (id: string) => {
-    console.info('MDI(act.)', id, tabs.value.find(m => m.id === id)?.title)
+    console.debug('MDI(act.)', id, tabs.value.find(m => m.id === id)?.title)
 
     activeTabId.value = id
   }

@@ -12,7 +12,8 @@ const meta: Meta<typeof RealTree> = {
   tags: ['autodocs'],
   argTypes: {
     height: { control: 'text' },
-    editable: { control: 'boolean' }
+    editable: { control: 'boolean' },
+    expanded: { control: 'boolean' }
   }
 }
 
@@ -142,5 +143,13 @@ export const Default: Story = {
     fixed: {
       column: 2
     }
+  }
+}
+
+export const Expanded: Story = {
+  args: {
+    ...Default.args,
+    title: '테스트 리얼트리 (전체 확장)',
+    expanded: true
   }
 }

@@ -288,7 +288,7 @@ const onKeydown = (e: KeyboardEvent) => {
       @update:model-value="onUpdate"
     >
       <div
-        class="h-control-md inline-flex items-center rounded-md border border-gray-300 px-2 focus-within:ring-2 focus-within:ring-blue-500"
+        class="h-control-md inline-flex items-center rounded-md border border-gray-300 bg-white px-2 focus-within:ring-2 focus-within:ring-blue-500"
         :class="disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 opacity-50' : ''"
       >
         <svg

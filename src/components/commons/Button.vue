@@ -27,7 +27,7 @@ defineExpose({ focus: () => el.value?.focus() })
       }[size ?? 'md'],
       {
         primary: 'bg-blue-600 text-white hover:bg-blue-700',
-        secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+        secondary: 'border border-gray-500 bg-white text-gray-900 hover:bg-gray-200',
         liner: 'border border-gray-300 text-gray-500 hover:bg-gray-100',
         ghost: 'border border-gray-200 text-gray-700 hover:bg-gray-100',
         united: 'absolute right-0 px-2! text-gray-700 hover:bg-gray-200/70',

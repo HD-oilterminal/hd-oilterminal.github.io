@@ -4,6 +4,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import Button from '../../components/commons/Button.vue'
+import Select from '../../components/commons/Select.vue'
 import { useRealGrid } from '../../composables/useRealGrid'
 import type { TreeProps } from '../../types/core'
 import Pagination from '../commons/Pagination.vue'
@@ -14,6 +15,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   rows: () => [],
   height: '100%',
   editable: false,
+  checkable: false,
   expanded: false
 })
 
@@ -24,6 +26,7 @@ const emit = defineEmits<{
   cellDblclicked: [data: ClickData, grid: GridBase]
   rowDblclicked: [row: RowObject, data: ClickData, grid: GridBase]
   paging: [page: number]
+  sizing: [size: number]
 }>()
 
 const { resolveColumns } = useRealGrid()
@@ -68,6 +71,8 @@ onMounted(() => {
     ...props,
     columns: resolveColumns(props.columns)
   }))
+
+  if (props.expanded) core.expandAll()
 
   core.onCurrentChanged = (grid: GridBase, index: CellIndex) => {
     emit('currentChanged', index.itemIndex ?? 0, grid?.getCurrent().fieldName ?? '')
@@ -144,6 +149,17 @@ defineExpose({
         :items-per-page="1"
         :total="pageable.total_page"
         @update:model-value="emit('paging', $event)"
+      />
+      <Select
+        v-if="size"
+        class="ml-4 p-3.75"
+        :options="
+          Array.from(new Set([size, 20, 50, 100]))
+            .sort((a, b) => a - b)
+            .map(i => ({ label: '' + i, value: '' + i }))
+        "
+        :model-value="size"
+        @update:model-value="v => emit('sizing', Number(v))"
       />
     </div>
   </div>

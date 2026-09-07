@@ -8,6 +8,7 @@ import Button from '../../components/commons/Button.vue'
 import { useRealGrid } from '../../composables/useRealGrid'
 import type { GridProps } from '../../types/core'
 import Pagination from '../commons/Pagination.vue'
+import Select from '../commons/Select.vue'
 import { useGrid, useGridSearch } from './RealGridOptions'
 
 const props = withDefaults(defineProps<GridProps>(), {
@@ -25,6 +26,7 @@ const emit = defineEmits<{
   cellDblclicked: [data: ClickData, grid: GridBase]
   rowDblclicked: [row: RowObject, data: ClickData, grid: GridBase]
   paging: [page: number]
+  sizing: [size: number]
 }>()
 
 const { resolveColumns } = useRealGrid()
@@ -151,6 +153,17 @@ defineExpose({
         :items-per-page="1"
         :total="pageable.total_page"
         @update:model-value="emit('paging', $event)"
+      />
+      <Select
+        v-if="size"
+        class="ml-4 p-3.75"
+        :options="
+          Array.from(new Set([size, 20, 50, 100]))
+            .sort((a, b) => a - b)
+            .map(i => ({ label: '' + i, value: '' + i }))
+        "
+        :model-value="size"
+        @update:model-value="v => emit('sizing', Number(v))"
       />
     </div>
   </div>
