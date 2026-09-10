@@ -32,10 +32,10 @@ const emit = defineEmits<{
 }>()
 
 const btnBase =
-  'inline-flex h-8 w-8 items-center justify-center cursor-pointer rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-40'
-const btnNav = `${btnBase} border border-gray-300 bg-white text-gray-600 hover:bg-gray-50`
-const btnPage = `${btnBase} border border-transparent text-gray-700 hover:bg-gray-100`
-const btnActive = `${btnBase} border cursor-default! border-blue-600 bg-blue-600 text-white font-medium`
+  'inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-40'
+const btnNav = `${btnBase} border cursor-pointer border-gray-300 bg-white text-gray-600 hover:bg-gray-50`
+const btnPage = `${btnBase} border cursor-pointer border-transparent text-gray-700 hover:bg-gray-100`
+const btnActive = `${btnBase} border border-gray-200 bg-gray-200`
 </script>
 
 <template>

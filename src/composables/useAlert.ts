@@ -1,5 +1,7 @@
 import { shallowRef, watch } from 'vue'
 
+type AlertType = 'success' | 'ok' | 'all'
+
 type AlertState = {
   title?: string
   message: string
@@ -55,5 +57,17 @@ export const useAlert = () => {
     })
   }
 
-  return { alert }
+  return {
+    alert,
+    async alertOf(type: AlertType, message: string, options?: AlertState) {
+      switch (type) {
+        case 'success':
+          return alert(message, { icon: 'check_circle', iconClass: 'alert-success', ...options })
+        case 'ok':
+          return alert(message, { icon: 'check', iconClass: 'alert-ok', ...options })
+        case 'all':
+          return alert(message, { icon: 'data_check', iconClass: 'alert-all', ...options })
+      }
+    }
+  }
 }

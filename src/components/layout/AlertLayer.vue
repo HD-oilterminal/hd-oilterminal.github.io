@@ -33,13 +33,13 @@ const onKeydown = (e: KeyboardEvent) => {
         <div class="absolute inset-0 bg-black/40" @click="onConfirm()" />
 
         <div
-          class="relative z-10 flex max-h-[80vh] w-88 flex-col overflow-hidden rounded-2xl bg-white px-4 pt-3 pb-4 shadow-2xl"
+          class="relative z-10 flex max-h-[80vh] w-88 flex-col overflow-hidden rounded-2xl bg-white px-4 pt-6 pb-4 shadow-2xl"
           @click.stop
         >
           <div class="shrink-0">
             <div class="mb-5 flex justify-center">
               <div
-                class="flex h-16 w-16 items-center justify-center rounded-full"
+                class="flex h-12 w-12 items-center justify-center rounded-full"
                 :class="state.icon ? state.iconClass || 'bg-gray-100 text-black' : 'bg-red-50'"
               >
                 <Icon v-if="state.icon" :name="state.icon" :size="40" />
