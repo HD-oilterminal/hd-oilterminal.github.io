@@ -15,6 +15,7 @@ import {
   type LiteralColumn,
   LocalDataProvider,
   LocalTreeDataProvider,
+  RowMaskType,
   SelectionMode,
   SelectionStyle,
   type SeriesColumn,
@@ -22,10 +23,15 @@ import {
   TreeView,
   ValueType
 } from 'realgrid'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ComposerTranslation, useI18n } from 'vue-i18n'
 
 import type { Column, ColumnGroup, ColumnHeader, GridProps, TreeProps } from '../../types/core'
+
+export type ColumnType = DataColumn | SeriesColumn | LiteralColumn | ConfigObject | string
+
+export type SearchableGrid<G extends GridBase = GridView | TreeView> = G & {
+  onSearching: () => void
+}
 
 export type TreeGridItem = GridItem & { parentIndex: number }
 
@@ -63,19 +69,22 @@ const getLabelMaps = (grid: GridBase, fields: string[]) => {
 }
 
 /**
- * 그리드 내부 검색. labels/values 로 표현되는 lookup 컬럼은 value 대신 label 로 검색한다.
+ * 그리드 내부 검색. labels/values 로 표현되는 lookup 컬럼은 value 대신 label 로 검색
  * @returns 검색된 셀의 위치. 없으면 undefined
  */
 export const searchGrid = (
   grid: GridBase,
   provider: DataProviderBase,
-  options: { value: string; position: SearchPosition; reverse?: boolean }
+  value: string = '',
+  reverse: boolean = false,
+  position: SearchPosition = { x: grid.getCurrent().fieldIndex ?? -1, y: grid.getCurrent().itemIndex ?? -1 }
 ): SearchPosition | undefined => {
-  const { value, position, reverse = false } = options
   if (!value) return
 
   const fields = provider.getFieldNames()
   const labelMaps = getLabelMaps(grid, fields)
+
+  console.log(reverse, position)
 
   const result = grid.searchCell({
     fields,
@@ -97,55 +106,31 @@ export const searchGrid = (
   return undefined
 }
 
-export const useGridSearch = (context: { grid: () => GridBase | undefined; data: () => DataProviderBase | undefined }) => {
-  const searchText = ref('')
-  const searchInput = ref<HTMLInputElement>()
-  const searchPanel = ref(false)
-  const searchPosition = ref<SearchPosition>({ x: 0, y: 0 })
-
-  const doSearch = (reverse = false) => {
-    const grid = context.grid()
-    const provider = context.data()
-    if (!grid || !provider) return
-
-    const next = searchGrid(grid, provider, { value: searchText.value, position: searchPosition.value, reverse })
-    if (next) searchPosition.value = next
-  }
-
-  const openSearch = (cell: { field?: number; itemIndex?: number }) => {
-    searchText.value = ''
-    searchPanel.value = true
-    searchPosition.value = { x: cell.field ?? 0, y: cell.itemIndex ?? 0 }
-
-    setTimeout(() => searchInput.value?.select(), 50)
-  }
-
-  return { searchText, searchInput, searchPanel, doSearch, openSearch }
-}
-
 //
 export const useGrid = () => {
-  const { t } = useI18n()
-
   return {
-    gridish: (title: string, container?: HTMLDivElement, props?: GridProps) => _gridish(title, container, props, t),
-    treeish: (title: string, container?: HTMLDivElement, props?: TreeProps) => _treeish(title, container, props, t)
+    gridish: (title: string, container?: HTMLDivElement, props?: GridProps) => _gridish(title, container, props),
+    treeish: (title: string, container?: HTMLDivElement, props?: TreeProps) => _treeish(title, container, props)
   }
 }
 
-const _treeish = (title: string, container?: HTMLDivElement, props?: TreeProps, t?: (key: string) => string) => {
+export const useGridSearch = () => {
+  console.log('gridSearch')
+}
+
+const _treeish = (title: string, container?: HTMLDivElement, props?: TreeProps) => {
   if (!container) throw new Error('Container is required!')
 
-  return generate(title, new TreeView(container, false, { title }), new LocalTreeDataProvider(false), props!, t!) as {
+  return generate(title, new TreeView(container, false, { title }), new LocalTreeDataProvider(false), props!) as {
     grid: TreeView
     provider: LocalTreeDataProvider
   }
 }
 
-const _gridish = (title: string, container?: HTMLDivElement, props?: GridProps, t?: (key: string) => string) => {
+const _gridish = (title: string, container?: HTMLDivElement, props?: GridProps) => {
   if (!container) throw new Error('Container is required!')
 
-  return generate(title, new GridView(container, false, { title }), new LocalDataProvider(false), props!, t!) as {
+  return generate(title, new GridView(container, false, { title }), new LocalDataProvider(false), props!) as {
     grid: GridView
     provider: LocalDataProvider
   }
@@ -155,12 +140,13 @@ const generate = (
   title: string,
   grid: GridView | TreeView,
   provider: LocalDataProvider | LocalTreeDataProvider,
-  props: GridProps | TreeProps,
-  t: (key: string) => string
+  props: GridProps | TreeProps
 ): {
   grid: GridBase
   provider: DataProviderBase
 } => {
+  const { t } = useI18n()
+
   const entries = Object.entries(props.columns) as Array<[string, Column | ColumnGroup]>
 
   // top-level columns + all group children merged into dataColumns
@@ -193,6 +179,7 @@ const generate = (
     fitStyle: GridFitStyle.EVEN,
     selectionMode: SelectionMode.EXTENDED,
     selectionStyle: SelectionStyle.BLOCK,
+    rowFocusType: RowMaskType.ROW,
     rowHeight: 28
   })
   grid.setCopyOptions({ copyDisplayText: true, singleMode: false })
@@ -200,7 +187,7 @@ const generate = (
   grid.setDataSource(provider)
   grid.setFixedOptions({ colCount: props.fixed?.column ?? 0, rowCount: props.fixed?.row ?? 0 })
 
-  grid.setRowIndicator({ visible: false })
+  // grid.setRowIndicator({ visible: false })
   grid.setStateBar({ visible: !!props.editable, errorVisible: true })
 
   if (props.groupable && grid instanceof GridView) grid.groupPanel.visible = true
@@ -269,13 +256,53 @@ const generate = (
     grid.treeOptions.iconVisible = false
   }
 
+  const searcher = generateSearcher(grid, provider, t)
+
   return {
-    grid,
+    grid: Object.assign(grid, {
+      onSearching: () => {
+        searcher.classList.remove('hidden')
+      }
+    }),
     provider
   }
 }
 
-type ColumnType = DataColumn | SeriesColumn | LiteralColumn | ConfigObject | string
+const generateSearcher = (grid: GridBase, provider: LocalDataProvider | LocalTreeDataProvider, t: ComposerTranslation) => {
+  const searcher = document.createElement('div')
+  searcher.classList.add('realgrid-searcher', 'hidden')
+  const input = document.createElement('input')
+  input.setAttribute('placeholder', `${t('검색어')} Enter`)
+  searcher.append(input)
+  const button = document.createElement('button')
+  button.textContent = t('닫기')
+  searcher.append(button)
+
+  grid.getContainer().after(searcher)
+
+  button.addEventListener('click', () => {
+    searcher.classList.add('hidden')
+    grid.setFocus()
+  })
+
+  input.addEventListener('keydown', ({ key, composed, shiftKey: reverse }) => {
+    'Enter' === key && composed && searchGrid(grid, provider, input.value, reverse)
+    'Escape' === key && button.click()
+  })
+
+  grid.getContainer().addEventListener('keydown', e => {
+    console.log(e.metaKey, e.key)
+    if ((e.metaKey || e.ctrlKey) && 'f' === e.key.toLowerCase()) {
+      searcher.classList.remove('hidden')
+      searcher.querySelector('input')?.focus()
+
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  })
+
+  return searcher
+}
 
 const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): ColumnType[] => {
   return Object.keys(columns).map(key => {

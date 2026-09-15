@@ -1,7 +1,18 @@
 <script setup lang="ts">
 import 'quill/dist/quill.snow.css'
+import 'quill-table-up/index.css'
+import 'quill-table-up/table-creator.css'
 
 import Quill from 'quill'
+import TableUp, {
+  defaultCustomSelect,
+  TableAlign,
+  TableMenuContextmenu,
+  TableResizeLine,
+  TableResizeScale,
+  TableSelection,
+  TableVirtualScrollbar
+} from 'quill-table-up'
 import { onMounted, ref, watch } from 'vue'
 
 defineProps<{ rows?: number }>()
@@ -11,6 +22,8 @@ const el = ref<HTMLElement>()
 let quill: Quill
 
 onMounted(() => {
+  Quill.register({ [`modules/${TableUp.moduleName}`]: TableUp }, true)
+
   quill = new Quill(el.value!, {
     theme: 'snow',
     modules: {
@@ -18,8 +31,21 @@ onMounted(() => {
         ['bold', 'italic', 'underline'],
         [{ color: [] }, { background: [] }],
         [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ [TableUp.toolName]: [] }],
         ['clean']
-      ]
+      ],
+      [TableUp.moduleName]: {
+        customSelect: defaultCustomSelect,
+        fullSwitch: false,
+        modules: [
+          { module: TableVirtualScrollbar },
+          { module: TableAlign },
+          { module: TableResizeLine },
+          { module: TableResizeScale },
+          { module: TableSelection },
+          { module: TableMenuContextmenu }
+        ]
+      }
     }
   })
 
@@ -64,7 +90,7 @@ watch(model, value => {
     }
 
     & + .ql-container.ql-snow {
-      border: 1px var(--tw-border-style) var(--color-gray-300);
+      border: 1px solid var(--color-gray-300);
       border-radius: var(--radius-md);
     }
   }

@@ -4,12 +4,11 @@ import { GridBase, GridView, LocalDataProvider } from 'realgrid'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import Button from '../../components/commons/Button.vue'
 import { useRealGrid } from '../../composables/useRealGrid'
 import type { GridProps } from '../../types/core'
 import Pagination from '../commons/Pagination.vue'
 import Select from '../commons/Select.vue'
-import { useGrid, useGridSearch } from './RealGridOptions'
+import { SearchableGrid, useGrid } from './RealGridOptions'
 
 const props = withDefaults(defineProps<GridProps>(), {
   columns: () => ({}),
@@ -44,11 +43,6 @@ const pageable = computed(() => {
     : undefined
 })
 
-const { searchText, searchPanel, doSearch, openSearch } = useGridSearch({
-  grid: () => core,
-  data: () => data
-})
-
 const excel = (filename?: string) => {
   core.exportGrid({
     type: 'excel',
@@ -56,15 +50,6 @@ const excel = (filename?: string) => {
     fileName: filename ?? props.title,
     done: () => console.info('Excel Export Done')
   })
-}
-
-const onSearch = (e: KeyboardEvent) => {
-  if ((e.metaKey || e.ctrlKey) && e.key.toUpperCase() === 'F') {
-    e.preventDefault()
-
-    const current = core.getCurrent()
-    openSearch({ field: current.fieldIndex, itemIndex: current.itemIndex })
-  }
 }
 
 watch(
@@ -97,16 +82,17 @@ onMounted(() => {
   core.setContextMenu([
     { label: t('엑셀 다운로드'), name: 'excel' },
     { label: t('검색'), name: 'search' },
-    { label: t('틀고정'), name: 'freeze' }
+    { label: t('틀고정'), name: 'freeze' },
+    { label: t('틀고정 해제'), name: 'unfreeze' }
   ])
 
   core.onContextMenuItemClicked = (_, menu, cell) => {
     if (menu.name === 'excel') excel()
-    else if (menu.name === 'search') {
-      openSearch(cell)
-    } else if (menu.name === 'freeze') {
-      const index = core.getColumnNames(true, false).indexOf(cell.column ?? '')
-      if (index >= 0) core.setFixedOptions({ colCount: index })
+    else if (menu.name === 'search') (core as SearchableGrid).onSearching()
+    else if (menu.name === 'freeze') {
+      core.setFixedOptions({ colCount: core.getColumnNames(true, false).indexOf(cell.column ?? '') })
+    } else if (menu.name === 'unfreeze') {
+      core.setFixedOptions({ colCount: 0 })
     }
   }
 })
@@ -134,19 +120,7 @@ defineExpose({
 
 <template>
   <div class="realgrid-wrapper" :style="{ height }">
-    <div ref="container" class="realgrid-container" @keydown="onSearch" />
-    <Transition name="fade">
-      <div v-if="searchPanel" class="realgrid-search-layer">
-        <input
-          ref="searchInput"
-          v-model="searchText"
-          :placeholder="`${$t('검색어')} Enter`"
-          @keydown.enter="doSearch($event.shiftKey)"
-          @keydown.esc="searchPanel = false"
-        />
-        <Button variant="ghost" type="button" @click="searchPanel = false">{{ $t('닫기') }}</Button>
-      </div>
-    </Transition>
+    <div ref="container" class="realgrid-container" />
     <div v-if="pageable" class="realgrid-pagination">
       <Pagination
         :model-value="pageable.page"

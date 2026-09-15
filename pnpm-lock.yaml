@@ -19,9 +19,12 @@ importers:
       quill:
         specifier: ^2.0.3
         version: 2.0.3
+      quill-table-up:
+        specifier: ^3.5.2
+        version: 3.5.2(quill@2.0.3)
       realgrid:
-        specifier: 2.8.7
-        version: 2.8.7
+        specifier: 2.8.9
+        version: 2.8.9
     devDependencies:
       '@internationalized/date':
         specifier: ^3.12.2
@@ -2100,6 +2103,11 @@ packages:
     resolution: { integrity: sha512-X74oCeRI4/p0ucjb5Ma8adTXd9Scumz367kkMK5V/IatcX6A0vlgLgKbzXWy5nZmCGeNJm2oQX0d2Eqj+ZIlCA== }
     engines: { node: '>= 12.0.0' }
 
+  quill-table-up@3.5.2:
+    resolution: { integrity: sha512-o8YdmSIXq629L7h00z4n7Ifz2gQS+yR+n33vhJSZaHdPWYUnTTeJKKMjXKCAkqDw5MUlPd64rZHqd2UoCMY3hA== }
+    peerDependencies:
+      quill: ^2.0.3
+
   quill@2.0.3:
     resolution: { integrity: sha512-xEYQBqfYx/sfb33VJiKnSJp8ehloavImQ2A6564GAbqG55PGw1dAWUn1MUbQB62t0azawUS2CZZhWCjO8gRvTw== }
     engines: { npm: '>=8.2.3' }
@@ -2119,8 +2127,8 @@ packages:
   readable-stream@2.3.8:
     resolution: { integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA== }
 
-  realgrid@2.8.7:
-    resolution: { integrity: sha512-UFl6BcSeS4LQ8SJ4taNGK8d5bYG65k10UIIYhq3tl34BbQPCfHPgO7JsQD8fnoJYfo0lO/6OSa1MlcV2JxpVUA== }
+  realgrid@2.8.9:
+    resolution: { integrity: sha512-Z1905AXKSpL6NjliInPfOqUfakoQSInkl1xr6dgLumjkZ5SQ6WU01xOjWy+jHZgkuS4GEqVezxE49k0cJY9b1Q== }
 
   recast@0.23.11:
     resolution: { integrity: sha512-YTUo+Flmw4ZXiWfQKGcwwc11KnoRAYgzAE2E7mXKCjSviTKShtxBsN6YUUBB2gtaBzKzeKunxhUwNHQuRryhWA== }
@@ -4388,6 +4396,11 @@ snapshots:
       lodash.clonedeep: 4.5.0
       lodash.isequal: 4.5.0
 
+  quill-table-up@3.5.2(quill@2.0.3):
+    dependencies:
+      '@floating-ui/dom': 1.7.6
+      quill: 2.0.3
+
   quill@2.0.3:
     dependencies:
       eventemitter3: 5.0.4
@@ -4414,7 +4427,7 @@ snapshots:
       string_decoder: 1.1.1
       util-deprecate: 1.0.2
 
-  realgrid@2.8.7: {}
+  realgrid@2.8.9: {}
 
   recast@0.23.11:
     dependencies:

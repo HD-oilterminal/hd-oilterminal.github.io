@@ -3,12 +3,11 @@ import type { CellIndex, ClickData, GridBase, LocalTreeDataProvider, RowObject, 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import Button from '../../components/commons/Button.vue'
 import Select from '../../components/commons/Select.vue'
 import { useRealGrid } from '../../composables/useRealGrid'
 import type { TreeProps } from '../../types/core'
 import Pagination from '../commons/Pagination.vue'
-import { useGrid, useGridSearch } from './RealGridOptions'
+import { SearchableGrid, useGrid } from './RealGridOptions'
 
 const props = withDefaults(defineProps<TreeProps>(), {
   columns: () => ({}),
@@ -42,11 +41,6 @@ const pageable = computed(() => {
     typeof props.rows.page === 'number' // page 속성 포함 및 숫자 타입 이면, 페이지처리 Ok
     ? props.rows
     : undefined
-})
-
-const { searchText, searchPanel, doSearch, openSearch } = useGridSearch({
-  grid: () => core,
-  data: () => data
 })
 
 const excel = (filename?: string) => {
@@ -98,9 +92,8 @@ onMounted(() => {
 
   core.onContextMenuItemClicked = (_, menu, cell) => {
     if (menu.name === 'excel') excel()
-    else if (menu.name === 'search') {
-      openSearch(cell)
-    } else if (menu.name === 'freeze') {
+    else if (menu.name === 'search') (core as SearchableGrid).onSearching()
+    else if (menu.name === 'freeze') {
       const index = core.getColumnNames(true, false).indexOf(cell.column ?? '')
       if (index >= 0) core.setFixedOptions({ colCount: index })
     }
@@ -131,18 +124,6 @@ defineExpose({
 <template>
   <div class="realgrid-wrapper" :style="{ width: '100%', height }">
     <div ref="container" class="realgrid-container" />
-    <Transition name="fade">
-      <div v-if="searchPanel" class="realgrid-search-layer">
-        <input
-          ref="searchInput"
-          v-model="searchText"
-          :placeholder="`${$t('검색어')} Enter`"
-          @keydown.enter="doSearch($event.shiftKey)"
-          @keydown.esc="searchPanel = false"
-        />
-        <Button variant="ghost" type="button" @click="searchPanel = false">{{ $t('닫기') }}</Button>
-      </div>
-    </Transition>
     <div v-if="pageable" class="realgrid-pagination">
       <Pagination
         :model-value="pageable.page"
