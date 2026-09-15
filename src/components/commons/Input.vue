@@ -212,7 +212,7 @@ defineExpose({ input })
       {{ label }}
     </i>
     <span
-      class="h-control-md flex max-w-50 min-w-20 flex-1 shrink items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500"
+      class="h-control-md flex max-w-50 min-w-20 flex-1 shrink items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500 in-[.layer-popup]:max-w-full"
       :class="[disabled ? 'bg-gray-200! opacity-50' : '', required ? 'bg-[#fff9f0]!' : '', prefix ? 'gap-0!' : '']"
     >
       <span v-if="prefix" class="shrink-0 text-gray-600">{{ prefix }}</span>
