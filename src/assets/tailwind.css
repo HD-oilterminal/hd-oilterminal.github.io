@@ -19,8 +19,10 @@
   --text-md: 14px;
   --text-sm: 12px;
   --text-xs: 10px;
-  --font-sans: 'pretendard', sans-serif;
-  --font-mono: monospace;
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Malgun Gothic', '맑은 고딕',
+    sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
   --radius-lg: var(--radius-md);
   --radius-md: var(--radius-sm);
   --radius-sm: 0.2rem;
