@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CalendarDate, type DateValue } from '@internationalized/date'
+import { CalendarDate, type DateValue, getLocalTimeZone, today } from '@internationalized/date'
 import {
   DatePickerCalendar,
   DatePickerCell,
@@ -10,12 +10,11 @@ import {
   DatePickerGridRow,
   DatePickerHeadCell,
   DatePickerHeader,
-  DatePickerHeading,
   DatePickerNext,
   DatePickerPrev,
   DatePickerRoot
 } from 'reka-ui'
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useDragNav } from '../../composables/useDragNav'
@@ -255,6 +254,20 @@ watch(
   }
 )
 
+// 헤더 연/월 select: placeholder 기준(미입력 시 오늘)으로 표시, 선택 시 해당 월로 이동
+const headDate = computed(() => placeholder.value ?? today(getLocalTimeZone()))
+const thisYear = today(getLocalTimeZone()).year
+const years = Array.from({ length: 21 }, (_, i) => thisYear - 10 + i)
+const onYearChange = (e: Event) => {
+  placeholder.value = new CalendarDate(Number((e.target as HTMLSelectElement).value), headDate.value.month, 1)
+}
+const onMonthChange = (e: Event) => {
+  placeholder.value = new CalendarDate(headDate.value.year, Number((e.target as HTMLSelectElement).value), 1)
+}
+const goToday = () => {
+  placeholder.value = today(getLocalTimeZone())
+}
+
 const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } = useDragNav(
   () => prev.value?.$el.click(),
   () => next.value?.$el.click()
@@ -315,7 +328,7 @@ const onKeydown = (e: KeyboardEvent) => {
           class="w-11 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
           @focusin="isOpen = true"
         />
-        <span class="mx-[-6px] text-gray-500 select-none">-</span>
+        <span class="-mx-1.5 text-gray-500 select-none">-</span>
         <input
           ref="monthInput"
           type="text"
@@ -324,7 +337,7 @@ const onKeydown = (e: KeyboardEvent) => {
           class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
           @focusin="isOpen = true"
         />
-        <span class="mx-[-6px] text-gray-500 select-none">-</span>
+        <span class="-mx-1.5 text-gray-500 select-none">-</span>
         <input
           ref="dayInput"
           type="text"
@@ -364,7 +377,24 @@ const onKeydown = (e: KeyboardEvent) => {
                 <path d="m15 18-6-6 6-6" />
               </svg>
             </DatePickerPrev>
-            <DatePickerHeading class="font-semibold text-gray-900" />
+            <div class="flex items-center gap-1 font-semibold text-gray-900" @wheel.stop>
+              <select
+                :value="headDate.year"
+                tabindex="-1"
+                class="cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
+                @change="onYearChange"
+              >
+                <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+              </select>
+              <select
+                :value="headDate.month"
+                tabindex="-1"
+                class="cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
+                @change="onMonthChange"
+              >
+                <option v-for="m in 12" :key="m" :value="m">{{ String(m).padStart(2, '0') }}</option>
+              </select>
+            </div>
             <DatePickerNext
               ref="next"
               tabindex="-1"
@@ -411,6 +441,17 @@ const onKeydown = (e: KeyboardEvent) => {
                 </DatePickerGridRow>
               </DatePickerGridBody>
             </DatePickerGrid>
+          </div>
+
+          <div class="mt-3 flex justify-center border-t border-gray-100 pt-2">
+            <button
+              type="button"
+              tabindex="-1"
+              class="rounded-md px-3 py-1 text-sm font-medium text-blue-600 hover:bg-blue-50"
+              @click="goToday"
+            >
+              Today
+            </button>
           </div>
         </DatePickerCalendar>
       </div>
