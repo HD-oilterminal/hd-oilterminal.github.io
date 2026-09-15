@@ -56,6 +56,12 @@
       background: none;
     }
 
+    .rg-checkbox,
+    .rg-radio {
+      position: relative;
+      z-index: 1;
+    }
+
     .rg-data-cell > .rg-renderer,
     .rg-rowgroup-footer-renderer {
       /*&.rg-tree-renderer > span {

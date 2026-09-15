@@ -2,7 +2,7 @@ import 'material-symbols/outlined.css'
 import 'realgrid/dist/realgrid-style.css'
 import '../src/assets/tailwind.css'
 
-import type { Preview } from '@storybook/vue3'
+import type { Preview } from '@storybook/vue3-vite'
 import JSZip from 'jszip'
 
 declare global {
@@ -12,7 +12,7 @@ declare global {
 }
 
 window.JSZip = JSZip
-import { setup } from '@storybook/vue3'
+import { setup } from '@storybook/vue3-vite'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { createPinia, setActivePinia } from 'pinia'

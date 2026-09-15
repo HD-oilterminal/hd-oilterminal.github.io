@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import type { RowObject } from 'realgrid'
 
 import Checkbox from '../../components/commons/Checkbox.vue'

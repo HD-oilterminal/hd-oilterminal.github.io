@@ -23,7 +23,7 @@ import {
   TreeView,
   ValueType
 } from 'realgrid'
-import { ComposerTranslation, useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 
 import type { Column, ColumnGroup, ColumnHeader, GridProps, TreeProps } from '../../types/core'
 
@@ -187,7 +187,7 @@ const generate = (
   grid.setDataSource(provider)
   grid.setFixedOptions({ colCount: props.fixed?.column ?? 0, rowCount: props.fixed?.row ?? 0 })
 
-  // grid.setRowIndicator({ visible: false })
+  grid.setRowIndicator({ visible: false })
   grid.setStateBar({ visible: !!props.editable, errorVisible: true })
 
   if (props.groupable && grid instanceof GridView) grid.groupPanel.visible = true
@@ -268,7 +268,11 @@ const generate = (
   }
 }
 
-const generateSearcher = (grid: GridBase, provider: LocalDataProvider | LocalTreeDataProvider, t: ComposerTranslation) => {
+const generateSearcher = (
+  grid: GridBase,
+  provider: LocalDataProvider | LocalTreeDataProvider,
+  t: ReturnType<typeof useI18n>['t']
+) => {
   const searcher = document.createElement('div')
   searcher.classList.add('realgrid-searcher', 'hidden')
   const input = document.createElement('input')

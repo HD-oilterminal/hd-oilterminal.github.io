@@ -1,5 +1,5 @@
-import { useArgs } from '@storybook/preview-api'
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { useArgs } from 'storybook/preview-api'
 import { ref } from 'vue'
 
 import Checkbox from './Checkbox.vue'

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ValueType } from 'realgrid'
 
 import { numeric } from '../../composables/useFormat'

@@ -8,7 +8,7 @@ import { useRealGrid } from '../../composables/useRealGrid'
 import type { GridProps } from '../../types/core'
 import Pagination from '../commons/Pagination.vue'
 import Select from '../commons/Select.vue'
-import { SearchableGrid, useGrid } from './RealGridOptions'
+import { type SearchableGrid, useGrid } from './RealGridOptions'
 
 const props = withDefaults(defineProps<GridProps>(), {
   columns: () => ({}),

@@ -7,7 +7,7 @@ import Select from '../../components/commons/Select.vue'
 import { useRealGrid } from '../../composables/useRealGrid'
 import type { TreeProps } from '../../types/core'
 import Pagination from '../commons/Pagination.vue'
-import { SearchableGrid, useGrid } from './RealGridOptions'
+import { type SearchableGrid, useGrid } from './RealGridOptions'
 
 const props = withDefaults(defineProps<TreeProps>(), {
   columns: () => ({}),
