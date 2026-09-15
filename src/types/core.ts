@@ -6,7 +6,11 @@ import type {
   ColumnSummaryStyleObject,
   GridBase,
   GridCell,
+  GridView,
+  LocalDataProvider,
+  LocalTreeDataProvider,
   RowObject,
+  TreeView,
   ValueType
 } from 'realgrid'
 import type { useI18n } from 'vue-i18n'
@@ -30,6 +34,7 @@ export interface GridProps {
    */
   title: string
   columns: Columns | ArrayColumns
+  id?: string
   rows?: Rows | PagedRows
   height?: string
   checkable?: boolean
@@ -53,6 +58,10 @@ export type PagedRows = {
   page: number
   size?: number
   list: Rows
+}
+
+export type GridEntry = (GridView | TreeView) & {
+  provider: LocalDataProvider | LocalTreeDataProvider
 }
 
 export type GridExcel = { bridge: Function; get: (filename?: string | undefined | null, rows?: Rows) => void }

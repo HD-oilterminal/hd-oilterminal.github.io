@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<GridProps>(), {
 })
 
 const emit = defineEmits<{
-  currentChanged: [row: number, column: string]
+  rowSelected: [data: RowObject, row: number, column: string]
   cellClicked: [data: ClickData, grid: GridBase]
   rowClicked: [row: RowObject, data: ClickData, grid: GridBase]
   cellDblclicked: [data: ClickData, grid: GridBase]
@@ -63,8 +63,12 @@ onMounted(() => {
     columns: resolveColumns(props.columns)
   }))
 
+  if (props.id) (globalThis.G ??= {})[props.id] = Object.assign(core, { provider: data })
+
   core.onCurrentChanged = (_g, newIndex) => {
-    emit('currentChanged', newIndex.itemIndex ?? 0, core?.getCurrent().fieldName ?? '')
+    if (newIndex.dataRow != undefined && newIndex.dataRow > -1) {
+      emit('rowSelected', data.getJsonRow(newIndex.dataRow), newIndex.itemIndex ?? 0, core?.getCurrent().fieldName ?? '')
+    }
   }
 
   core.onCellClicked = (grid, value) => {
@@ -98,6 +102,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  if (props.id) delete globalThis.G?.[props.id]
+
   data?.clearRows()
   core?.destroy()
 })

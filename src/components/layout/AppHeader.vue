@@ -35,7 +35,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="flex h-12 shrink-0 items-stretch border-b border-gray-200 bg-gray-100">
+  <header class="z-50 flex h-12 shrink-0 items-stretch border-b border-gray-200 bg-gray-100">
     <div class="flex cursor-pointer items-center gap-4 px-3 hover:brightness-95">
       <img src="/images/logo.svg" alt="HDOT" class="h-5 w-auto" @click="mdi.activate('')" />
       <slot name="logged-user" />

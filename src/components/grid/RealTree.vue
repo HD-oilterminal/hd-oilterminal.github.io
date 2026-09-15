@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CellIndex, ClickData, GridBase, LocalTreeDataProvider, RowObject, TreeView } from 'realgrid'
+import type { ClickData, GridBase, LocalTreeDataProvider, RowObject, TreeView } from 'realgrid'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
 })
 
 const emit = defineEmits<{
-  currentChanged: [row: number, column: string]
+  rowSelected: [data: RowObject, row: number, column: string]
   cellClicked: [clickData: ClickData, grid: GridBase]
   rowClicked: [row: RowObject, data: ClickData, grid: GridBase]
   cellDblclicked: [data: ClickData, grid: GridBase]
@@ -66,10 +66,14 @@ onMounted(() => {
     columns: resolveColumns(props.columns)
   }))
 
+  if (props.id) (globalThis.G ??= {})[props.id] = Object.assign(core, { provider: data })
+
   if (props.expanded) core.expandAll()
 
-  core.onCurrentChanged = (grid: GridBase, index: CellIndex) => {
-    emit('currentChanged', index.itemIndex ?? 0, grid?.getCurrent().fieldName ?? '')
+  core.onCurrentChanged = (_g, newIndex) => {
+    if (newIndex.dataRow) {
+      emit('rowSelected', data.getJsonRow(newIndex.dataRow), newIndex.itemIndex ?? 0, core?.getCurrent().fieldName ?? '')
+    }
   }
 
   core.onCellClicked = (grid, value) => {
@@ -101,6 +105,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  if (props.id) delete globalThis.G?.[props.id]
+
   data?.clearRows()
   core?.destroy()
 })
