@@ -24,6 +24,12 @@
       font-family: 'Malgun Gothic', '맑은 고딕', AppleSDGothicNeo-Light, sans-serif;
     }
 
+    .rg-focus,
+    .rg-deactive-focus,
+    .rg-focus-line {
+      border-color: rgb(3, 105, 180, 0.5);
+    }
+
     .rg-rowfocus {
       background-color: var(--color-realgrid-row-current) !important;
     }

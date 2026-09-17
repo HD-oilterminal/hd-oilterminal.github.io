@@ -12,11 +12,12 @@ import {
   SelectValue,
   SelectViewport
 } from 'reka-ui'
+import { ref } from 'vue'
 
 import type { Option } from '../../types/core'
 import IconArrowDown from './IconArrowDown.vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modelValue?: string | number
     label?: string
@@ -40,15 +41,28 @@ defineOptions({ inheritAttrs: false })
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
+  change: [value: string]
 }>()
 
 const EMPTY_VALUE = '__EMPTY__'
 const toInternal = (v: string) => (v === '' ? EMPTY_VALUE : v)
 const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
+
+const root = ref<HTMLLabelElement>()
+
+const onUpdate = (v: string) => {
+  const val = toExternal(v)
+  emit('update:modelValue', val)
+  if (val !== String(props.modelValue ?? '')) {
+    emit('change', val)
+    root.value?.dispatchEvent(new Event('change', { bubbles: true }))
+  }
+}
 </script>
 
 <template>
   <label
+    ref="root"
     class="field field-select relative shrink"
     :class="{ 'cursor-not-allowed': disabled, required }"
     :data-name="label"
@@ -61,7 +75,7 @@ const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
     <SelectRoot
       :model-value="modelValue !== undefined ? toInternal(String(modelValue)) : undefined"
       :disabled="disabled"
-      @update:model-value="emit('update:modelValue', toExternal($event))"
+      @update:model-value="onUpdate"
     >
       <SelectTrigger
         :class="[
