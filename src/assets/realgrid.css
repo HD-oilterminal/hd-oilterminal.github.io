@@ -6,6 +6,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  letter-spacing: 0;
   @apply grow;
 
   &:not(:last-child) {
