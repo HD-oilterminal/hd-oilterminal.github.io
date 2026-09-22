@@ -40,6 +40,10 @@ export interface GridProps {
   checkable?: boolean
   editable?: boolean
   groupable?: boolean
+  /**
+   * 그리드 행번호 표시
+   */
+  numberable?: boolean
   headerHeight?: number
   fixed?: Fixed
   excel?: GridExcel
@@ -60,9 +64,11 @@ export type PagedRows = {
   list: Rows
 }
 
-export type GridEntry = (GridView | TreeView) & {
-  provider: LocalDataProvider | LocalTreeDataProvider
-}
+// 그리드/트리를 교집합으로 선언해 G[id] 에서 캐스팅 없이 양쪽 메서드를 쓸 수 있게 한다 (대입 지점에서 as GridEntry)
+export type GridEntry = GridView &
+  TreeView & {
+    provider: LocalDataProvider & LocalTreeDataProvider
+  }
 
 export type GridExcel = { bridge: Function; get: (filename?: string | undefined | null, rows?: Rows) => void }
 
@@ -129,6 +135,9 @@ export interface Column {
 export interface ColumnGroup {
   header?: string | string[] | ColumnHeader
   direction?: ColumnLayoutDirection
+  /**
+   * 하위 컬럼 헤더 숨김 여부 (기본 false)
+   */
   hideChildHeaders?: boolean
   subColumns: Record<string, Column>
 }

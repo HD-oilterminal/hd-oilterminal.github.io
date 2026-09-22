@@ -256,8 +256,7 @@ watch(
 
 // 헤더 연/월 select: placeholder 기준(미입력 시 오늘)으로 표시, 선택 시 해당 월로 이동
 const headDate = computed(() => placeholder.value ?? today(getLocalTimeZone()))
-const thisYear = today(getLocalTimeZone()).year
-const years = Array.from({ length: 21 }, (_, i) => thisYear - 10 + i)
+const years = computed(() => Array.from({ length: 31 }, (_, i) => headDate.value.year - 15 + i))
 const onYearChange = (e: Event) => {
   placeholder.value = new CalendarDate(Number((e.target as HTMLSelectElement).value), headDate.value.month, 1)
 }
@@ -324,8 +323,9 @@ const onKeydown = (e: KeyboardEvent) => {
           ref="yearInput"
           type="text"
           inputmode="numeric"
+          data-type="date"
           :disabled="disabled"
-          class="w-11 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
+          class="w-11 rounded px-1 text-center tabular-nums outline-none"
           @focusin="isOpen = true"
         />
         <span class="-mx-1.5 text-gray-500 select-none">-</span>
@@ -333,8 +333,9 @@ const onKeydown = (e: KeyboardEvent) => {
           ref="monthInput"
           type="text"
           inputmode="numeric"
+          data-type="date"
           :disabled="disabled"
-          class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
+          class="w-7 rounded px-1 text-center tabular-nums outline-none"
           @focusin="isOpen = true"
         />
         <span class="-mx-1.5 text-gray-500 select-none">-</span>
@@ -342,23 +343,24 @@ const onKeydown = (e: KeyboardEvent) => {
           ref="dayInput"
           type="text"
           inputmode="numeric"
+          data-type="date"
           :disabled="disabled"
-          class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
+          class="w-7 rounded px-1 text-center tabular-nums outline-none"
           @focusin="isOpen = true"
         />
       </div>
 
-      <div v-if="isOpen" class="absolute top-full left-0 z-50 mt-1 rounded-md border border-gray-200 bg-white shadow-lg">
+      <div v-if="isOpen" class="absolute top-full left-0 z-50 rounded-md border border-gray-200 bg-white shadow-lg">
         <DatePickerCalendar
           v-slot="{ grid, weekDays }"
-          class="p-3 select-none"
+          class="p-1 select-none"
           @pointerdown="onPointerDown"
           @pointerup="onPointerUp"
           @pointercancel="onPointerCancel"
           @click.capture="onClickCapture"
           @wheel.prevent="onWheel"
         >
-          <DatePickerHeader class="mb-4 flex items-center justify-between">
+          <DatePickerHeader class="mb-1 flex items-center justify-between">
             <DatePickerPrev
               ref="prev"
               tabindex="-1"
@@ -381,7 +383,7 @@ const onKeydown = (e: KeyboardEvent) => {
               <select
                 :value="headDate.year"
                 tabindex="-1"
-                class="cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
+                class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
                 @change="onYearChange"
               >
                 <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
@@ -389,7 +391,7 @@ const onKeydown = (e: KeyboardEvent) => {
               <select
                 :value="headDate.month"
                 tabindex="-1"
-                class="cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
+                class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
                 @change="onMonthChange"
               >
                 <option v-for="m in 12" :key="m" :value="m">{{ String(m).padStart(2, '0') }}</option>
@@ -415,14 +417,14 @@ const onKeydown = (e: KeyboardEvent) => {
             </DatePickerNext>
           </DatePickerHeader>
 
-          <div class="relative z-1000 flex gap-4">
-            <DatePickerGrid v-for="month in grid" :key="month.value.toString()" class="border-collapse">
+          <div class="relative z-1000 flex gap-1">
+            <DatePickerGrid v-for="month in grid" :key="month.value.toString()">
               <DatePickerGridHead>
                 <DatePickerGridRow class="flex">
                   <DatePickerHeadCell
                     v-for="day in weekDays"
                     :key="day"
-                    class="w-9 pb-1 text-center text-sm font-medium text-gray-400"
+                    class="w-7 text-center text-sm font-medium text-gray-400"
                   >
                     {{ day }}
                   </DatePickerHeadCell>
@@ -435,7 +437,7 @@ const onKeydown = (e: KeyboardEvent) => {
                       :day="day"
                       :month="month.value"
                       tabindex="-1"
-                      class="inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-disabled:pointer-events-none data-disabled:opacity-40 data-outside-view:text-gray-300 data-selected:bg-blue-600 data-selected:text-white data-selected:hover:bg-blue-700 data-today:font-semibold data-today:text-blue-600 data-selected:data-today:text-white"
+                      class="inline-flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-disabled:pointer-events-none data-disabled:opacity-40 data-outside-view:text-gray-300 data-selected:bg-blue-600 data-selected:text-white data-selected:hover:bg-blue-700 data-today:font-semibold data-today:text-blue-600 data-selected:data-today:text-white"
                     />
                   </DatePickerCell>
                 </DatePickerGridRow>
@@ -443,7 +445,7 @@ const onKeydown = (e: KeyboardEvent) => {
             </DatePickerGrid>
           </div>
 
-          <div class="mt-3 flex justify-center border-t border-gray-100 pt-2">
+          <div class="flex justify-center border-t border-gray-100">
             <button
               type="button"
               tabindex="-1"
@@ -458,3 +460,14 @@ const onKeydown = (e: KeyboardEvent) => {
     </DatePickerRoot>
   </div>
 </template>
+
+<style scoped>
+.head-select {
+  appearance: none;
+  padding-right: 1.25rem;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 2px center;
+  background-size: 14px;
+}
+</style>

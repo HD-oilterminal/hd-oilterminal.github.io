@@ -186,7 +186,7 @@ const onKeydown = (e: KeyboardEvent) => {
 <template>
   <div class="relative inline-block" @focusout="onFocusOut" @keydown="onKeydown">
     <div
-      class="h-control-md inline-flex items-center rounded-md border border-gray-300 px-2 focus-within:ring-2 focus-within:ring-blue-500"
+      class="h-control-md inline-flex items-center rounded-md border border-gray-300 bg-white px-2 focus-within:ring-2 focus-within:ring-blue-500"
       :class="disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 opacity-50' : ''"
     >
       <svg
@@ -209,6 +209,7 @@ const onKeydown = (e: KeyboardEvent) => {
         ref="yearInput"
         type="text"
         inputmode="numeric"
+        data-type="date"
         :disabled="disabled"
         class="w-10 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
         @focusin="isOpen = true"
@@ -218,6 +219,7 @@ const onKeydown = (e: KeyboardEvent) => {
         ref="monthInput"
         type="text"
         inputmode="numeric"
+        data-type="date"
         :disabled="disabled"
         class="w-6 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
         @focusin="isOpen = true"

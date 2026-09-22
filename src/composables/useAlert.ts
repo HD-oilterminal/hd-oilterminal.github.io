@@ -26,18 +26,12 @@ watch(state, value => {
 })
 
 export const useAlert = () => {
-  const alert = async (
-    message: string,
-    options?: {
-      title?: string
-      detail?: string
-      readonly?: boolean
-      confirmLabel?: string
-      icon?: string
-      iconClass?: string
-    }
-  ): Promise<void> => {
+  const alert = async (message: string, options?: Partial<AlertState> | string): Promise<void> => {
     return new Promise(resolve => {
+      if (typeof options === 'string') {
+        options = { title: options }
+      }
+
       const next: AlertState = {
         message,
         title: options?.title,
@@ -59,7 +53,11 @@ export const useAlert = () => {
 
   return {
     alert,
-    async alertOf(type: AlertType, message: string, options?: AlertState) {
+    async alertOf(type: AlertType, message: string, options?: Partial<AlertState> | string) {
+      if (typeof options === 'string') {
+        options = { title: options }
+      }
+
       switch (type) {
         case 'success':
           return alert(message, { icon: 'check_circle', iconClass: 'alert-success', ...options })

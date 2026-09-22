@@ -25,10 +25,11 @@ export type DialogState = ConfirmState | PromptState
 export const _dialogState = shallowRef<DialogState | null>(null)
 
 export const useDialog = () => {
-  function confirm(
-    message: string,
-    options?: { title?: string; confirmLabel?: string; cancelLabel?: string }
-  ): Promise<boolean> {
+  function confirm(message: string, options?: Partial<ConfirmState> | string): Promise<boolean> {
+    if (typeof options === 'string') {
+      options = { title: options }
+    }
+
     return new Promise(resolve => {
       _dialogState.value = {
         type: 'confirm',

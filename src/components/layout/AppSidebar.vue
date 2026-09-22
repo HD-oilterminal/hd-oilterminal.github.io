@@ -100,7 +100,7 @@ const close = () => {
             <div class="flex h-10 w-10 shrink-0 items-center justify-center">
               <img :src="getIcon(menu.menu_id)" :alt="menu.menu_nm" />
             </div>
-            <span class="text-lg whitespace-nowrap text-gray-800">
+            <span class="text-lg font-semibold whitespace-nowrap text-gray-800">
               {{ menu.menu_nm }}
             </span>
           </li>
@@ -115,7 +115,7 @@ const close = () => {
     >
       <div class="h-full w-52 border-r border-gray-200 bg-white shadow-lg">
         <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-          <span class="text-lg font-semibold text-gray-900">
+          <span class="text-[1rem] font-bold text-gray-900">
             {{ menus.menuLv1.find((m: MenuLv1Item) => m.menu_id === selectedId)?.menu_nm }}
           </span>
           <button class="text-gray-400 hover:text-gray-700" @click="close">✕</button>
@@ -124,9 +124,8 @@ const close = () => {
           <li
             v-for="sub in menus.getSubMenus(selectedId)"
             :key="sub.menu_id"
-            class="cursor-pointer px-4 py-2.5 text-lg text-gray-700 hover:text-blue-700"
+            class="text-md cursor-pointer px-4 py-3 text-gray-600 hover:text-blue-700"
             :class="mdi.isOpen(sub.menu_id) ? 'font-medium text-blue-600' : 'hover:bg-blue-50'"
-            style="transition: background 0.1s"
             @click="openPage(sub)"
           >
             {{ sub.menu_nm }}

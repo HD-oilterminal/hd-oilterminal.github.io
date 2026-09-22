@@ -187,7 +187,7 @@ const generate = (
   grid.setDataSource(provider)
   grid.setFixedOptions({ colCount: props.fixed?.column ?? 0, rowCount: props.fixed?.row ?? 0 })
 
-  grid.setRowIndicator({ visible: false })
+  grid.setRowIndicator({ visible: props.numberable ?? false })
   grid.setStateBar({ visible: !!props.editable, errorVisible: true })
 
   if (props.groupable && grid instanceof GridView) grid.groupPanel.visible = true
@@ -279,6 +279,7 @@ const generateSearcher = (
   input.setAttribute('placeholder', `${t('검색어')} Enter`)
   searcher.append(input)
   const button = document.createElement('button')
+  button.type = 'button'
   button.textContent = t('닫기')
   searcher.append(button)
 
@@ -289,13 +290,21 @@ const generateSearcher = (
     grid.setFocus()
   })
 
-  input.addEventListener('keydown', ({ key, composed, shiftKey: reverse }) => {
-    'Enter' === key && composed && searchGrid(grid, provider, input.value, reverse)
-    'Escape' === key && button.click()
+  input.addEventListener('keydown', e => {
+    const { key, composed, shiftKey: reverse } = e
+
+    if ('Enter' === key && composed) {
+      e.preventDefault()
+      e.stopPropagation()
+      searchGrid(grid, provider, input.value, reverse)
+    } else if ('Escape' === key) {
+      e.preventDefault()
+      e.stopPropagation()
+      button.click()
+    }
   })
 
   grid.getContainer().addEventListener('keydown', e => {
-    console.log(e.metaKey, e.key)
     if ((e.metaKey || e.ctrlKey) && 'f' === e.key.toLowerCase()) {
       searcher.classList.remove('hidden')
       searcher.querySelector('input')?.focus()

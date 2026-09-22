@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 
 import Select from '../../components/commons/Select.vue'
 import { useRealGrid } from '../../composables/useRealGrid'
-import type { TreeProps } from '../../types/core'
+import type { GridEntry, TreeProps } from '../../types/core'
 import Pagination from '../commons/Pagination.vue'
 import { type SearchableGrid, useGrid } from './RealGridOptions'
 
@@ -66,7 +66,7 @@ onMounted(() => {
     columns: resolveColumns(props.columns)
   }))
 
-  if (props.id) (globalThis.G ??= {})[props.id] = Object.assign(core, { provider: data })
+  if (props.id) (globalThis.G ??= {})[props.id] = Object.assign(core, { provider: data }) as GridEntry
 
   if (props.expanded) core.expandAll()
 

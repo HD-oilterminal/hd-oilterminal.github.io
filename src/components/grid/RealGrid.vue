@@ -5,7 +5,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useRealGrid } from '../../composables/useRealGrid'
-import type { GridProps } from '../../types/core'
+import type { GridEntry, GridProps } from '../../types/core'
 import Pagination from '../commons/Pagination.vue'
 import Select from '../commons/Select.vue'
 import { type SearchableGrid, useGrid } from './RealGridOptions'
@@ -63,7 +63,7 @@ onMounted(() => {
     columns: resolveColumns(props.columns)
   }))
 
-  if (props.id) (globalThis.G ??= {})[props.id] = Object.assign(core, { provider: data })
+  if (props.id) (globalThis.G ??= {})[props.id] = Object.assign(core, { provider: data }) as GridEntry
 
   core.onCurrentChanged = (_g, newIndex) => {
     if (newIndex.dataRow != undefined && newIndex.dataRow > -1) {

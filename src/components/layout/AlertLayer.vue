@@ -5,10 +5,12 @@ import Icon from '../commons/Icon.vue'
 
 const btnRef = ref()
 const isExpanded = ref(false)
+const visible = ref(false)
 
 watch(state, state => {
   if (state) {
     isExpanded.value = false
+    visible.value = true
     nextTick().then(() => btnRef.value?.focus())
   }
 })
@@ -17,7 +19,11 @@ const onConfirm = (clicked?: boolean) => {
   if (!state.value) return
   if (state.value?.readonly && !clicked) return
 
-  state.value.resolve()
+  visible.value = false
+}
+
+const onAfterLeave = () => {
+  state.value?.resolve()
   state.value = null
 }
 
@@ -28,8 +34,8 @@ const onKeydown = (e: KeyboardEvent) => {
 
 <template>
   <Teleport to="body">
-    <Transition name="alert-fade">
-      <div v-if="state" class="fixed inset-0 z-9999 flex items-center justify-center" @keydown="onKeydown">
+    <Transition name="alert-fade" @after-leave="onAfterLeave">
+      <div v-if="state && visible" class="fixed inset-0 z-9999 flex items-center justify-center" @keydown="onKeydown">
         <div class="absolute inset-0 bg-black/40" @click="onConfirm()" />
 
         <div
@@ -61,12 +67,12 @@ const onKeydown = (e: KeyboardEvent) => {
 
           <div v-if="state.detail" class="mt-3 flex min-h-0 flex-col" :class="isExpanded ? 'flex-1' : 'shrink-0'">
             <pre
-              class="rounded-lg bg-gray-50 px-3 py-2.5 font-mono text-sm leading-relaxed text-gray-600"
+              class="h-12 rounded-lg bg-gray-50 px-3 py-2.5 font-mono text-sm leading-relaxed text-gray-600"
               :class="isExpanded ? 'min-h-0 flex-1 overflow-y-auto' : 'line-clamp-1 overflow-hidden'"
               >{{ state.detail }}</pre
             >
             <button
-              class="m-2 shrink-0 text-right text-sm text-blue-500 transition-colors hover:text-blue-700"
+              class="m-2 shrink-0 cursor-pointer text-right text-sm text-blue-500 transition-colors hover:text-blue-700"
               @click="isExpanded = !isExpanded"
             >
               {{ $t(isExpanded ? '접기' : '펼치기') }}
