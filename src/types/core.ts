@@ -45,6 +45,10 @@ export interface GridProps {
    * 그리드 행번호 표시
    */
   numberable?: boolean
+  /**
+   * 상태바 숨김 (editable 에서도 숨김)
+   */
+  stateInvisible?: boolean
   headerHeight?: number
   fixed?: Fixed
   excel?: GridExcel

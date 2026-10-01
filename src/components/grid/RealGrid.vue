@@ -78,6 +78,8 @@ onMounted(() => {
   }
 
   core.onCellDblClicked = (grid, value) => {
+    if (value.dataRow != undefined) grid.showEditor(true)
+
     emit('cellDblclicked', value, grid)
 
     if (value.dataRow != undefined) emit('rowDblclicked', data.getJsonRow(value.dataRow), value, grid)

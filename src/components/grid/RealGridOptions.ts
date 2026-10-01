@@ -171,7 +171,7 @@ const generate = (
   }
 
   grid.setColumns(columnsAdapter(dataColumns, props.editable))
-  grid.setEditOptions({ editable: props.editable, checkable: true })
+  grid.setEditOptions({ editable: props.editable, checkable: true, commitByCell: true })
   grid.setCheckBar({ visible: props.checkable ?? true })
   grid.setDisplayOptions({
     showTooltip: true,
@@ -183,21 +183,12 @@ const generate = (
     rowHeight: 28
   })
   grid.setCopyOptions({ copyDisplayText: true, singleMode: false })
+  grid.setPasteOptions({ convertLookupLabel: true })
   grid.setFooter({ visible: false })
   grid.setDataSource(provider)
   grid.setFixedOptions({ colCount: props.fixed?.column ?? 0, rowCount: props.fixed?.row ?? 0 })
-
   grid.setRowIndicator({ visible: props.numberable ?? false })
-  grid.setStateBar({ visible: !!props.editable, errorVisible: true })
-
-  if (props.groupable && grid instanceof GridView) grid.groupPanel.visible = true
-
-  let currentItemIndex: number | undefined
-  grid.onSelectionChanged = (_grid, selection) => {
-    currentItemIndex = selection.startItem
-    _grid.refresh()
-  }
-
+  grid.setStateBar({ visible: !!props.editable && !props.stateInvisible, errorVisible: true })
   grid.setContextMenu([{ label: t('엑셀 다운로드'), name: 'excel' }])
   grid.onContextMenuItemClicked = (_grid, menu, data) => {
     if (menu.name === 'excel') {
@@ -250,6 +241,10 @@ const generate = (
   }
 
   grid.header.height = (props.headerHeight ?? grid.header.height) || 30
+
+  if (props.groupable && grid instanceof GridView) {
+    grid.groupPanel.visible = true
+  }
 
   if (grid instanceof TreeView && grid.treeOptions) {
     grid.treeOptions.expanderIconStyle = TreeExpanderIconStyle.SQUARE
@@ -352,10 +347,10 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
           type: 'dropdown',
           domainOnly: true,
           textReadOnly: true,
-          dropDownWhenClick: true,
+          dropDownWhenClick: false,
           dropDownWhenEnter: true
         }
-        def.editButtonVisibility = 'hidden'
+        def.editButtonVisibility = 'always'
       }
     }
 
