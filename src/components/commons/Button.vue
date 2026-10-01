@@ -29,7 +29,7 @@ defineExpose({ focus: () => el.value?.focus() })
         primary: 'bg-blue-600 text-white hover:bg-blue-700',
         secondary: 'border border-gray-500 bg-white text-gray-900 hover:bg-gray-200',
         liner: 'border border-gray-300 text-gray-500 hover:bg-gray-100',
-        ghost: 'border border-gray-200 text-gray-700 hover:bg-gray-100',
+        ghost: 'bg-primary-500 hover:bg-primary-700 text-white',
         united: 'absolute right-0 px-2! text-gray-700 hover:bg-gray-200/70',
         none: 'px-0!'
       }[variant ?? 'primary'],

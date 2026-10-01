@@ -1,5 +1,5 @@
 :root {
-  --color-realgrid-row-current: rgb(3, 105, 180, 0.15);
+  --color-realgrid-row-current: rgb(245, 100, 0, 0.15);
 }
 
 .realgrid-wrapper {
@@ -23,12 +23,6 @@
     .rg-root {
       /*font-family: var(--font-sans), sans-serif !important;*/
       font-family: 'Malgun Gothic', '맑은 고딕', AppleSDGothicNeo-Light, sans-serif;
-    }
-
-    .rg-focus,
-    .rg-deactive-focus,
-    .rg-focus-line {
-      border-color: rgb(3, 105, 180, 0.5);
     }
 
     .rg-rowfocus {

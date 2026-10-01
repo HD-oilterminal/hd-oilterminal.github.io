@@ -12,7 +12,7 @@ withDefaults(
 
 <template>
   <span
-    class="material-symbols-outlined leading-none select-none"
+    class="icon material-symbols-outlined leading-none select-none"
     :style="{
       fontSize: `${size}px`,
       fontVariationSettings: `'FILL' ${filled ? 1 : 0}, 'wght' ${weight}`

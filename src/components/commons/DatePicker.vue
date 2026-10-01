@@ -313,6 +313,7 @@ const onKeydown = (e: KeyboardEvent) => {
           stroke-linecap="round"
           stroke-linejoin="round"
           color="#ccc"
+          class="cursor-pointer"
         >
           <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
           <line x1="16" x2="16" y1="2" y2="6" />
