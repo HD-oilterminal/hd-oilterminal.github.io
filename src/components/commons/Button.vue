@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   label?: string
-  variant?: 'primary' | 'secondary' | 'liner' | 'ghost' | 'united' | 'none'
+  variant?: 'primary' | 'secondary' | 'norm' | 'liner' | 'ghost' | 'united' | 'none'
   type?: 'button' | 'submit' | 'reset'
   size?: 'sm' | 'md' | 'lg'
   disabled?: boolean
@@ -28,6 +28,7 @@ defineExpose({ focus: () => el.value?.focus() })
       {
         primary: 'bg-blue-600 text-white hover:bg-blue-700',
         secondary: 'border border-gray-500 bg-white text-gray-900 hover:bg-gray-200',
+        norm: 'border border-gray-300 bg-white text-gray-500 hover:text-black',
         liner: 'border border-gray-300 text-gray-500 hover:bg-gray-100',
         ghost: 'bg-primary-500 hover:bg-primary-700 text-white',
         united: 'absolute right-0 px-2! text-gray-700 hover:bg-gray-200/70',

@@ -12,7 +12,7 @@ import {
   SelectValue,
   SelectViewport
 } from 'reka-ui'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import type { Option } from '../../types/core'
 import IconArrowDown from './IconArrowDown.vue'
@@ -50,6 +50,8 @@ const toExternal = (v: string) => (v === EMPTY_VALUE ? '' : v)
 
 const root = ref<HTMLLabelElement>()
 
+const selectedLabel = computed(() => props.options.find(o => String(o.value) === String(props.modelValue ?? ''))?.label ?? '')
+
 const onUpdate = (v: string) => {
   const val = toExternal(v)
   emit('update:modelValue', val)
@@ -79,12 +81,13 @@ const onUpdate = (v: string) => {
     >
       <SelectTrigger
         :class="[
-          'h-control-md inline-flex items-center justify-between gap-2 rounded-md border border-gray-300 bg-white pr-1.5 pl-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50 data-placeholder:text-gray-400',
+          'h-control-md inline-flex items-center justify-between gap-2 rounded-md border border-gray-300 bg-white pr-1.5 pl-3 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50',
           required ? 'bg-[#fff9f0]!' : '',
+          selectedLabel ? 'text-gray-900' : 'text-gray-400',
           $props.class
         ]"
       >
-        <SelectValue class="mr-3 whitespace-nowrap" />
+        <SelectValue class="mr-3 whitespace-nowrap">{{ selectedLabel }}</SelectValue>
         <icon-arrow-down />
       </SelectTrigger>
       <SelectPortal>

@@ -1,6 +1,7 @@
 import type {
   CellIndex,
   CellLayoutColumnItem,
+  ClickData,
   ColumnLayoutDirection,
   ColumnStyleObject,
   ColumnSummaryStyleObject,
@@ -47,6 +48,7 @@ export interface GridProps {
   headerHeight?: number
   fixed?: Fixed
   excel?: GridExcel
+  contextMenu?: Record<string, (row: RowObject | undefined, cell: ClickData, grid: GridBase) => void>
   /**
    * 페이지당 표출되는 행의 개수
    */

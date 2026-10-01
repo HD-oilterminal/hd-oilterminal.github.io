@@ -103,9 +103,9 @@ function onKeydown(e: KeyboardEvent) {
             @keydown.esc="onCancel"
           />
 
-          <div class="mt-6 flex gap-3">
-            <Button :label="_dialogState.confirmLabel || $t('확인')" variant="primary" class="flex-1" @click="onConfirm" />
-            <Button :label="_dialogState.cancelLabel || $t('확인')" variant="ghost" class="flex-1" @click="onCancel" />
+          <div class="mt-6 flex justify-center gap-3 border-t border-t-gray-300 pt-3">
+            <Button :label="_dialogState.confirmLabel || $t('확인')" @click="onConfirm" />
+            <Button :label="_dialogState.cancelLabel || $t('취소')" variant="liner" @click="onCancel" />
           </div>
         </div>
       </div>

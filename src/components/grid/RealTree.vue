@@ -88,14 +88,22 @@ onMounted(() => {
     if (value.dataRow != undefined) emit('rowDblclicked', data.getJsonRow(value.dataRow), value, grid)
   }
 
+  const contextMenus = Object.keys(props.contextMenu ?? {}).map(label => ({ label, name: 'custom:' + label }))
   core.setContextMenu([
+    ...(contextMenus.length ? [...contextMenus, { label: '-' }] : []),
     { label: t('엑셀 다운로드'), name: 'excel' },
     { label: t('검색'), name: 'search' },
     { label: t('틀고정'), name: 'freeze' }
   ])
 
-  core.onContextMenuItemClicked = (_, menu, cell) => {
-    if (menu.name === 'excel') excel()
+  core.onContextMenuItemClicked = (grid, menu, cell) => {
+    if (menu.name?.startsWith('custom:')) {
+      props.contextMenu?.[menu.name.slice(7)]?.(
+        cell.dataRow != undefined ? data.getJsonRow(cell.dataRow) : undefined,
+        cell,
+        grid
+      )
+    } else if (menu.name === 'excel') excel()
     else if (menu.name === 'search') (core as SearchableGrid).onSearching()
     else if (menu.name === 'freeze') {
       const index = core.getColumnNames(true, false).indexOf(cell.column ?? '')
