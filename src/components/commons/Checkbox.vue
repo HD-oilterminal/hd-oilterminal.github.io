@@ -17,7 +17,13 @@ withDefaults(
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean | 'indeterminate']
+  change: [value: boolean | 'indeterminate']
 }>()
+
+const onUpdate = (value: boolean | 'indeterminate') => {
+  emit('update:modelValue', value)
+  emit('change', value)
+}
 </script>
 
 <template>
@@ -28,7 +34,7 @@ const emit = defineEmits<{
       :disabled="disabled"
       class="flex h-4 w-4 items-center justify-center rounded border border-gray-300 bg-white transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 focus-visible:outline-none disabled:pointer-events-none data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=indeterminate]:border-blue-600 data-[state=indeterminate]:bg-blue-600"
       @click.stop
-      @update:model-value="emit('update:modelValue', $event)"
+      @update:model-value="onUpdate"
     >
       <CheckboxIndicator
         :force-mount="true"

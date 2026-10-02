@@ -23,13 +23,13 @@ defineExpose({ focus: () => el.value?.focus() })
       {
         sm: 'h-control-sm px-2',
         md: 'h-control-md px-3',
-        lg: 'h-12 px-5 text-base'
+        lg: 'h-12 px-4 text-base'
       }[size ?? 'md'],
       {
         primary: 'bg-blue-600 text-white hover:bg-blue-700',
         secondary: 'border border-gray-500 bg-white text-gray-900 hover:bg-gray-200',
         norm: 'border border-gray-300 bg-white text-gray-500 hover:text-black',
-        liner: 'border border-gray-300 text-gray-500 hover:bg-gray-100',
+        liner: 'border border-gray-300 bg-white/30 text-gray-500 hover:bg-gray-100',
         ghost: 'bg-primary-500 hover:bg-primary-700 text-white',
         united: 'absolute right-0 px-2! text-gray-700 hover:bg-gray-200/70',
         none: 'px-0!'

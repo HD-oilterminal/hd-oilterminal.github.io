@@ -46,7 +46,7 @@ onMounted(() => {
         <li
           v-for="tab in mdi.tabs"
           :key="tab.id"
-          class="group relative mx-px my-2 inline-flex w-37.5 shrink-0 cursor-pointer items-center rounded border px-3 text-sm font-semibold"
+          class="group relative mx-px my-2 inline-flex w-37 shrink-0 cursor-pointer items-center rounded border px-3 text-sm font-semibold"
           :class="
             tab.id === mdi.activeTabId
               ? 'border-primary-500 bg-white font-bold'
