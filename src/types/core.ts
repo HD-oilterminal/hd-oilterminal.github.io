@@ -1,4 +1,5 @@
 import type {
+  CellEditor,
   CellIndex,
   CellLayoutColumnItem,
   ClickData,
@@ -104,6 +105,7 @@ export interface Column {
   header?: ColumnHeader | string | string[]
   visible?: boolean
   editable?: boolean
+  editor?: CellEditor
   styleName?: string
   code?: string
   values?: string[]

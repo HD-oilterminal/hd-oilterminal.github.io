@@ -171,7 +171,8 @@ const generate = (
   }
 
   grid.setColumns(columnsAdapter(dataColumns, props.editable))
-  grid.setEditOptions({ editable: props.editable, checkable: true, commitByCell: true })
+  const hasEditor = Object.values(dataColumns).some(column => column.editor)
+  grid.setEditOptions({ editable: props.editable || hasEditor, checkable: true, commitByCell: true })
   grid.setCheckBar({ visible: props.checkable ?? true })
   grid.setDisplayOptions({
     showTooltip: true,
@@ -320,9 +321,11 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
       fieldName: key,
       width: column.width,
       type: column.type ?? ValueType.TEXT,
-      editable: column.editable ?? editable ?? false,
+      editable: column.editable ?? (column.editor ? true : (editable ?? false)),
       visible: column.visible ?? true
     }
+
+    if (column.editor) def.editor = column.editor
 
     if (column.header) {
       if (Array.isArray(column.header)) {
@@ -348,7 +351,8 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
           domainOnly: true,
           textReadOnly: true,
           dropDownWhenClick: false,
-          dropDownWhenEnter: true
+          dropDownWhenEnter: true,
+          ...column.editor
         }
         def.editButtonVisibility = 'always'
       }
