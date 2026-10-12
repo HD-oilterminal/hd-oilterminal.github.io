@@ -70,27 +70,51 @@ const getLabelMaps = (grid: GridBase, fields: string[]) => {
 
 /**
  * 그리드 내부 검색. labels/values 로 표현되는 lookup 컬럼은 value 대신 label 로 검색
- * @returns 검색된 셀의 위치. 없으면 undefined
+ * @param position 검색 시작 위치. x 는 fields 배열 내 인덱스. 생략 시 현재 포커스 셀 (다음/이전 셀부터 검색)
+ * @param fields 검색 대상 필드. 생략 시 전체 필드
+ * @returns 검색된 셀의 위치 (x 는 fields 배열 내 인덱스). 없으면 undefined
  */
 export const searchGrid = (
   grid: GridBase,
   provider: DataProviderBase,
   value: string = '',
   reverse: boolean = false,
-  position: SearchPosition = { x: grid.getCurrent().fieldIndex ?? -1, y: grid.getCurrent().itemIndex ?? -1 }
+  position?: SearchPosition,
+  fields: string[] = provider.getFieldNames()
 ): SearchPosition | undefined => {
   if (!value) return
 
-  const fields = provider.getFieldNames()
-  const labelMaps = getLabelMaps(grid, fields)
+  const current = grid.getCurrent()
+  const start = position ?? {
+    x: fields.findIndex(f => f.toLowerCase() === current.fieldName?.toLowerCase()),
+    y: current.itemIndex ?? -1
+  }
 
-  console.log(reverse, position)
+  const last = fields.length - 1
+  let x = start.x + (reverse ? -1 : 1)
+  let y = start.y
+  if (x > last) {
+    x = 0
+    y++
+  } else if (x < 0) {
+    x = last
+    y--
+  }
+  const itemCount = grid.getItemCount()
+  if (y >= itemCount) {
+    x = 0
+    y = 0
+  } else if (y < 0) {
+    x = last
+    y = itemCount - 1
+  }
 
+  const labelMaps = getLabelMaps(grid, provider.getFieldNames())
   const result = grid.searchCell({
     fields,
     value,
-    startIndex: position.y,
-    startFieldIndex: position.x + (reverse ? -1 : 1),
+    startIndex: y,
+    startFieldIndex: x,
     wrap: true,
     caseSensitive: false,
     partialMatch: true,
@@ -101,8 +125,9 @@ export const searchGrid = (
 
   if (result != null) {
     grid.setCurrent(result)
-    return { x: result.fieldIndex, y: result.itemIndex }
+    return { x: fields.findIndex(f => f === result.fieldName), y: result.itemIndex }
   }
+
   return undefined
 }
 

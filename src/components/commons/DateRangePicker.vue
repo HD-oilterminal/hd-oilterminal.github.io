@@ -18,8 +18,10 @@ import {
 import { computed, onMounted, ref, shallowRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import Radio from '../../components/commons/Radio.vue'
 import { useDragNav } from '../../composables/useDragNav'
 import { dateString, toDate } from '../../composables/useFormat'
+import { type Option } from '../../types/core'
 
 const props = withDefaults(
   defineProps<{
@@ -29,6 +31,11 @@ const props = withDefaults(
   }>(),
   { start: '', end: '' }
 )
+
+const JUMP_OPTIONS: Option[] = [
+  { label: '일별', value: 'daily' },
+  { label: '월별', value: 'monthly' }
+]
 
 const emit = defineEmits<{ 'update:start': [value: string]; 'update:end': [value: string] }>()
 
@@ -47,6 +54,7 @@ const placeholder = ref<DateValue | undefined>(toDate(props.start) ?? toDate(pro
 const isOpen = ref(false)
 const prev = ref()
 const next = ref()
+const jump = ref('monthly')
 
 // 연·월·일 세그먼트 입력 한 묶음(시작/종료 각각 하나씩). DatePicker.vue 의 입력 로직과 동일
 function useSegments(key: 'start' | 'end', initial: string) {
@@ -291,12 +299,12 @@ const goToday = () => {
   placeholder.value = today(getLocalTimeZone())
 }
 
-// before(-1): 시작일 기준 전월 1일~말일, after(+1): 종료일 기준 익월 1일~말일. 기준 날짜가 없으면 오늘
-const shiftMonth = (delta: -1 | 1) => {
+const shiftValue = (delta: -1 | 1) => {
   const base = (delta < 0 ? internalValue.value.start : internalValue.value.end) ?? today(getLocalTimeZone())
-  const month = base.add({ months: delta })
-  const s = startOfMonth(month)
-  const e = endOfMonth(month)
+  const daily = jump.value === 'daily'
+  const target = base.add(daily ? { days: delta } : { months: delta })
+  const s = daily ? target : startOfMonth(target)
+  const e = daily ? target : endOfMonth(target)
   startSeg.setDate(s)
   endSeg.setDate(e)
   internalValue.value = { start: s, end: e }
@@ -354,7 +362,7 @@ const onKeydown = (e: KeyboardEvent) => {
           tabindex="-1"
           :disabled="disabled"
           class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
-          @click="shiftMonth(-1)"
+          @click="shiftValue(-1)"
         >
           <svg
             width="16"
@@ -455,7 +463,7 @@ const onKeydown = (e: KeyboardEvent) => {
           tabindex="-1"
           :disabled="disabled"
           class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
-          @click="shiftMonth(1)"
+          @click="shiftValue(1)"
         >
           <svg
             width="16"
@@ -470,6 +478,8 @@ const onKeydown = (e: KeyboardEvent) => {
             <path d="m9 18 6-6-6-6" />
           </svg>
         </button>
+
+        <Radio v-model="jump" :items="JUMP_OPTIONS" />
       </div>
 
       <div v-if="isOpen" class="absolute top-full left-0 z-50 rounded-md border border-gray-200 bg-white shadow-lg">
