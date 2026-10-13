@@ -27,6 +27,7 @@ export default [
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       'storybook/no-renderer-packages': 'off',
+      'vue/no-v-html': 'off',
       'vue/multi-word-component-names': 'off',
       'vue/max-attributes-per-line': 'off',
       'vue/html-self-closing': 'off',

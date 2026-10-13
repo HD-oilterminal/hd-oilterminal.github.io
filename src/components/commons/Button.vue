@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import Icon from './Icon.vue'
+
 defineProps<{
   label?: string
   variant?: 'primary' | 'secondary' | 'norm' | 'liner' | 'ghost' | 'united' | 'none'
   type?: 'button' | 'submit' | 'reset'
   size?: 'sm' | 'md' | 'lg'
+  icon?: string
+  iconSize?: number
   disabled?: boolean
 }>()
 
@@ -39,6 +43,6 @@ defineExpose({ focus: () => el.value?.focus() })
     :type="type ?? 'button'"
     @click="$emit('click', $event)"
   >
-    {{ label }}<slot />
+    {{ label }}<Icon v-if="icon" :name="icon" :size="iconSize" class="-ml-1.5" /><slot />
   </button>
 </template>

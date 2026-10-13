@@ -34,8 +34,8 @@ const columns: Columns = {
       template: '${top}<i>${bottom}</i>',
       values: { top: '소설번호', bottom: '챕터번호' }
     },
-    styling: dataCell => {
-      if (Number.isNaN(parseInt(String(dataCell?.value)))) {
+    styling: (_cell, _grid) => {
+      if (Number.isNaN(parseInt(String(_cell?.value)))) {
         return { styleName: 'grid-cell-pointer-text-blue' }
       }
     }

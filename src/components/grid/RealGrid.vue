@@ -54,7 +54,13 @@ const excel = (filename?: string) => {
 
 watch(
   () => props.rows,
-  rows => data?.setRows(Array.isArray(rows) ? rows : rows.list)
+  rows => {
+    data?.setRows(Array.isArray(rows) ? rows : rows.list)
+
+    if (props.numberable && pageable.value) {
+      core?.setRowIndicator({ indexOffset: (pageable.value.page - 1) * (props.size ?? pageable.value.size ?? 0) })
+    }
+  }
 )
 
 onMounted(() => {

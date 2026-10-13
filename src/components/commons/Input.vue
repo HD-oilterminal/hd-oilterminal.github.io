@@ -4,7 +4,7 @@ import { onMounted, watch } from 'vue'
 const props = withDefaults(
   defineProps<{
     modelValue?: string | number
-    type?: string
+    type?: 'text' | 'number' | 'tel' | 'email' | 'password'
     label?: string
     labelSize?: string
     placeholder?: string
@@ -265,7 +265,7 @@ defineExpose({ input })
           }
         "
       />
-      <span v-if="suffix" class="shrink-0 text-gray-500">{{ suffix }}</span>
+      <span v-if="suffix" class="shrink-0 text-gray-500" v-html="suffix"></span>
     </span>
     <slot />
   </label>

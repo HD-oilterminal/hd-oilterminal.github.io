@@ -3,7 +3,7 @@ import { CheckboxIndicator, CheckboxRoot } from 'reka-ui'
 
 withDefaults(
   defineProps<{
-    modelValue?: boolean | 'indeterminate'
+    modelValue?: boolean | 'indeterminate' | 'Y' | 'N'
     label?: string
     disabled?: boolean
     id?: string
@@ -20,7 +20,10 @@ const emit = defineEmits<{
   change: [value: boolean | 'indeterminate']
 }>()
 
-const onUpdate = (value: boolean | 'indeterminate') => {
+const onUpdate = (value: boolean | 'indeterminate' | 'Y' | 'N') => {
+  if ('Y' === value) value = true
+  if ('N' === value) value = false
+
   emit('update:modelValue', value)
   emit('change', value)
 }
@@ -30,7 +33,7 @@ const onUpdate = (value: boolean | 'indeterminate') => {
   <label :class="['inline-flex shrink-0 items-center gap-1 select-none', disabled ? 'cursor-not-allowed opacity-50' : '']">
     <CheckboxRoot
       :id="id"
-      :model-value="modelValue"
+      :model-value="'Y' === modelValue ? true : 'N' === modelValue ? false : modelValue"
       :disabled="disabled"
       class="flex h-4 w-4 items-center justify-center rounded border border-gray-300 bg-white transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 focus-visible:outline-none disabled:pointer-events-none data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=indeterminate]:border-blue-600 data-[state=indeterminate]:bg-blue-600"
       @click.stop

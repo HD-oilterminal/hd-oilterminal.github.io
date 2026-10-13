@@ -9,6 +9,7 @@ import {
   type DataFieldInput,
   DataProviderBase,
   GridBase,
+  type GridCell,
   GridFitStyle,
   type GridItem,
   GridView,
@@ -411,7 +412,10 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
         return displaying(___, __, _)
       }
     }
-    if (column.styling) def.styleCallback = column.styling
+    if (column.styling) {
+      const styling = column.styling
+      def.styleCallback = (_: GridBase, __: GridCell) => styling(__, _)
+    }
     if (column.prefix) def.prefix = column.prefix
     if (column.suffix) def.suffix = column.suffix
     if (column.type === ValueType.NUMBER) {
