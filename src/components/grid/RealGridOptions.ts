@@ -199,7 +199,7 @@ const generate = (
   grid.setColumns(columnsAdapter(dataColumns, props.editable))
   const hasEditor = Object.values(dataColumns).some(column => column.editor)
   grid.setEditOptions({ editable: props.editable || hasEditor, checkable: true, commitByCell: true })
-  grid.setCheckBar({ visible: props.checkable ?? true })
+  grid.setCheckBar({ visible: !!(props.checkable ?? true) })
   grid.setDisplayOptions({
     showTooltip: true,
     tooltipEllipsisOnly: true,
@@ -442,7 +442,7 @@ const fieldsAdaptor = (columns: Record<string, Column>): DataFieldInput[] => {
   return Object.keys(columns).map(key => {
     return {
       fieldName: key,
-      dataType: ValueType.TEXT,
+      dataType: columns[key].json ? ValueType.OBJECT : ValueType.TEXT,
       displayCallback: columns[key].displaying,
       nullValue: '',
       defaultValue: ''

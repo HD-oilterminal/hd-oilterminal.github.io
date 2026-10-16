@@ -26,6 +26,8 @@ const emit = defineEmits<{
   rowDblclicked: [row: RowObject, data: ClickData, grid: GridBase]
   paging: [page: number]
   sizing: [size: number]
+  itemChecked: [itemIndex: number, checked: boolean, grid: GridBase]
+  itemAllChecked: [checked: boolean, grid: GridBase]
 }>()
 
 const { resolveColumns } = useRealGrid()
@@ -69,6 +71,19 @@ onMounted(() => {
   if (props.id) (globalThis.G ??= {})[props.id] = Object.assign(core, { provider: data }) as GridEntry
 
   if (props.expanded) core.expandAll()
+
+  core.onItemChecked = (grid, itemIndex, checked) => {
+    if (props.checkable === 'tree-group') {
+      for (const row of data.getDescendants(core.getDataRow(itemIndex)) ?? []) {
+        const parentChecked = core.isCheckedRow(data.getParent(row))
+        if (parentChecked) core.checkRow(row, false, false, false)
+        core.setCheckableOfRow(row, !parentChecked)
+      }
+    }
+    emit('itemChecked', itemIndex, checked, grid)
+  }
+
+  core.onItemAllChecked = (grid, checked) => emit('itemAllChecked', checked, grid)
 
   core.onCurrentChanged = (_g, newIndex) => {
     if (newIndex.dataRow) {

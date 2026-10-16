@@ -39,7 +39,10 @@ export interface GridProps {
   id?: string
   rows?: Rows | PagedRows
   height?: string
-  checkable?: boolean
+  /**
+   * 'tree-group': 분기점의 체크에 따라 직계 자식 `checked=false, disabled`
+   */
+  checkable?: boolean | 'tree-group'
   editable?: boolean
   groupable?: boolean
   /**
@@ -102,6 +105,7 @@ export interface Column {
   key?: string
   width?: number
   type?: ValueType
+  json?: boolean
   header?: ColumnHeader | string | string[]
   visible?: boolean
   editable?: boolean
