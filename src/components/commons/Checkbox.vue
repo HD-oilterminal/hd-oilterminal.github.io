@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { CheckboxIndicator, CheckboxRoot } from 'reka-ui'
+import { watch } from 'vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modelValue?: boolean | 'indeterminate' | 'Y' | 'N'
     label?: string
     disabled?: boolean
+    readonly?: boolean
     id?: string
   }>(),
   {
@@ -27,14 +29,29 @@ const onUpdate = (value: boolean | 'indeterminate' | 'Y' | 'N') => {
   emit('update:modelValue', value)
   emit('change', value)
 }
+
+watch(
+  () => props.modelValue,
+  value => {
+    if ('Y' === value) emit('update:modelValue', true)
+    if ('N' === value) emit('update:modelValue', false)
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
-  <label :class="['inline-flex shrink-0 items-center gap-1 select-none', disabled ? 'cursor-not-allowed opacity-50' : '']">
+  <label
+    :class="[
+      'inline-flex shrink-0 items-center gap-1 select-none',
+      disabled ? 'cursor-not-allowed opacity-50' : '',
+      readonly ? 'cursor-not-allowed' : ''
+    ]"
+  >
     <CheckboxRoot
       :id="id"
       :model-value="'Y' === modelValue ? true : 'N' === modelValue ? false : modelValue"
-      :disabled="disabled"
+      :disabled="disabled || readonly"
       class="flex h-4 w-4 items-center justify-center rounded border border-gray-300 bg-white transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 focus-visible:outline-none disabled:pointer-events-none data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=indeterminate]:border-blue-600 data-[state=indeterminate]:bg-blue-600"
       @click.stop
       @update:model-value="onUpdate"
@@ -61,6 +78,6 @@ const onUpdate = (value: boolean | 'indeterminate' | 'Y' | 'N') => {
         </svg>
       </CheckboxIndicator>
     </CheckboxRoot>
-    <span v-if="label" class="text-gray-900">{{ label }}</span>
+    <span v-if="label" class="-ml-0.5 text-gray-900">{{ label }}</span>
   </label>
 </template>

@@ -9,7 +9,8 @@ const meta: Meta<typeof YearPicker> = {
   component: YearPicker,
   tags: ['autodocs'],
   argTypes: {
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
+    readonly: { control: 'boolean' }
   },
   decorators: [() => ({ template: '<div style="min-height: 280px"><story /></div>' })]
 }
@@ -25,6 +26,10 @@ export const Default: Story = {
 
 export const Disabled: Story = {
   args: { modelValue: thisYear, disabled: true }
+}
+
+export const Readonly: Story = {
+  args: { modelValue: thisYear, readonly: true }
 }
 
 export const Interactive: Story = {

@@ -34,12 +34,16 @@
       margin-right: 4px;
     }
 
-    .rg-header-renderer span > i,
-    .rg-header-group-cell span > i {
-      color: var(--color-hdot);
-      display: block;
-      font-style: normal;
+    .rg-header-renderer,
+    .rg-header-group-cell {
       line-height: 0.8rem;
+
+      span > i {
+        color: var(--color-primary-700);
+        display: block;
+        font-style: normal;
+        line-height: 0.8rem;
+      }
     }
 
     .rg-fixed-column-bar,
@@ -47,9 +51,11 @@
       background-color: #ccc !important;
     }
 
-    .rg-body .rg-table tr td:hover,
-    .rg-fixed-body .rg-table tr td:hover {
-      background: transparent;
+    .rg-body .rg-table tr td,
+    .rg-fixed-body .rg-table tr td {
+      &:hover {
+        background: transparent;
+      }
     }
 
     .rg-header-focus,

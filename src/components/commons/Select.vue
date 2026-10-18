@@ -63,96 +63,101 @@ const onUpdate = (v: string) => {
 </script>
 
 <template>
-  <label
-    ref="root"
-    class="field field-select relative shrink"
-    :class="{ 'cursor-not-allowed': disabled, required }"
-    :data-name="label"
-    :data-selected="modelValue"
-  >
-    <i v-if="label" :style="labelSize && { width: labelSize }">
-      {{ label }}
-    </i>
-
-    <SelectRoot
-      :model-value="modelValue !== undefined ? toInternal(String(modelValue)) : undefined"
-      :disabled="disabled"
-      @update:model-value="onUpdate"
+  <div class="field-wrapper flex w-fit">
+    <label
+      ref="root"
+      class="field field-select relative flex items-center gap-1.5"
+      :class="{ 'cursor-not-allowed': disabled, required }"
+      :data-name="label"
+      :data-selected="modelValue"
     >
-      <SelectTrigger
-        :class="[
-          'h-control-md inline-flex items-center justify-between gap-2 rounded-md border border-gray-300 bg-white pr-1.5 pl-3 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50',
-          required ? 'bg-[#fff9f0]!' : '',
-          selectedLabel ? 'text-gray-900' : 'text-gray-400',
-          $props.class
-        ]"
+      <i
+        v-if="label"
+        :style="labelSize && { width: labelSize }"
+        class="w-(--label-w) shrink-0 text-right text-sm leading-3 font-bold not-italic in-[.required]:before:mr-0.5 in-[.required]:before:text-red-500 in-[.required]:before:content-['*']"
       >
-        <SelectValue class="mr-3 whitespace-nowrap">{{ selectedLabel }}</SelectValue>
-        <icon-arrow-down />
-      </SelectTrigger>
-      <SelectPortal>
-        <SelectContent
-          position="popper"
-          :side-offset="4"
-          class="z-50 w-(--reka-select-trigger-width) min-w-max rounded-md border border-gray-200 bg-white shadow-lg"
+        {{ label }}
+      </i>
+      <SelectRoot
+        :model-value="modelValue !== undefined ? toInternal(String(modelValue)) : undefined"
+        :disabled="disabled"
+        @update:model-value="onUpdate"
+      >
+        <SelectTrigger
+          :class="[
+            'h-control-md inline-flex items-center justify-between gap-2 rounded-md border border-gray-300 bg-white pr-1 pl-2 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50',
+            required ? 'bg-[#fff9f0]!' : '',
+            selectedLabel ? 'text-gray-900' : 'text-gray-400',
+            $props.class
+          ]"
         >
-          <SelectScrollUpButton class="flex items-center justify-center py-1 text-gray-500">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="m18 15-6-6-6 6" />
-            </svg>
-          </SelectScrollUpButton>
-          <SelectViewport class="max-h-60 overflow-y-auto p-1">
-            <SelectItem
-              v-for="option in options"
-              :key="option.value"
-              :value="toInternal(option.value as string)"
-              :disabled="option.disabled"
-              class="relative flex cursor-pointer items-center rounded-sm px-3 py-1 pr-8 whitespace-nowrap outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-[state=checked]:font-medium"
-            >
-              <SelectItemText>{{ option.label || '&nbsp;' }}</SelectItemText>
-              <SelectItemIndicator class="absolute right-3 flex items-center">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="m20 6-11 11-5-5" />
-                </svg>
-              </SelectItemIndicator>
-            </SelectItem>
-          </SelectViewport>
-          <SelectScrollDownButton class="flex items-center justify-center py-1 text-gray-500">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </SelectScrollDownButton>
-        </SelectContent>
-      </SelectPortal>
-    </SelectRoot>
+          <SelectValue class="mr-2 overflow-hidden text-ellipsis whitespace-nowrap">{{ selectedLabel }}</SelectValue>
+          <icon-arrow-down />
+        </SelectTrigger>
+        <SelectPortal>
+          <SelectContent
+            position="popper"
+            :side-offset="4"
+            class="z-50 w-(--reka-select-trigger-width) min-w-max rounded-md border border-gray-200 bg-white shadow-lg"
+          >
+            <SelectScrollUpButton class="flex items-center justify-center py-1 text-gray-500">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m18 15-6-6-6 6" />
+              </svg>
+            </SelectScrollUpButton>
+            <SelectViewport class="max-h-60 overflow-y-auto p-1">
+              <SelectItem
+                v-for="option in options"
+                :key="option.value"
+                :value="toInternal(option.value as string)"
+                :disabled="option.disabled"
+                class="relative flex cursor-pointer items-center rounded-sm px-2 py-1 pr-8 whitespace-nowrap outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700 data-[state=checked]:font-medium"
+              >
+                <SelectItemText>{{ option.label || '&nbsp;' }}</SelectItemText>
+                <SelectItemIndicator class="absolute right-3 flex items-center">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m20 6-11 11-5-5" />
+                  </svg>
+                </SelectItemIndicator>
+              </SelectItem>
+            </SelectViewport>
+            <SelectScrollDownButton class="flex items-center justify-center py-1 text-gray-500">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </SelectScrollDownButton>
+          </SelectContent>
+        </SelectPortal>
+      </SelectRoot>
+    </label>
 
     <slot />
-  </label>
+  </div>
 </template>

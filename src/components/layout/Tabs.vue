@@ -47,6 +47,8 @@ const emit = defineEmits<{
           >{{ tab.count }}</span
         >
       </TabsTrigger>
+
+      <slot name="TAB_SIDE" />
     </TabsList>
     <TabsContent
       v-for="tab in tabs"

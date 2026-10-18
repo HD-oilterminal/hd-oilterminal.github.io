@@ -23,18 +23,18 @@ defineExpose({ focus: () => el.value?.focus() })
     ref="el"
     :disabled="disabled"
     :class="[
-      'btn inline-flex items-center justify-center rounded font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-50',
+      'btn inline-flex items-center justify-center rounded font-medium whitespace-nowrap transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-visible:ring-2 focus-visible:outline-none disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-50',
       {
         sm: 'h-control-sm px-2',
         md: 'h-control-md px-3',
         lg: 'h-12 px-4 text-base'
       }[size ?? 'md'],
       {
-        primary: 'bg-blue-600 text-white hover:bg-blue-700',
+        primary: 'bg-primary-500 hover:bg-primary-600 text-white',
         secondary: 'border border-gray-500 bg-white text-gray-900 hover:bg-gray-200',
         norm: 'border border-gray-300 bg-white text-gray-500 hover:text-black',
         liner: 'border border-gray-300 bg-white/30 text-gray-500 hover:bg-gray-100',
-        ghost: 'bg-primary-500 hover:bg-primary-700 text-white',
+        ghost: 'bg-primary-400 hover:bg-primary-500 text-white',
         united: 'absolute right-0 px-2! text-gray-700 hover:bg-gray-200/70',
         none: 'px-0!'
       }[variant ?? 'primary'],
@@ -43,6 +43,6 @@ defineExpose({ focus: () => el.value?.focus() })
     :type="type ?? 'button'"
     @click="$emit('click', $event)"
   >
-    {{ label }}<Icon v-if="icon" :name="icon" :size="iconSize" class="-ml-1.5" /><slot />
+    {{ label }}<Icon v-if="icon" :name="icon" :size="iconSize" :class="{ 'non-label': !label }" /><slot />
   </button>
 </template>

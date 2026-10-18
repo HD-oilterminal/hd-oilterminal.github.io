@@ -9,7 +9,8 @@ const meta: Meta<typeof MonthPicker> = {
   component: MonthPicker,
   tags: ['autodocs'],
   argTypes: {
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
+    readonly: { control: 'boolean' }
   },
   decorators: [() => ({ template: '<div style="min-height: 300px"><story /></div>' })]
 }
@@ -25,6 +26,10 @@ export const Default: Story = {
 
 export const Disabled: Story = {
   args: { modelValue: thisMonth, disabled: true }
+}
+
+export const Readonly: Story = {
+  args: { modelValue: thisMonth, readonly: true }
 }
 
 export const Interactive: Story = {

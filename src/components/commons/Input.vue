@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { computed, getCurrentInstance, onMounted, watch } from 'vue'
+
+import Icon from '../../components/commons/Icon.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -10,9 +12,12 @@ const props = withDefaults(
     placeholder?: string
     prefix?: string
     suffix?: string
+    icon?: string
     required?: boolean
     disabled?: boolean
     readonly?: boolean
+    class?: string
+    linking?: boolean
   }>(),
   {
     modelValue: '',
@@ -21,13 +26,21 @@ const props = withDefaults(
     label: '',
     placeholder: '',
     prefix: '',
-    suffix: ''
+    suffix: '',
+    icon: undefined,
+    class: ''
   }
 )
 
+defineOptions({ inheritAttrs: false })
+
 const emit = defineEmits<{
   'update:modelValue': [value?: string | number]
+  iconClick: []
 }>()
+
+const instance = getCurrentInstance()
+const hasIconClick = computed(() => !!instance?.vnode.props?.onIconClick)
 
 const input = ref<HTMLInputElement>()
 const isNumber = computed(() => props.type === 'number')
@@ -203,70 +216,125 @@ watch(
   }
 )
 
+const iconAction = (e: Event) => {
+  if (e instanceof MouseEvent || (e instanceof KeyboardEvent && (e.key === 'Enter' || e.key === 'F2'))) {
+    if (props.linking) popupLinking(e)
+    emit('iconClick')
+  }
+}
+
+const popupLinking = (e: Event) => {
+  let input
+
+  if (e instanceof MouseEvent) {
+    input = (e.target as HTMLElement)?.parentElement?.querySelector('input')
+  } else {
+    input = e.target
+  }
+
+  if (input) {
+    e.preventDefault()
+    e.stopPropagation()
+    document.documentElement.dataset.popupKeyword = (input as HTMLInputElement).value
+    setTimeout(() => delete document.documentElement.dataset.popupKeyword, 5000)
+  }
+}
+
+onMounted(() => {
+  input.value?.addEventListener('keyup', iconAction)
+})
+
+onUnmounted(() => {
+  input.value?.removeEventListener('keyup', iconAction)
+})
+
 defineExpose({ input })
 </script>
 
 <template>
-  <label class="field field-input relative shrink" :class="{ 'cursor-not-allowed': disabled, required }" :data-name="label">
-    <i v-if="label" :style="labelSize && { width: labelSize }">
-      {{ label }}
-    </i>
-    <span
-      class="h-control-md flex max-w-50 min-w-20 flex-1 shrink items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 focus-within:ring-2 focus-within:ring-blue-500 in-[.layer-popup]:max-w-full"
-      :class="[disabled ? 'bg-gray-200! opacity-50' : '', required ? 'bg-[#fff9f0]!' : '', prefix ? 'gap-0!' : '']"
+  <div class="field-wrapper flex w-fit">
+    <label
+      class="field field-input relative flex w-full items-center gap-1.5"
+      :class="{ 'cursor-not-allowed': disabled || required, required, linking }"
+      :data-name="label"
     >
-      <span v-if="prefix" class="shrink-0 text-gray-600">{{ prefix }}</span>
-      <input
-        v-if="!isNumber && !isTel"
-        ref="input"
-        :type="type"
-        :placeholder="placeholder"
-        :disabled="disabled"
-        :readonly="readonly"
-        :value="modelValue as string"
-        class="min-w-0 flex-1 bg-transparent outline-none disabled:cursor-not-allowed disabled:text-gray-800"
-        @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-      />
-      <input
-        v-else-if="isTel"
-        ref="input"
-        type="text"
-        inputmode="tel"
-        :placeholder="placeholder"
-        :disabled="disabled"
-        :readonly="readonly"
-        class="min-w-0 flex-1 bg-transparent font-mono tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800"
-        @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
-        @copy="
-          (e: ClipboardEvent) => {
-            const t = e.target as HTMLInputElement
-            const sel = t.value.slice(t.selectionStart ?? 0, t.selectionEnd ?? t.value.length)
-            e.clipboardData?.setData('text/plain', sel.replace(/\D/g, ''))
-            e.preventDefault()
-          }
-        "
-      />
-      <input
-        v-else
-        ref="input"
-        type="text"
-        inputmode="decimal"
-        :placeholder="placeholder"
-        :disabled="disabled"
-        :readonly="readonly"
-        class="min-w-0 flex-1 bg-transparent text-right font-mono tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800"
-        @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
-        @copy="
-          (e: ClipboardEvent) => {
-            const t = e.target as HTMLInputElement
-            const sel = t.value.slice(t.selectionStart ?? 0, t.selectionEnd ?? t.value.length)
-            e.clipboardData?.setData('text/plain', sel.replace(/,/g, ''))
-            e.preventDefault()
-          }
-        "
-      />
-      <span v-if="suffix" class="shrink-0 text-gray-500" v-html="suffix"></span>
-    </span>
+      <i
+        v-if="label"
+        :style="labelSize && { width: labelSize }"
+        class="w-(--label-w) shrink-0 text-right text-sm leading-3 font-bold not-italic in-[.required]:before:mr-0.5 in-[.required]:before:text-red-500 in-[.required]:before:content-['*']"
+      >
+        {{ label }}
+      </i>
+      <span
+        class="flex h-[24px] shrink grow items-center rounded-md border border-gray-300 bg-white px-2 ring-blue-500 focus-within:ring-2 in-[.layer-popup]:max-w-full"
+        :class="[
+          disabled || readonly ? 'cursor-not-allowed bg-gray-200! opacity-75' : '',
+          required ? 'bg-[#fff9f0]!' : '',
+          prefix ? 'gap-0!' : '',
+          $props.class
+        ]"
+      >
+        <span v-if="prefix" class="shrink-0 text-sm font-bold text-gray-400">{{ prefix }}</span>
+        <input
+          v-if="!isNumber && !isTel"
+          v-bind="$attrs"
+          ref="input"
+          :type="type"
+          :placeholder="placeholder"
+          :disabled="disabled || readonly"
+          :value="modelValue as string"
+          class="w-full shrink grow bg-transparent outline-none disabled:cursor-not-allowed disabled:text-gray-800"
+          @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+        />
+        <input
+          v-else-if="isTel"
+          v-bind="$attrs"
+          ref="input"
+          type="text"
+          inputmode="tel"
+          :placeholder="placeholder"
+          :disabled="disabled || readonly"
+          class="w-full shrink grow bg-transparent tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800"
+          @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
+          @copy="
+            (e: ClipboardEvent) => {
+              const t = e.target as HTMLInputElement
+              const sel = t.value.slice(t.selectionStart ?? 0, t.selectionEnd ?? t.value.length)
+              e.clipboardData?.setData('text/plain', sel.replace(/\D/g, ''))
+              e.preventDefault()
+            }
+          "
+        />
+        <input
+          v-else
+          v-bind="$attrs"
+          ref="input"
+          type="text"
+          inputmode="decimal"
+          :placeholder="placeholder"
+          :disabled="disabled || readonly"
+          class="w-full shrink grow bg-transparent px-0.5 text-right tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800"
+          @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
+          @copy="
+            (e: ClipboardEvent) => {
+              const t = e.target as HTMLInputElement
+              const sel = t.value.slice(t.selectionStart ?? 0, t.selectionEnd ?? t.value.length)
+              e.clipboardData?.setData('text/plain', sel.replace(/,/g, ''))
+              e.preventDefault()
+            }
+          "
+        />
+        <span v-if="suffix" class="shrink-0 text-sm font-bold text-gray-400" v-html="suffix"></span>
+        <icon
+          v-if="icon && !disabled"
+          :name="icon"
+          class="-mr-1 rounded-full"
+          :class="{ 'cursor-pointer hover:bg-gray-200': hasIconClick }"
+          @click="(e: MouseEvent) => !disabled && iconAction(e)"
+        />
+      </span>
+    </label>
+
     <slot />
-  </label>
+  </div>
 </template>

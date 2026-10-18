@@ -30,6 +30,7 @@ const props = withDefaults(
     label?: string
     labelSize?: string
     disabled?: boolean
+    readonly?: boolean
     required?: boolean
     noButton?: boolean
   }>(),
@@ -60,7 +61,6 @@ const prev = ref()
 const next = ref()
 const jump = ref('monthly')
 
-// 연·월·일 세그먼트 입력 한 묶음(시작/종료 각각 하나씩). DatePicker.vue 의 입력 로직과 동일
 function useSegments(key: 'start' | 'end', initial: string) {
   const yearStr = ref('')
   const monthStr = ref('')
@@ -289,6 +289,19 @@ const syncFromProps = (key: 'start' | 'end', seg: ReturnType<typeof useSegments>
 
 watch(() => props.start, syncFromProps('start', startSeg))
 watch(() => props.end, syncFromProps('end', endSeg))
+watch(
+  isOpen,
+  (() => {
+    let openedWith = ''
+    return (open, was) => {
+      const current = `${props.start}|${props.end}`
+      if (open) openedWith = current
+      else if (was && current !== openedWith) {
+        startSeg.yearInput.value?.closest<HTMLFormElement>('form.search')?.requestSubmit()
+      }
+    }
+  })()
+)
 
 // 헤더 연/월 select: placeholder 기준(미입력 시 오늘)으로 표시, 선택 시 해당 월로 이동
 const headDate = computed(() => placeholder.value ?? today(getLocalTimeZone()))
@@ -327,6 +340,10 @@ const onClick = (e: MouseEvent) => {
   if (!(e.target as HTMLElement).closest('input,button,select')) e.preventDefault()
 }
 
+const toggleOpen = () => {
+  startSeg.yearInput.value?.focus()
+  isOpen.value = !isOpen.value
+}
 const onKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape' || e.key === 'Enter') {
     isOpen.value = false
@@ -351,260 +368,266 @@ const onKeydown = (e: KeyboardEvent) => {
 </script>
 
 <template>
-  <label class="field relative shrink" :class="{ 'cursor-not-allowed': disabled, required }" :data-name="label">
-    <i v-if="label" :style="labelSize && { width: labelSize }">
-      {{ label }}
-    </i>
-    <div class="relative inline-block" @click="onClick" @focusout="onFocusOut" @keydown="onKeydown">
-      <DateRangePickerRoot
-        v-model:placeholder="placeholder as DateValue"
-        :model-value="calendarValue"
-        :disabled="disabled"
-        :locale="locale"
-        :number-of-months="2"
-        @update:model-value="onUpdate"
+  <div class="field-wrapper flex w-fit">
+    <label
+      class="field field-daterange relative flex w-full items-center gap-1.5"
+      :class="{ 'cursor-not-allowed': disabled || readonly, required }"
+      :data-name="label"
+    >
+      <i
+        v-if="label"
+        :style="labelSize && { width: labelSize }"
+        class="w-(--label-w) shrink-0 text-right text-sm leading-3 font-bold not-italic in-[.required]:before:mr-0.5 in-[.required]:before:text-red-500 in-[.required]:before:content-['*']"
       >
-        <div class="inline-flex items-center gap-1">
-          <button
-            v-if="!noButton"
-            type="button"
-            tabindex="-1"
-            :disabled="disabled"
-            class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
-            @click="shiftValue(-1)"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+        {{ label }}
+      </i>
+      <span class="relative inline-block" @click="onClick" @focusout="onFocusOut" @keydown="onKeydown">
+        <DateRangePickerRoot
+          v-model:placeholder="placeholder as DateValue"
+          :model-value="calendarValue"
+          :disabled="disabled || readonly"
+          :locale="locale"
+          :number-of-months="2"
+          @update:model-value="onUpdate"
+        >
+          <div class="inline-flex items-center gap-1">
+            <button
+              v-if="!noButton"
+              type="button"
+              tabindex="-1"
+              :disabled="disabled || readonly"
+              class="inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+              @click="shiftValue(-1)"
             >
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-          </button>
-          <div
-            class="h-control-md inline-flex items-center rounded-md border border-gray-300 bg-white px-2 focus-within:ring-2 focus-within:ring-blue-500"
-            :class="[
-              disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 opacity-50' : '',
-              required ? 'bg-[#fff9f0]!' : ''
-            ]"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              color="#ccc"
-              :class="disabled ? 'cursor-not-allowed' : 'cursor-pointer'"
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <div
+              class="h-control-md inline-flex items-center rounded-md border border-gray-300 bg-white px-2 focus-within:ring-2 focus-within:ring-blue-500"
+              :class="[
+                disabled || readonly ? 'cursor-not-allowed bg-gray-200! opacity-75' : '',
+                required ? 'bg-[#fff9f0]!' : ''
+              ]"
             >
-              <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-              <line x1="16" x2="16" y1="2" y2="6" />
-              <line x1="8" x2="8" y1="2" y2="6" />
-              <line x1="3" x2="21" y1="10" y2="10" />
-            </svg>
-            <input
-              :ref="startSeg.yearInput"
-              type="text"
-              inputmode="numeric"
-              data-type="date"
-              :disabled="disabled"
-              class="w-11 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
-              @focusin="isOpen = true"
-            />
-            <span class="-mx-1.5 text-gray-500 select-none">-</span>
-            <input
-              :ref="startSeg.monthInput"
-              type="text"
-              inputmode="numeric"
-              data-type="date"
-              :disabled="disabled"
-              class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
-              @focusin="isOpen = true"
-            />
-            <span class="-mx-1.5 text-gray-500 select-none">-</span>
-            <input
-              :ref="startSeg.dayInput"
-              type="text"
-              inputmode="numeric"
-              data-type="date"
-              :disabled="disabled"
-              class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
-              @focusin="isOpen = true"
-            />
-            <span class="px-1 text-gray-500 select-none">~</span>
-            <input
-              :ref="endSeg.yearInput"
-              type="text"
-              inputmode="numeric"
-              data-type="date"
-              :disabled="disabled"
-              class="w-11 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
-              @focusin="isOpen = true"
-            />
-            <span class="-mx-1.5 text-gray-500 select-none">-</span>
-            <input
-              :ref="endSeg.monthInput"
-              type="text"
-              inputmode="numeric"
-              data-type="date"
-              :disabled="disabled"
-              class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
-              @focusin="isOpen = true"
-            />
-            <span class="-mx-1.5 text-gray-500 select-none">-</span>
-            <input
-              :ref="endSeg.dayInput"
-              type="text"
-              inputmode="numeric"
-              data-type="date"
-              :disabled="disabled"
-              class="w-7 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
-              @focusin="isOpen = true"
-            />
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                color="#ccc"
+                :class="disabled || readonly ? 'cursor-not-allowed' : 'cursor-pointer'"
+                @mousedown.prevent
+                @click="!disabled && !readonly && toggleOpen()"
+              >
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                <line x1="16" x2="16" y1="2" y2="6" />
+                <line x1="8" x2="8" y1="2" y2="6" />
+                <line x1="3" x2="21" y1="10" y2="10" />
+              </svg>
+              <input
+                :ref="startSeg.yearInput"
+                type="text"
+                inputmode="numeric"
+                data-type="date"
+                :disabled="disabled && readonly"
+                class="w-12 rounded text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
+              />
+              <span class="-mx-1.5 text-gray-500 select-none">-</span>
+              <input
+                :ref="startSeg.monthInput"
+                type="text"
+                inputmode="numeric"
+                data-type="date"
+                :disabled="disabled || readonly"
+                class="w-7 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
+              />
+              <span class="-mx-1.5 text-gray-500 select-none">-</span>
+              <input
+                :ref="startSeg.dayInput"
+                type="text"
+                inputmode="numeric"
+                data-type="date"
+                :disabled="disabled || readonly"
+                class="w-7 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
+              />
+              <span class="px-1 text-gray-500 select-none">~</span>
+              <input
+                :ref="endSeg.yearInput"
+                type="text"
+                inputmode="numeric"
+                data-type="date"
+                :disabled="disabled || readonly"
+                class="w-12 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
+              />
+              <span class="-mx-1.5 text-gray-500 select-none">-</span>
+              <input
+                :ref="endSeg.monthInput"
+                type="text"
+                inputmode="numeric"
+                data-type="date"
+                :disabled="disabled || readonly"
+                class="w-7 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
+              />
+              <span class="-mx-1.5 text-gray-500 select-none">-</span>
+              <input
+                :ref="endSeg.dayInput"
+                type="text"
+                inputmode="numeric"
+                data-type="date"
+                :disabled="disabled || readonly"
+                class="w-7 text-center tabular-nums outline-none disabled:cursor-not-allowed disabled:opacity-40"
+              />
+            </div>
+            <button
+              v-if="!noButton"
+              type="button"
+              tabindex="-1"
+              :disabled="disabled || readonly"
+              class="inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+              @click="shiftValue(1)"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+
+            <Radio v-if="!noButton" v-model="jump" :disabled="disabled || readonly" :items="JUMP_OPTIONS" />
           </div>
-          <button
-            v-if="!noButton"
-            type="button"
-            tabindex="-1"
-            :disabled="disabled"
-            class="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
-            @click="shiftValue(1)"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+
+          <div v-if="isOpen" class="absolute top-full left-0 z-50 rounded-md border border-gray-200 bg-white shadow-lg">
+            <DateRangePickerCalendar
+              v-slot="{ grid, weekDays }"
+              class="p-1 select-none"
+              @pointerdown="onPointerDown"
+              @pointerup="onPointerUp"
+              @pointercancel="onPointerCancel"
+              @click.capture="onClickCapture"
+              @wheel.prevent="onWheel"
             >
-              <path d="m9 18 6-6-6-6" />
-            </svg>
-          </button>
-
-          <Radio v-if="!noButton" v-model="jump" :items="JUMP_OPTIONS" />
-        </div>
-
-        <div v-if="isOpen" class="absolute top-full left-0 z-50 rounded-md border border-gray-200 bg-white shadow-lg">
-          <DateRangePickerCalendar
-            v-slot="{ grid, weekDays }"
-            class="p-1 select-none"
-            @pointerdown="onPointerDown"
-            @pointerup="onPointerUp"
-            @pointercancel="onPointerCancel"
-            @click.capture="onClickCapture"
-            @wheel.prevent="onWheel"
-          >
-            <DateRangePickerHeader class="mb-1 flex items-center justify-between">
-              <DateRangePickerPrev
-                ref="prev"
-                tabindex="-1"
-                class="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-40"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="m15 18-6-6 6-6" />
-                </svg>
-              </DateRangePickerPrev>
-              <div class="flex items-center gap-1 font-semibold text-gray-900" @wheel.stop>
-                <select
-                  :value="headDate.year"
+              <DateRangePickerHeader class="mb-1 flex items-center justify-between">
+                <DateRangePickerPrev
+                  ref="prev"
                   tabindex="-1"
-                  class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
-                  @change="onYearChange"
+                  class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-40"
                 >
-                  <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-                </select>
-                <select
-                  :value="headDate.month"
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
+                </DateRangePickerPrev>
+                <div class="flex items-center gap-1 font-semibold text-gray-900" @wheel.stop>
+                  <select
+                    :value="headDate.year"
+                    tabindex="-1"
+                    class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
+                    @change="onYearChange"
+                  >
+                    <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+                  </select>
+                  <select
+                    :value="headDate.month"
+                    tabindex="-1"
+                    class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
+                    @change="onMonthChange"
+                  >
+                    <option v-for="m in 12" :key="m" :value="m">{{ String(m).padStart(2, '0') }}</option>
+                  </select>
+                </div>
+                <DateRangePickerNext
+                  ref="next"
                   tabindex="-1"
-                  class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
-                  @change="onMonthChange"
+                  class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-40"
                 >
-                  <option v-for="m in 12" :key="m" :value="m">{{ String(m).padStart(2, '0') }}</option>
-                </select>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </DateRangePickerNext>
+              </DateRangePickerHeader>
+
+              <div class="relative z-1000 flex gap-3 text-sm">
+                <DateRangePickerGrid v-for="month in grid" :key="month.value.toString()">
+                  <DateRangePickerGridHead>
+                    <DateRangePickerGridRow class="flex">
+                      <DateRangePickerHeadCell
+                        v-for="day in weekDays"
+                        :key="day"
+                        class="w-6 text-center font-medium text-gray-400"
+                      >
+                        {{ day }}
+                      </DateRangePickerHeadCell>
+                    </DateRangePickerGridRow>
+                  </DateRangePickerGridHead>
+                  <DateRangePickerGridBody class="space-y-px">
+                    <DateRangePickerGridRow v-for="(week, i) in month.rows" :key="i" class="flex">
+                      <DateRangePickerCell v-for="day in week" :key="day.toString()" :date="day" class="p-0">
+                        <DateRangePickerCellTrigger
+                          :day="day"
+                          :month="month.value"
+                          tabindex="-1"
+                          class="inline-flex h-6 w-6 items-center justify-center rounded transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-disabled:pointer-events-none data-disabled:opacity-40 data-highlighted:rounded-none data-highlighted:bg-blue-100 data-outside-view:bg-transparent! data-outside-view:text-gray-300! data-selected:rounded-none data-selected:bg-blue-100 data-selection-end:rounded-r-md data-selection-end:bg-blue-600 data-selection-end:text-white data-selection-start:rounded-l-md data-selection-start:bg-blue-600 data-selection-start:text-white data-today:font-semibold data-today:text-blue-600 data-selection-end:data-today:text-white data-selection-start:data-today:text-white"
+                        />
+                      </DateRangePickerCell>
+                    </DateRangePickerGridRow>
+                  </DateRangePickerGridBody>
+                </DateRangePickerGrid>
               </div>
-              <DateRangePickerNext
-                ref="next"
-                tabindex="-1"
-                class="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-40"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+
+              <div class="flex justify-center border-t border-gray-100">
+                <button
+                  type="button"
+                  tabindex="-1"
+                  class="rounded-md px-3 py-1 font-medium text-blue-600 hover:bg-blue-50"
+                  @click="goToday"
                 >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </DateRangePickerNext>
-            </DateRangePickerHeader>
-
-            <div class="relative z-1000 flex gap-3">
-              <DateRangePickerGrid v-for="month in grid" :key="month.value.toString()">
-                <DateRangePickerGridHead>
-                  <DateRangePickerGridRow class="flex">
-                    <DateRangePickerHeadCell
-                      v-for="day in weekDays"
-                      :key="day"
-                      class="w-7 text-center text-sm font-medium text-gray-400"
-                    >
-                      {{ day }}
-                    </DateRangePickerHeadCell>
-                  </DateRangePickerGridRow>
-                </DateRangePickerGridHead>
-                <DateRangePickerGridBody class="space-y-1">
-                  <DateRangePickerGridRow v-for="(week, i) in month.rows" :key="i" class="flex">
-                    <DateRangePickerCell v-for="day in week" :key="day.toString()" :date="day" class="p-0">
-                      <DateRangePickerCellTrigger
-                        :day="day"
-                        :month="month.value"
-                        tabindex="-1"
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-disabled:pointer-events-none data-disabled:opacity-40 data-highlighted:rounded-none data-highlighted:bg-blue-100 data-outside-view:bg-transparent! data-outside-view:text-gray-300! data-selected:rounded-none data-selected:bg-blue-100 data-selection-end:rounded-r-md data-selection-end:bg-blue-600 data-selection-end:text-white data-selection-start:rounded-l-md data-selection-start:bg-blue-600 data-selection-start:text-white data-today:font-semibold data-today:text-blue-600 data-selection-end:data-today:text-white data-selection-start:data-today:text-white"
-                      />
-                    </DateRangePickerCell>
-                  </DateRangePickerGridRow>
-                </DateRangePickerGridBody>
-              </DateRangePickerGrid>
-            </div>
-
-            <div class="flex justify-center border-t border-gray-100">
-              <button
-                type="button"
-                tabindex="-1"
-                class="rounded-md px-3 py-1 text-sm font-medium text-blue-600 hover:bg-blue-50"
-                @click="goToday"
-              >
-                Today
-              </button>
-            </div>
-          </DateRangePickerCalendar>
-        </div>
-      </DateRangePickerRoot>
-    </div>
-  </label>
+                  Today
+                </button>
+              </div>
+            </DateRangePickerCalendar>
+          </div>
+        </DateRangePickerRoot>
+      </span>
+    </label>
+  </div>
 </template>
 
 <style scoped>

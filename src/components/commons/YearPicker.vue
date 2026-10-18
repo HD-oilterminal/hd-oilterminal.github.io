@@ -9,8 +9,12 @@ const props = withDefaults(
   defineProps<{
     modelValue?: string
     disabled?: boolean
+    readonly?: boolean
+    required?: boolean
+    label?: string
+    labelSize?: string
   }>(),
-  { modelValue: '' }
+  { modelValue: '', label: '', labelSize: '' }
 )
 
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
@@ -113,110 +117,129 @@ const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } =
 
 const years = computed(() => Array.from({ length: 12 }, (_, i) => viewPageStart.value + i))
 
+const toggleOpen = () => {
+  yearInput.value?.focus()
+  isOpen.value = !isOpen.value
+}
 const onKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape' || e.key === 'Enter') isOpen.value = false
 }
 </script>
 
 <template>
-  <div class="relative inline-block" @focusout="onFocusOut" @keydown="onKeydown">
+  <div class="field-wrapper relative inline-block" @focusout="onFocusOut" @keydown="onKeydown">
     <div
-      class="h-control-md inline-flex items-center rounded-md border border-gray-300 px-2 focus-within:ring-2 focus-within:ring-blue-500"
-      :class="disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 opacity-50' : ''"
+      class="field field-input relative flex w-full items-center gap-1.5"
+      :class="{ 'cursor-not-allowed': disabled || readonly, required }"
+      :data-name="label"
     >
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        color="#ccc"
+      <i
+        v-if="label"
+        :style="labelSize && { width: labelSize }"
+        class="w-(--label-w) shrink-0 text-right text-sm leading-3 font-bold not-italic in-[.required]:before:mr-0.5 in-[.required]:before:text-red-500 in-[.required]:before:content-['*']"
       >
-        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-        <line x1="16" x2="16" y1="2" y2="6" />
-        <line x1="8" x2="8" y1="2" y2="6" />
-        <line x1="3" x2="21" y1="10" y2="10" />
-      </svg>
-      <input
-        ref="yearInput"
-        type="text"
-        inputmode="numeric"
-        :disabled="disabled"
-        class="w-10 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
-        @focusin="isOpen = true"
-      />
-    </div>
-
-    <div
-      v-if="isOpen"
-      class="absolute top-full left-0 z-50 mt-1 w-52 rounded-md border border-gray-200 bg-white p-3 shadow-lg select-none"
-      @pointerdown="onPointerDown"
-      @pointerup="onPointerUp"
-      @pointercancel="onPointerCancel"
-      @click.capture="onClickCapture"
-      @wheel.prevent="onWheel"
-    >
-      <div class="mb-3 flex items-center justify-between">
-        <button
-          type="button"
-          tabindex="-1"
-          class="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100"
+        {{ label }}
+      </i>
+      <div
+        class="flex h-[24px] shrink grow items-center rounded-md border border-gray-300 bg-white px-2 ring-blue-500 focus-within:ring-2 in-[.layer-popup]:max-w-full"
+        :class="[disabled || readonly ? 'cursor-not-allowed bg-gray-200! opacity-75' : '', required ? 'bg-[#fff9f0]!' : '']"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          color="#ccc"
+          class="cursor-pointer"
           @mousedown.prevent
-          @click="viewPageStart -= 12"
+          @click="toggleOpen"
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="m15 18-6-6 6-6" />
-          </svg>
-        </button>
-        <span class="font-semibold text-gray-900">{{ viewPageStart }} – {{ viewPageStart + 11 }}</span>
-        <button
-          type="button"
-          tabindex="-1"
-          class="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100"
-          @mousedown.prevent
-          @click="viewPageStart += 12"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="m9 18 6-6-6-6" />
-          </svg>
-        </button>
+          <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+          <line x1="16" x2="16" y1="2" y2="6" />
+          <line x1="8" x2="8" y1="2" y2="6" />
+          <line x1="3" x2="21" y1="10" y2="10" />
+        </svg>
+        <input
+          ref="yearInput"
+          type="text"
+          inputmode="numeric"
+          :disabled="disabled || readonly"
+          class="w-10 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
+        />
       </div>
-      <div class="grid grid-cols-3 gap-1">
-        <button
-          v-for="year in years"
-          :key="year"
-          type="button"
-          tabindex="-1"
-          :class="[
-            'rounded px-1 py-1.5 transition-colors',
-            internalValue?.year === year ? 'bg-blue-600 text-white hover:bg-blue-700' : 'hover:bg-gray-100'
-          ]"
-          @mousedown.prevent
-          @click="selectYear(year)"
-        >
-          {{ year }}
-        </button>
+
+      <div
+        v-if="isOpen"
+        class="absolute top-full left-0 z-50 mt-1 w-52 rounded-md border border-gray-200 bg-white p-3 shadow-lg select-none"
+        @pointerdown="onPointerDown"
+        @pointerup="onPointerUp"
+        @pointercancel="onPointerCancel"
+        @click.capture="onClickCapture"
+        @wheel.prevent="onWheel"
+      >
+        <div class="mb-3 flex items-center justify-between">
+          <button
+            type="button"
+            tabindex="-1"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100"
+            @mousedown.prevent
+            @click="viewPageStart -= 12"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <span class="font-semibold text-gray-900">{{ viewPageStart }} – {{ viewPageStart + 11 }}</span>
+          <button
+            type="button"
+            tabindex="-1"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100"
+            @mousedown.prevent
+            @click="viewPageStart += 12"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+        <div class="grid grid-cols-3 gap-1">
+          <button
+            v-for="year in years"
+            :key="year"
+            type="button"
+            tabindex="-1"
+            :class="[
+              'rounded px-1 py-1.5 transition-colors',
+              internalValue?.year === year ? 'bg-blue-600 text-white hover:bg-blue-700' : 'hover:bg-gray-100'
+            ]"
+            @mousedown.prevent
+            @click="selectYear(year)"
+          >
+            {{ year }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
