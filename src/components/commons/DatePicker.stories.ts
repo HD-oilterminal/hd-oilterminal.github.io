@@ -9,7 +9,8 @@ const meta: Meta<typeof DatePicker> = {
   component: DatePicker,
   tags: ['autodocs'],
   argTypes: {
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
+    readonly: { control: 'boolean' }
   },
   decorators: [() => ({ template: '<div style="min-height: 350px"><story /></div>' })]
 }
@@ -25,6 +26,30 @@ export const Default: Story = {
 
 export const Disabled: Story = {
   args: { modelValue: today, disabled: true }
+}
+
+export const Readonly: Story = {
+  args: { modelValue: today, readonly: true }
+}
+
+export const WithLabel: Story = {
+  name: '라벨',
+  parameters: {
+    docs: { source: { code: `<DatePicker v-model="date" label="입항일" />` } }
+  },
+  render: () => ({
+    components: { DatePicker },
+    setup() {
+      const date = ref<string>(today)
+      return { date }
+    },
+    template: `
+      <div class="space-y-4 p-4">
+        <DatePicker v-model="date" label="입항일" />
+        <DatePicker v-model="date" label="입항일" required />
+      </div>
+    `
+  })
 }
 
 export const Interactive: Story = {

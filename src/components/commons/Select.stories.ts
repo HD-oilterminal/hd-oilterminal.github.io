@@ -20,7 +20,7 @@ export default meta
 type Story = StoryObj<typeof Select>
 
 export const Default: Story = {
-  args: { options, placeholder: '선택하세요' }
+  args: { options }
 }
 
 export const WithValue: Story = {
@@ -28,12 +28,12 @@ export const WithValue: Story = {
 }
 
 export const Disabled: Story = {
-  args: { options, disabled: true, placeholder: '비활성화' }
+  args: { options, disabled: true }
 }
 
-export const Interactive: Story = {
+export const Required: Story = {
   parameters: {
-    docs: { source: { code: `<Select v-model="value" :options="options" placeholder="선택하세요" />` } }
+    docs: { source: { code: `<Select v-model="value" :options="options" required />` } }
   },
   render: () => ({
     components: { Select },
@@ -43,7 +43,66 @@ export const Interactive: Story = {
     },
     template: `
       <div class="space-y-2 w-48">
-        <Select v-model="value" :options="options" placeholder="선택하세요" />
+        <Select v-model="value" :options="options" label="대상" required />
+        <p class="text-gray-500">선택: {{ value || '없음' }}</p>
+      </div>
+    `
+  })
+}
+
+export const Interactive: Story = {
+  parameters: {
+    docs: { source: { code: `<Select v-model="value" :options="options" />` } }
+  },
+  render: () => ({
+    components: { Select },
+    setup() {
+      const value = ref<string | undefined>(undefined)
+      return { value, options }
+    },
+    template: `
+      <div class="space-y-2 w-48">
+        <Select v-model="value" :options="options" label="대상" />
+        <p class="text-gray-500">선택: {{ value || '없음' }}</p>
+      </div>
+    `
+  })
+}
+
+const longOptions = [
+  {
+    label:
+      '울산1: 2026-10-17 09:00 입항 예정, 화물 HSFO 380 / 적하 12,000 MT, 선적 대기 중, 하역사 담당자 사전 협의 필요, 선석 점유 예상 시간 18시간 이상, 세관 검사 대상 여부 확인 요망',
+    value: 'long1'
+  },
+  {
+    label:
+      '울산2: 2026-10-18 14:30 접안 예정, 화물 MGO / 양하 8,500 MT, 탱크 TK-204 배정, 품질 검사 샘플링 완료 후 하역 개시, 야간 작업 승인 필요, 기상 악화 시 일정 변동 가능',
+    value: 'long2'
+  },
+  {
+    label:
+      '평택: 2026-10-19 06:00 이안 예정, 화물 LSFO 0.5% / 적하 15,200 MT, 선적 완료 후 검량 서류 제출 대기, 도선사 배정 확인 요망, 예인선 2척 사전 수배 완료, 출항 전 안전 점검 필수',
+    value: 'long3',
+    disabled: true
+  }
+]
+
+export const LongOptions: Story = {
+  name: '긴 옵션 텍스트',
+  parameters: {
+    docs: { source: { code: `<Select v-model="value" :options="longOptions" label="선석" />` } }
+  },
+  render: () => ({
+    components: { Select },
+    setup() {
+      const value = ref<string | undefined>(undefined)
+      return { value, longOptions }
+    },
+    template: `
+      <div class="space-y-2 w-80">
+        <p class="text-xs text-gray-400">옵션 라벨이 길 경우 선택 영역과 드롭다운의 말줄임/줄바꿈 처리 확인</p>
+        <Select v-model="value" :options="longOptions" label="선석" class="w-150" />
         <p class="text-gray-500">선택: {{ value || '없음' }}</p>
       </div>
     `

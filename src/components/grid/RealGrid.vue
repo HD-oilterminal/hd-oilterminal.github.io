@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ClickData, RowObject } from 'realgrid'
 import { GridBase, GridView, LocalDataProvider } from 'realgrid'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, onUpdated, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useRealGrid } from '../../composables/useRealGrid'
@@ -63,7 +63,7 @@ watch(
   }
 )
 
-onMounted(() => {
+const mount = () => {
   ;({ grid: core, provider: data } = gridish(props.title, container.value, {
     ...props,
     columns: resolveColumns(props.columns)
@@ -116,14 +116,26 @@ onMounted(() => {
       core.setFixedOptions({ colCount: 0 })
     }
   }
-})
+}
 
-onBeforeUnmount(() => {
+const unmount = () => {
   if (props.id) delete globalThis.G?.[props.id]
 
   data?.clearRows()
   core?.destroy()
-})
+}
+
+onMounted(mount)
+onBeforeUnmount(unmount)
+
+if (import.meta.hot) {
+  const instance = getCurrentInstance()
+  let pending = false
+  const onHot = () => ((pending = true), instance?.proxy?.$forceUpdate())
+  onUpdated(() => pending && ((pending = false), unmount(), mount()))
+  import.meta.hot.on('vite:afterUpdate', onHot)
+  onBeforeUnmount(() => import.meta.hot?.off('vite:afterUpdate', onHot))
+}
 
 defineExpose({
   get core() {

@@ -22,6 +22,14 @@ export interface Code {
   name: string
   english?: string
   order?: number
+  ref1?: string
+  ref2?: string
+  ref3?: string
+  ref4?: string
+  ref5?: string
+  ref6?: string
+  ref7?: string
+  ref8?: string
 }
 
 export type Codes = Record<string, Code[]>
@@ -142,6 +150,11 @@ export interface Column {
    * @return {number} - 값 만큼 셀 병합
    */
   spanning?: (index: number, grid: GridBase, item: CellLayoutColumnItem) => number
+
+  /**
+   * "Y", "N" 선택옵션
+   */
+  yesOrNo?: boolean
 }
 
 export interface ColumnGroup {

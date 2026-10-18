@@ -70,6 +70,29 @@ export const WithPrefixSuffix: Story = {
   })
 }
 
+export const WithIcon: Story = {
+  name: '아이콘',
+  parameters: {
+    docs: {
+      source: { code: `<Input v-model="value" label="검색" icon="search" placeholder="검색어 입력" />` }
+    }
+  },
+  render: () => ({
+    components: { Input },
+    setup() {
+      const value = ref('')
+      return { value }
+    },
+    template: `
+      <div class="space-y-2">
+        <p class="text-xs text-gray-400">입력 영역 끝에 Material Symbols 아이콘 표시</p>
+        <Input v-model="value" label="검색" icon="search" :icon-click="() => console.log('test')" placeholder="검색어 입력" />
+        <Input v-model="value" type="number" label="수량" icon="inventory_2" suffix="개" placeholder="0" />
+      </div>
+    `
+  })
+}
+
 export const NumberType: Story = {
   name: '숫자 입력',
   parameters: {
@@ -125,7 +148,7 @@ export const TelType: Story = {
     },
     template: `
       <div class="space-y-2">
-        <p class="text-xs text-gray-400">숫자와 하이픈만 입력 가능, 유효하지 않은 형식이면 빨간 테두리</p>
+        <p class="text-xs text-gray-400">숫자와 하이픈만 입력 가능</p>
         <Input v-model="value" type="tel" label="전화번호" placeholder="010-1234-5678" />
         <p class="text-xs text-gray-400">입력값: {{ value || '없음' }}</p>
       </div>

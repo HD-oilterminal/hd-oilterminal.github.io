@@ -9,7 +9,8 @@ const meta: Meta<typeof DateRangePicker> = {
   component: DateRangePicker,
   tags: ['autodocs'],
   argTypes: {
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
+    readonly: { control: 'boolean' }
   },
   decorators: [() => ({ template: '<div style="min-height: 350px"><story /></div>' })]
 }
@@ -26,6 +27,10 @@ export const Default: Story = {
 
 export const Disabled: Story = {
   args: { start: weekAgo, end: today, disabled: true }
+}
+
+export const Readonly: Story = {
+  args: { start: weekAgo, end: today, readonly: true }
 }
 
 export const Interactive: Story = {

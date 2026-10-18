@@ -13,6 +13,7 @@ import {
   GridFitStyle,
   type GridItem,
   GridView,
+  HandleVisibility,
   type LiteralColumn,
   LocalDataProvider,
   LocalTreeDataProvider,
@@ -53,6 +54,8 @@ const compare = (v1: string, v2: string, caseSensitive: boolean, partialMatch: b
 // lookup 컬럼(values/labels)은 그리드 생성 시 고정이므로 최초 검색 때 한 번만 만들어 그리드별로 캐시
 const labelMapsCache = new WeakMap<GridBase, Map<string, Map<string, string>>>()
 
+export const YN = { values: ['Y', 'N'], labels: ['Y', 'N'] }
+
 const getLabelMaps = (grid: GridBase, fields: string[]) => {
   let labelMaps = labelMapsCache.get(grid)
   if (!labelMaps) {
@@ -71,6 +74,10 @@ const getLabelMaps = (grid: GridBase, fields: string[]) => {
 
 /**
  * 그리드 내부 검색. labels/values 로 표현되는 lookup 컬럼은 value 대신 label 로 검색
+ * @param grid
+ * @param provider
+ * @param value
+ * @param reverse
  * @param position 검색 시작 위치. x 는 fields 배열 내 인덱스. 생략 시 현재 포커스 셀 (다음/이전 셀부터 검색)
  * @param fields 검색 대상 필드. 생략 시 전체 필드
  * @returns 검색된 셀의 위치 (x 는 fields 배열 내 인덱스). 없으면 undefined
@@ -209,6 +216,7 @@ const generate = (
     rowFocusType: RowMaskType.ROW,
     rowHeight: 28
   })
+  grid.setFilteringOptions({ handleVisibility: HandleVisibility.HIDDEN })
   grid.setCopyOptions({ copyDisplayText: true, singleMode: false })
   grid.setPasteOptions({ convertLookupLabel: true })
   grid.setFooter({ visible: false })
@@ -352,6 +360,11 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
     }
 
     if (column.editor) def.editor = column.editor
+    if (column.type === ValueType.NUMBER) column.align = 'right'
+    if (column.yesOrNo) {
+      column.values = ['Y', 'N']
+      column.labels = ['Y', 'N']
+    }
 
     if (column.header) {
       if (Array.isArray(column.header)) {

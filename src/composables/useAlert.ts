@@ -27,6 +27,8 @@ watch(state, value => {
 
 export const useAlert = () => {
   const alert = async (message: string, options?: Partial<AlertState> | string): Promise<void> => {
+    console.warn(new Error(message))
+
     return new Promise(resolve => {
       if (typeof options === 'string') {
         options = { title: options }
@@ -66,6 +68,29 @@ export const useAlert = () => {
         case 'all':
           return alert(message, { icon: 'data_check', iconClass: 'alert-all', ...options })
       }
+    },
+    validate: async (form: HTMLFormElement): Promise<{ element?: HTMLElement; label?: string; isSelect?: boolean }> => {
+      if (!form) return {}
+
+      for (const field of form.querySelectorAll<HTMLElement>('.required, [required]')) {
+        const isSelect = field.hasAttribute('data-selected')
+        const control = field.querySelector<HTMLInputElement>('input:not([type=hidden]), textarea, select')
+        const value = isSelect ? field.getAttribute('data-selected') : control?.value
+
+        if (field instanceof HTMLInputElement && field.disabled) continue
+        if (control?.disabled) continue
+        if (value) continue
+
+        const label = field.getAttribute('data-name') || field.querySelector('i')?.textContent?.trim() || ''
+
+        return {
+          element: control ?? field,
+          label,
+          isSelect
+        }
+      }
+
+      return {}
     }
   }
 }
