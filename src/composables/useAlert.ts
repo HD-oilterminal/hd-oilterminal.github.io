@@ -46,7 +46,9 @@ export const useAlert = () => {
       }
 
       if (state.value) {
-        queue.push(next)
+        if (queue.every(q => q.message !== message && (q.detail === undefined || q.detail === next.detail))) {
+          queue.push(next)
+        }
       } else {
         state.value = next
       }
@@ -55,7 +57,7 @@ export const useAlert = () => {
 
   return {
     alert,
-    async alertOf(type: AlertType, message: string, options?: Partial<AlertState> | string) {
+    async alertOf(type: AlertType | string, message: string, options?: Partial<AlertState> | string) {
       if (typeof options === 'string') {
         options = { title: options }
       }
@@ -67,6 +69,8 @@ export const useAlert = () => {
           return alert(message, { icon: 'check', iconClass: 'alert-ok', ...options })
         case 'all':
           return alert(message, { icon: 'data_check', iconClass: 'alert-all', ...options })
+        default:
+          return alert(message, { icon: type, iconClass: 'alert-all', ...options })
       }
     },
     validate: async (form: HTMLFormElement): Promise<{ element?: HTMLElement; label?: string; isSelect?: boolean }> => {
