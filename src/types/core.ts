@@ -173,7 +173,7 @@ export type ArrayColumns = [string, (string | string[] | ColumnHeader)?, Column?
 
 export interface Option {
   label: string
-  value: string | number
+  value?: string | number
   disabled?: boolean
 }
 

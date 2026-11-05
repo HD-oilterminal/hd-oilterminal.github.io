@@ -91,13 +91,15 @@ onMounted(() => {
     }
   }
 
-  core.onCellClicked = (grid, value) => {
+  const click = (grid: GridBase, value: ClickData) => {
     emit('cellClicked', value, grid)
 
     if (value.dataRow != undefined) emit('rowClicked', data.getJsonRow(value.dataRow), value, grid)
   }
 
-  core.onCellDblClicked = (grid, value) => {
+  core.onCellClicked = click
+
+  const dblclick = (grid: GridBase, value: ClickData) => {
     if (value.dataRow != undefined) grid.showEditor(true)
 
     emit('cellDblclicked', value, grid)
@@ -105,12 +107,26 @@ onMounted(() => {
     if (value.dataRow != undefined) emit('rowDblclicked', data.getJsonRow(value.dataRow), value, grid)
   }
 
+  core.onCellDblClicked = dblclick
+
+  core.onKeyDown = (grid, event) => {
+    const action = { Enter: click, F2: dblclick }[event.key]
+    if (!action || grid.isEditing()) return true
+
+    const { column, fieldIndex, ...current } = grid.getCurrent()
+    if (current.dataRow == undefined || current.dataRow < 0) return true
+
+    action(grid, { field: fieldIndex, column: typeof column === 'string' ? column : column?.name, ...current })
+    return false
+  }
+
   const contextMenus = Object.keys(props.contextMenu ?? {}).map(label => ({ label, name: 'custom:' + label }))
   core.setContextMenu([
     ...(contextMenus.length ? [...contextMenus, { label: '-' }] : []),
     { label: t('엑셀 다운로드'), name: 'excel' },
     { label: t('검색'), name: 'search' },
-    { label: t('틀고정'), name: 'freeze' }
+    { label: t('틀고정'), name: 'freeze' },
+    { label: t('틀고정 해제'), name: 'unfreeze' }
   ])
 
   core.onContextMenuItemClicked = (grid, menu, cell) => {
@@ -123,8 +139,9 @@ onMounted(() => {
     } else if (menu.name === 'excel') excel()
     else if (menu.name === 'search') (core as SearchableGrid).onSearching()
     else if (menu.name === 'freeze') {
-      const index = core.getColumnNames(true, false).indexOf(cell.column ?? '')
-      if (index >= 0) core.setFixedOptions({ colCount: index })
+      core.setFixedOptions({ colCount: core.getColumnNames(true, false).indexOf(cell.column ?? '') })
+    } else if (menu.name === 'unfreeze') {
+      core.setFixedOptions({ colCount: 0 })
     }
   }
 })

@@ -108,7 +108,7 @@ const filteredOptions = computed(() => {
           <ComboboxItem
             v-for="option in filteredOptions"
             :key="option.value"
-            :value="option.value"
+            :value="option.value ?? ''"
             class="relative flex cursor-pointer items-center rounded-sm px-3 py-2 pr-8 text-gray-900 outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-blue-50 data-highlighted:text-blue-700"
           >
             {{ option.label }}

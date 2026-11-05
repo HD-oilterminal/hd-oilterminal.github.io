@@ -77,18 +77,33 @@ const mount = () => {
     }
   }
 
-  core.onCellClicked = (grid, value) => {
+  const click = (grid: GridBase, value: ClickData) => {
     emit('cellClicked', value, grid)
 
     if (value.dataRow != undefined) emit('rowClicked', data.getJsonRow(value.dataRow), value, grid)
   }
 
-  core.onCellDblClicked = (grid, value) => {
+  core.onCellClicked = click
+
+  const dblclick = (grid: GridBase, value: ClickData) => {
     if (value.dataRow != undefined) grid.showEditor(true)
 
     emit('cellDblclicked', value, grid)
 
     if (value.dataRow != undefined) emit('rowDblclicked', data.getJsonRow(value.dataRow), value, grid)
+  }
+
+  core.onCellDblClicked = dblclick
+
+  core.onKeyDown = (grid, event) => {
+    const action = { Enter: click, F2: dblclick }[event.key]
+    if (!action || grid.isEditing()) return true
+
+    const { column, fieldIndex, ...current } = grid.getCurrent()
+    if (current.dataRow == undefined || current.dataRow < 0) return true
+
+    action(grid, { field: fieldIndex, column: typeof column === 'string' ? column : column?.name, ...current })
+    return false
   }
 
   const contextMenus = Object.keys(props.contextMenu ?? {}).map(label => ({ label, name: 'custom:' + label }))

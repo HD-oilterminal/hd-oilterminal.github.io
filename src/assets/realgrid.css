@@ -52,10 +52,9 @@
     }
 
     .rg-body .rg-table tr td,
+    .rg-fixed-body .rg-data-row,
     .rg-fixed-body .rg-table tr td {
-      &:hover {
-        background: transparent;
-      }
+      background-color: transparent;
     }
 
     .rg-header-focus,

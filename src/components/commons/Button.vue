@@ -34,7 +34,7 @@ defineExpose({ focus: () => el.value?.focus() })
         secondary: 'border border-gray-500 bg-white text-gray-900 hover:bg-gray-200',
         norm: 'border border-gray-300 bg-white text-gray-500 hover:text-black',
         liner: 'border border-gray-300 bg-white/30 text-gray-500 hover:bg-gray-100',
-        ghost: 'bg-primary-400 hover:bg-primary-500 text-white',
+        ghost: 'bg-primary-400 text-white hover:bg-[#07D]',
         united: 'absolute right-0 px-2! text-gray-700 hover:bg-gray-200/70',
         none: ''
       }[variant ?? 'primary'],
@@ -43,6 +43,6 @@ defineExpose({ focus: () => el.value?.focus() })
     :type="type ?? 'button'"
     @click="$emit('click', $event)"
   >
-    {{ label }}<Icon v-if="icon" :name="icon" :size="iconSize" :class="{ 'non-label': !label }" /><slot />
+    {{ label }}<Icon v-if="icon" :name="icon" :size="iconSize" :class="{ 'non-label': label === undefined }" /><slot />
   </button>
 </template>

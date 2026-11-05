@@ -205,7 +205,7 @@ const generate = (
 
   grid.setColumns(columnsAdapter(dataColumns, props.editable))
   const hasEditor = Object.values(dataColumns).some(column => column.editor)
-  grid.setEditOptions({ editable: props.editable || hasEditor, checkable: true, commitByCell: true })
+  grid.setEditOptions({ editable: props.editable || hasEditor, checkable: true, commitByCell: true, enterToNextCell: false })
   grid.setCheckBar({ visible: !!(props.checkable ?? true) })
   grid.setDisplayOptions({
     showTooltip: true,

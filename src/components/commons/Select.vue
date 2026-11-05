@@ -26,6 +26,7 @@ const props = withDefaults(
     required?: boolean
     disabled?: boolean
     class?: string
+    noCloseFocus?: boolean
   }>(),
   {
     modelValue: undefined,
@@ -33,7 +34,8 @@ const props = withDefaults(
     labelSize: '',
     required: false,
     options: () => [],
-    class: ''
+    class: '',
+    noCloseFocus: false
   }
 )
 
@@ -109,6 +111,7 @@ const onUpdate = (v: string) => {
             position="popper"
             :side-offset="4"
             class="z-50 w-(--reka-select-trigger-width) min-w-max rounded-md border border-gray-200 bg-white shadow-lg"
+            @close-auto-focus="(e: Event) => props.noCloseFocus && e.preventDefault()"
           >
             <SelectScrollUpButton class="flex items-center justify-center py-1 text-gray-500">
               <svg
