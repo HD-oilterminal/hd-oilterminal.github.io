@@ -36,13 +36,15 @@ const emit = defineEmits<{
       :key="i"
       :class="[
         'inline-flex shrink-0 items-center gap-1',
-        (Array.isArray(disabled) ? disabled.includes(value) : disabled) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+        (Array.isArray(disabled) ? disabled.includes(value as string | number) : disabled)
+          ? 'cursor-not-allowed opacity-50'
+          : 'cursor-pointer'
       ]"
     >
       <RadioGroupItem
         :id="'Radio-' + label"
         :value="`${value}`"
-        :disabled="Array.isArray(disabled) ? disabled.includes(value) : disabled"
+        :disabled="Array.isArray(disabled) ? disabled.includes(value as string | number) : disabled"
         class="flex h-4 w-4 items-center justify-center rounded-full border border-gray-300 bg-white transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 focus-visible:outline-none disabled:pointer-events-none data-[state=checked]:border-blue-600"
       >
         <RadioGroupIndicator

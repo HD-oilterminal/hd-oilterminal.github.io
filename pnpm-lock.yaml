@@ -23,8 +23,8 @@ importers:
         specifier: ^3.5.2
         version: 3.5.2(quill@2.0.3)
       realgrid:
-        specifier: 2.8.9
-        version: 2.8.9
+        specifier: 2.10.2
+        version: 2.10.2
     devDependencies:
       '@internationalized/date':
         specifier: ^3.12.2
@@ -2208,8 +2208,8 @@ packages:
   readable-stream@2.3.8:
     resolution: { integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA== }
 
-  realgrid@2.8.9:
-    resolution: { integrity: sha512-Z1905AXKSpL6NjliInPfOqUfakoQSInkl1xr6dgLumjkZ5SQ6WU01xOjWy+jHZgkuS4GEqVezxE49k0cJY9b1Q== }
+  realgrid@2.10.2:
+    resolution: { integrity: sha512-ylpD2/N46fMTZOOIwibT+NZg8mvIPJ737+Utvhqa5Ma+FVF8sngk+LiJj1JI/6DmfMABtjUby0PW/PdIAdfKnQ== }
 
   recast@0.23.11:
     resolution: { integrity: sha512-YTUo+Flmw4ZXiWfQKGcwwc11KnoRAYgzAE2E7mXKCjSviTKShtxBsN6YUUBB2gtaBzKzeKunxhUwNHQuRryhWA== }
@@ -4500,7 +4500,7 @@ snapshots:
       string_decoder: 1.1.1
       util-deprecate: 1.0.2
 
-  realgrid@2.8.9: {}
+  realgrid@2.10.2: {}
 
   recast@0.23.11:
     dependencies:

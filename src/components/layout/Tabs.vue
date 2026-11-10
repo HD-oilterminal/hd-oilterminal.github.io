@@ -7,10 +7,12 @@ withDefaults(
   defineProps<{
     modelValue?: string
     tabs?: TabItem[]
+    triggerClass?: string
   }>(),
   {
     modelValue: undefined,
-    tabs: () => []
+    tabs: () => [],
+    triggerClass: ''
   }
 )
 
@@ -35,10 +37,10 @@ const emit = defineEmits<{
       <TabsTrigger
         v-for="tab in tabs"
         :key="tab.value"
-        :value="tab.value"
+        :value="tab.value || ''"
         :disabled="tab.disabled"
-        :class="[tab.disabled ? 'cursor-not-allowed' : 'cursor-pointer']"
-        class="group text-md mr-px rounded-t px-4 py-2 text-gray-500 transition-colors hover:bg-gray-200/70! hover:text-black focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 data-[state=active]:-mb-px data-[state=active]:border data-[state=active]:border-b data-[state=active]:border-blue-600 data-[state=active]:border-b-white data-[state=active]:font-bold data-[state=inactive]:bg-gray-100"
+        :class="[tab.disabled ? 'cursor-not-allowed' : 'cursor-pointer', $props.triggerClass]"
+        class="group text-md mr-px rounded-t px-4 py-2 text-gray-500 transition-colors hover:bg-gray-200/70! hover:text-black focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 data-[state=active]:mt-px data-[state=active]:-mb-px data-[state=active]:border data-[state=active]:border-b data-[state=active]:border-blue-600 data-[state=active]:border-b-white data-[state=active]:font-bold data-[state=inactive]:bg-gray-100"
       >
         {{ tab.label }}
         <span
@@ -53,7 +55,7 @@ const emit = defineEmits<{
     <TabsContent
       v-for="tab in tabs"
       :key="tab.value"
-      :value="tab.value"
+      :value="tab.value || ''"
       force-mount
       class="mt-2 min-h-0 flex-1 focus-visible:outline-none data-[state=inactive]:hidden"
     >

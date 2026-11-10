@@ -1,4 +1,4 @@
-import { shallowRef, watch } from 'vue'
+import { shallowRef } from 'vue'
 
 type AlertType = 'success' | 'ok' | 'all'
 
@@ -16,14 +16,6 @@ type AlertState = {
 export type { AlertState }
 
 export const state = shallowRef<AlertState | null>(null)
-
-const queue: AlertState[] = []
-
-watch(state, value => {
-  if (!value && queue.length) {
-    state.value = queue.shift()!
-  }
-})
 
 export const useAlert = () => {
   const alert = async (message: string, options?: Partial<AlertState> | string): Promise<void> => {
@@ -45,13 +37,8 @@ export const useAlert = () => {
         resolve
       }
 
-      if (state.value) {
-        if (queue.every(q => q.message !== message && (q.detail === undefined || q.detail === next.detail))) {
-          queue.push(next)
-        }
-      } else {
-        state.value = next
-      }
+      state.value?.resolve()
+      state.value = next
     })
   }
 
@@ -76,16 +63,20 @@ export const useAlert = () => {
     validate: async (form: HTMLFormElement): Promise<{ element?: HTMLElement; label?: string; isSelect?: boolean }> => {
       if (!form) return {}
 
-      for (const field of form.querySelectorAll<HTMLElement>('.required, [required]')) {
+      for (const field of form.querySelectorAll<HTMLElement>('.required, [required]:not([required=false])')) {
         const isSelect = field.hasAttribute('data-selected')
         const control = field.querySelector<HTMLInputElement>('input:not([type=hidden]), textarea, select')
         const value = isSelect ? field.getAttribute('data-selected') : control?.value
 
-        if (field instanceof HTMLInputElement && field.disabled) continue
-        if (control?.disabled) continue
+        // if (field instanceof HTMLInputElement && field.disabled) continue
+        // if (control?.disabled) continue
         if (value) continue
 
-        const label = field.getAttribute('data-name') || field.querySelector('i')?.textContent?.trim() || ''
+        const label =
+          field.getAttribute('data-name') ||
+          field.querySelector('i')?.textContent?.trim() ||
+          field.closest('[data-name]')?.getAttribute('data-name') ||
+          ''
 
         return {
           element: control ?? field,

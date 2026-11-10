@@ -17,7 +17,9 @@ const props = withDefaults(
     disabled?: boolean
     readonly?: boolean
     class?: string
+    inputClass?: string
     linking?: boolean
+    breadth?: boolean
   }>(),
   {
     modelValue: '',
@@ -28,7 +30,8 @@ const props = withDefaults(
     prefix: '',
     suffix: '',
     icon: undefined,
-    class: ''
+    class: '',
+    inputClass: ''
   }
 )
 
@@ -252,7 +255,7 @@ defineExpose({ input })
 </script>
 
 <template>
-  <div class="field-wrapper flex w-fit">
+  <div class="field-wrapper flex" :class="breadth ? 'w-full' : 'w-fit'">
     <label
       class="field field-input relative flex w-full items-center gap-1.5"
       :class="{ 'cursor-not-allowed': disabled || required, required, linking }"
@@ -283,7 +286,7 @@ defineExpose({ input })
           :placeholder="placeholder"
           :disabled="disabled || readonly"
           :value="modelValue as string"
-          class="w-full shrink grow bg-transparent outline-none disabled:cursor-not-allowed disabled:text-gray-800"
+          :class="`w-full shrink grow bg-transparent outline-none disabled:cursor-not-allowed disabled:text-gray-800 ${props.inputClass}`"
           @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
         />
         <input
@@ -294,7 +297,7 @@ defineExpose({ input })
           inputmode="tel"
           :placeholder="placeholder"
           :disabled="disabled || readonly"
-          class="w-full shrink grow bg-transparent tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800"
+          :class="`w-full shrink grow bg-transparent tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800 ${props.inputClass}`"
           @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
           @copy="
             (e: ClipboardEvent) => {
@@ -313,7 +316,7 @@ defineExpose({ input })
           inputmode="decimal"
           :placeholder="placeholder"
           :disabled="disabled || readonly"
-          class="w-full shrink grow bg-transparent px-0.5 text-right tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800"
+          :class="`w-full shrink grow bg-transparent px-0.5 text-right tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800 ${props.inputClass}`"
           @focusin="(e: Event) => (e.target as HTMLInputElement).select()"
           @copy="
             (e: ClipboardEvent) => {
