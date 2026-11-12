@@ -98,31 +98,13 @@ export const searchGrid = (
     y: current.itemIndex ?? -1
   }
 
-  const last = fields.length - 1
-  let x = start.x + (reverse ? -1 : 1)
-  let y = start.y
-  if (x > last) {
-    x = 0
-    y++
-  } else if (x < 0) {
-    x = last
-    y--
-  }
-  const itemCount = grid.getItemCount()
-  if (y >= itemCount) {
-    x = 0
-    y = 0
-  } else if (y < 0) {
-    x = last
-    y = itemCount - 1
-  }
-
+  // 다음/이전 셀부터 검색. 범위를 벗어난 행/필드 넘김과 wrap 은 realgrid(2.10.2+)가 처리
   const labelMaps = getLabelMaps(grid, provider.getFieldNames())
   const result = grid.searchCell({
     fields,
     value,
-    startIndex: y,
-    startFieldIndex: x,
+    startIndex: start.y,
+    startFieldIndex: start.x + (reverse ? -1 : 1),
     wrap: true,
     caseSensitive: false,
     partialMatch: true,
@@ -133,7 +115,7 @@ export const searchGrid = (
 
   if (result != null) {
     grid.setCurrent(result)
-    return { x: fields.findIndex(f => f === result.fieldName), y: result.itemIndex }
+    return { x: fields.findIndex(f => f === result.fieldName), y: result.itemIndex ?? -1 }
   }
 
   return undefined
@@ -223,7 +205,7 @@ const generate = (
   grid.setDataSource(provider)
   grid.setFixedOptions({ colCount: props.fixed?.column ?? 0, rowCount: props.fixed?.row ?? 0 })
   grid.setRowIndicator({ visible: props.numberable ?? false })
-  grid.setStateBar({ visible: !!props.editable && !props.stateInvisible, errorVisible: true })
+  grid.setStateBar({ visible: (!!props.editable && !props.stateInvisible) || props.stateVisible, errorVisible: true })
   grid.setContextMenu([{ label: t('엑셀 다운로드'), name: 'excel' }])
   grid.onContextMenuItemClicked = (_grid, menu, data) => {
     if (menu.name === 'excel') {
@@ -286,12 +268,17 @@ const generate = (
     grid.treeOptions.iconVisible = false
   }
 
-  const searcher = generateSearcher(grid, provider, t)
+  const { searcher, dispose } = generateSearcher(grid, provider, t)
+  const destroy = grid.destroy.bind(grid)
 
   return {
     grid: Object.assign(grid, {
       onSearching: () => {
         searcher.classList.remove('hidden')
+      },
+      destroy: () => {
+        dispose()
+        destroy()
       }
     }),
     provider
@@ -313,7 +300,8 @@ const generateSearcher = (
   button.textContent = t('닫기')
   searcher.append(button)
 
-  grid.getContainer().after(searcher)
+  const container = grid.getContainer()
+  container.after(searcher)
 
   button.addEventListener('click', () => {
     searcher.classList.add('hidden')
@@ -334,7 +322,7 @@ const generateSearcher = (
     }
   })
 
-  grid.getContainer().addEventListener('keydown', e => {
+  const onKeydown = (e: KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && 'f' === e.key.toLowerCase()) {
       searcher.classList.remove('hidden')
       searcher.querySelector('input')?.focus()
@@ -342,9 +330,16 @@ const generateSearcher = (
       e.preventDefault()
       e.stopPropagation()
     }
-  })
+  }
+  container.addEventListener('keydown', onKeydown)
 
-  return searcher
+  return {
+    searcher,
+    dispose: () => {
+      container.removeEventListener('keydown', onKeydown)
+      searcher.remove()
+    }
+  }
 }
 
 const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): ColumnType[] => {

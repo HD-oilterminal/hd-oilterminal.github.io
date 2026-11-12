@@ -243,13 +243,13 @@ const popupLinking = (e: Event) => {
   }
 }
 
-onMounted(() => {
+/*onMounted(() => {
   input.value?.addEventListener('keyup', iconAction)
 })
 
 onUnmounted(() => {
   input.value?.removeEventListener('keyup', iconAction)
-})
+})*/
 
 defineExpose({ input })
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CalendarDate, type DateValue } from '@internationalized/date'
+import { CalendarDate, type DateValue, getLocalTimeZone, startOfMonth, today } from '@internationalized/date'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -14,6 +14,7 @@ const props = withDefaults(
     required?: boolean
     label?: string
     labelSize?: string
+    noButton?: boolean
   }>(),
   { modelValue: '', label: '', labelSize: '' }
 )
@@ -170,6 +171,23 @@ const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } =
   () => viewYear.value++
 )
 
+const shiftValue = (delta: -1 | 1) => {
+  const base = internalValue.value ?? startOfMonth(today(getLocalTimeZone()))
+  const val = base.add({ months: delta })
+  yearStr.value = String(val.year).padStart(4, '0')
+  monthStr.value = String(val.month).padStart(2, '0')
+  if (yearInput.value) yearInput.value.value = yearStr.value
+  if (monthInput.value) monthInput.value.value = monthStr.value
+  internalValue.value = val
+  viewYear.value = val.year
+  emit('update:modelValue', dateString(val, 'YYYY-MM'))
+}
+
+// <label>(Field) 안에 놓이면 svg/div 클릭이 label 활성화로 이어져 첫 labelable 요소(형제 버튼 등)가 클릭됨 → 차단
+const onClick = (e: MouseEvent) => {
+  if (!(e.target as HTMLElement).closest('input,button,select')) e.preventDefault()
+}
+
 const toggleOpen = () => {
   yearInput.value?.focus()
   isOpen.value = !isOpen.value
@@ -192,7 +210,7 @@ const onKeydown = (e: KeyboardEvent) => {
 </script>
 
 <template>
-  <div class="field-wrapper relative inline-block" @focusout="onFocusOut" @keydown="onKeydown">
+  <div class="field-wrapper relative inline-block" @click="onClick" @focusout="onFocusOut" @keydown="onKeydown">
     <div
       class="field field-input relative flex w-full items-center gap-1.5"
       :class="{ 'cursor-not-allowed': disabled || readonly, required }"
@@ -205,52 +223,99 @@ const onKeydown = (e: KeyboardEvent) => {
       >
         {{ label }}
       </i>
-      <div
-        class="flex h-[24px] shrink grow items-center rounded-md border border-gray-300 bg-white px-2 ring-blue-500 focus-within:ring-2 in-[.layer-popup]:max-w-full"
-        :class="[disabled || readonly ? 'cursor-not-allowed bg-gray-200! opacity-75' : '', required ? 'bg-[#fff9f0]!' : '']"
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          color="#ccc"
-          class="cursor-pointer"
+      <div class="inline-flex items-center gap-1">
+        <button
+          v-if="!noButton"
+          type="button"
+          tabindex="-1"
+          :disabled="disabled || readonly"
+          class="inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-75"
           @mousedown.prevent
-          @click="!disabled && !readonly && toggleOpen()"
+          @click="shiftValue(-1)"
         >
-          <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-          <line x1="16" x2="16" y1="2" y2="6" />
-          <line x1="8" x2="8" y1="2" y2="6" />
-          <line x1="3" x2="21" y1="10" y2="10" />
-        </svg>
-        <input
-          ref="yearInput"
-          type="text"
-          inputmode="numeric"
-          data-type="date"
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+        <div
+          class="flex h-[24px] shrink grow items-center rounded-md border border-gray-300 bg-white px-2 ring-blue-500 focus-within:ring-2 in-[.layer-popup]:max-w-full"
+          :class="[disabled || readonly ? 'cursor-not-allowed bg-gray-200! opacity-75' : '', required ? 'bg-[#fff9f0]!' : '']"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            color="#ccc"
+            class="cursor-pointer"
+            @mousedown.prevent
+            @click="!disabled && !readonly && toggleOpen()"
+          >
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+            <line x1="16" x2="16" y1="2" y2="6" />
+            <line x1="8" x2="8" y1="2" y2="6" />
+            <line x1="3" x2="21" y1="10" y2="10" />
+          </svg>
+          <input
+            ref="yearInput"
+            type="text"
+            inputmode="numeric"
+            data-type="date"
+            :disabled="disabled || readonly"
+            class="w-10 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
+          />
+          <span class="-mx-0.5 text-gray-500 select-none">-</span>
+          <input
+            ref="monthInput"
+            type="text"
+            inputmode="numeric"
+            data-type="date"
+            :disabled="disabled || readonly"
+            class="w-6 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
+          />
+        </div>
+        <button
+          v-if="!noButton"
+          type="button"
+          tabindex="-1"
           :disabled="disabled || readonly"
-          class="w-10 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
-        />
-        <span class="-mx-0.5 text-gray-500 select-none">-</span>
-        <input
-          ref="monthInput"
-          type="text"
-          inputmode="numeric"
-          data-type="date"
-          :disabled="disabled || readonly"
-          class="w-6 rounded px-1 text-center tabular-nums outline-none disabled:cursor-not-allowed"
-        />
+          class="inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-75"
+          @mousedown.prevent
+          @click="shiftValue(1)"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
       </div>
     </div>
 
     <div
       v-if="isOpen"
       class="absolute top-full left-0 z-50 mt-1 w-56 rounded-md border border-gray-200 bg-white p-3 shadow-lg select-none"
+      @mousedown.prevent
       @pointerdown="onPointerDown"
       @pointerup="onPointerUp"
       @pointercancel="onPointerCancel"

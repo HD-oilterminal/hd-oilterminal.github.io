@@ -61,6 +61,10 @@ export interface GridProps {
    * 상태바 숨김 (editable 에서도 숨김)
    */
   stateInvisible?: boolean
+  /**
+   * 상태바 보임 (editable 아니어도 보임)
+   */
+  stateVisible?: boolean
   headerHeight?: number
   fixed?: Fixed
   excel?: GridExcel

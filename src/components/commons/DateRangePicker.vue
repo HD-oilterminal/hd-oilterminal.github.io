@@ -33,6 +33,7 @@ const props = withDefaults(
     readonly?: boolean
     required?: boolean
     noButton?: boolean
+    noOption?: boolean
   }>(),
   { start: '', end: '', label: '', labelSize: '' }
 )
@@ -514,7 +515,7 @@ const onKeydown = (e: KeyboardEvent) => {
               </svg>
             </button>
 
-            <Radio v-if="!noButton" v-model="jump" :disabled="disabled || readonly" :items="JUMP_OPTIONS" />
+            <Radio v-if="!noButton && !noOption" v-model="jump" :disabled="disabled || readonly" :items="JUMP_OPTIONS" />
           </div>
 
           <div v-if="isOpen" class="absolute top-full left-0 z-50 rounded-md border border-gray-200 bg-white shadow-lg">
