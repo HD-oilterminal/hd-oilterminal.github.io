@@ -131,6 +131,7 @@ export interface Column {
   prefix?: string
   suffix?: string
   renderer?: Record<string, unknown>
+  icon?: string | ((value?: any) => string)
   displaying?: (value: any, cell: CellIndex, grid: GridBase) => any
 
   /**

@@ -29,6 +29,20 @@ import { useI18n } from 'vue-i18n'
 
 import type { Column, ColumnGroup, ColumnHeader, GridProps, TreeProps } from '../../types/core'
 
+declare module 'realgrid' {
+  interface GridBase {
+    /**
+     * 그리드의 기본 `.clearCurrent()` 의 선택 행이 있을 때만 해제
+     * (행 선택 없이 실행하면 오류 발생으로 확장)
+     */
+    resetCurrent(): void
+  }
+}
+
+GridBase.prototype.resetCurrent = function (this: GridBase) {
+  if ((this.getCurrent().itemIndex ?? -1) > -1) this.clearCurrent()
+}
+
 export type ColumnType = DataColumn | SeriesColumn | LiteralColumn | ConfigObject | string
 
 export type SearchableGrid<G extends GridBase = GridView | TreeView> = G & {
@@ -392,6 +406,13 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
       }
     }
 
+    if (column.icon) {
+      def.renderer = {
+        type: 'html',
+        callback: (_: unknown, model: any) =>
+          `<span class="rg-cell-icon material-symbols-outlined">${typeof column.icon === 'function' ? column.icon(model?.value) : column.icon}</span>`
+      }
+    }
     if (column.renderer) def.renderer = column.renderer
 
     if (column.summary) {
