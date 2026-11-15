@@ -212,7 +212,7 @@ const onKeydown = (e: KeyboardEvent) => {
 <template>
   <div class="field-wrapper relative inline-block" @click="onClick" @focusout="onFocusOut" @keydown="onKeydown">
     <div
-      class="field field-input relative flex w-full items-center gap-1.5"
+      class="field field-month-picker relative flex w-full items-center gap-1.5"
       :class="{ 'cursor-not-allowed': disabled || readonly, required }"
       :data-name="label"
     >
