@@ -15,7 +15,7 @@ import TableUp, {
 } from 'quill-table-up'
 import { onMounted, ref, watch } from 'vue'
 
-defineProps<{ rows?: number }>()
+const props = defineProps<{ rows?: number | 'auto'; readonly?: boolean }>()
 
 const model = defineModel<string>()
 const el = ref<HTMLElement>()
@@ -26,6 +26,7 @@ onMounted(() => {
 
   quill = new Quill(el.value!, {
     theme: 'snow',
+    readOnly: props.readonly,
     modules: {
       toolbar: [
         ['bold', 'italic', 'underline'],
@@ -56,6 +57,11 @@ onMounted(() => {
   })
 })
 
+watch(
+  () => props.readonly,
+  value => quill?.enable(!value)
+)
+
 watch(model, value => {
   if (!quill || (value ?? '') === quill.root.innerHTML) return
 
@@ -64,8 +70,8 @@ watch(model, value => {
 </script>
 
 <template>
-  <div class="texteditor" @click.prevent>
-    <div ref="el" :style="{ height: `calc(${rows ?? 3} * 1rem + 24px)` }" />
+  <div class="texteditor w-64" :class="{ readonly }" @click.prevent>
+    <div ref="el" :style="rows === 'auto' ? { height: '100%' } : { height: `calc(${rows ?? 3} * 1rem + 24px)` }" />
     <textarea :value="model" tabindex="-1" aria-hidden="true" @focus="quill?.focus()" />
   </div>
 </template>
@@ -78,6 +84,10 @@ watch(model, value => {
   &:hover .ql-toolbar.ql-snow,
   &:focus-within .ql-toolbar.ql-snow {
     opacity: 1;
+  }
+
+  &.readonly .ql-toolbar.ql-snow {
+    display: none;
   }
 
   .ql-toolbar.ql-snow {

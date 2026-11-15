@@ -17,6 +17,7 @@ export interface MenuLv2Item {
   menu_nm: string
   menu_nm_eng?: string
   page_url: string
+  controller_url: string
   dsply_ordr: number
 }
 
@@ -30,6 +31,7 @@ export const menuSystem = defineStore(
   () => {
     const menuLv1 = ref<MenuLv1Item[]>([])
     const menuLv2 = ref<MenuLv2Item[]>([])
+    const descriptions = ref<{ [key: string]: string }>({})
     const activeUpperMenuId = ref('')
 
     const load = async (_menus?: TotalMenuContent) => {
@@ -42,9 +44,17 @@ export const menuSystem = defineStore(
     const hasAccess = (menuId: string): boolean =>
       menuLv1.value.some(m => m.menu_id === menuId) || menuLv2.value.some(m => m.menu_id === menuId)
 
-    return { menuLv1, menuLv2, activeUpperMenuId, load, getSubMenus, hasAccess }
+    const getDescription = (menuId: string): string => {
+      return descriptions.value[menuId]
+    }
+
+    const setDescription = (menuId: string, description: string) => {
+      descriptions.value[menuId] = description
+    }
+
+    return { menuLv1, menuLv2, activeUpperMenuId, load, getSubMenus, hasAccess, descriptions, getDescription, setDescription }
   },
   {
-    persist: { pick: ['menuLv1', 'menuLv2'], storage: sessionStorage }
+    persist: { pick: ['menuLv1', 'menuLv2', 'descriptions'], storage: sessionStorage }
   }
 )
