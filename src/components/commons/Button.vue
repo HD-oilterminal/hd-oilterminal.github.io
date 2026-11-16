@@ -5,7 +5,7 @@ defineProps<{
   label?: string
   variant?: 'primary' | 'secondary' | 'norm' | 'liner' | 'ghost' | 'united' | 'none'
   type?: 'button' | 'submit' | 'reset'
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
   icon?: string
   iconSize?: number
   disabled?: boolean
@@ -25,6 +25,7 @@ defineExpose({ focus: () => el.value?.focus() })
     :class="[
       'btn inline-flex items-center justify-center rounded font-medium whitespace-nowrap transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-visible:ring-2 focus-visible:outline-none disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-50',
       {
+        xs: 'px-1 text-[11px]',
         sm: 'h-control-sm px-1.5',
         md: 'h-control-md px-2',
         lg: 'h-12 px-3 text-base'

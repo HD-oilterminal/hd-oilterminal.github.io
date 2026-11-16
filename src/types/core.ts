@@ -113,6 +113,8 @@ export interface ColumnHeader {
   }>
 }
 
+export type ColumnOption = [label: string, value: string] | Option
+
 export interface Column {
   key?: string
   width?: number
@@ -124,6 +126,7 @@ export interface Column {
   editor?: CellEditor
   styleName?: string
   code?: string
+  options?: (ColumnOption | any)[]
   values?: string[]
   labels?: string[]
   align?: 'left' | 'right' | 'center'

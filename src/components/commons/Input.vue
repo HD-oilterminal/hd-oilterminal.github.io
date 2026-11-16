@@ -17,6 +17,7 @@ const props = withDefaults(
     disabled?: boolean
     readonly?: boolean
     class?: string
+    labelClass?: string
     inputClass?: string
     linking?: boolean
     breadth?: boolean
@@ -31,6 +32,7 @@ const props = withDefaults(
     suffix: '',
     icon: undefined,
     class: '',
+    labelClass: '',
     inputClass: ''
   }
 )
@@ -255,10 +257,10 @@ defineExpose({ input })
 </script>
 
 <template>
-  <div class="field-wrapper flex" :class="breadth ? 'w-full' : 'w-fit'">
+  <div class="field-wrapper flex" :class="[breadth ? 'w-full' : 'w-fit', $props.labelClass]">
     <label
       class="field field-input relative flex w-full items-center gap-1.5"
-      :class="{ 'cursor-not-allowed': disabled || required, required, linking }"
+      :class="{ 'cursor-not-allowed': disabled || readonly, required, linking }"
       :data-name="label"
     >
       <i

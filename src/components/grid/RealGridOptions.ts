@@ -389,6 +389,10 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
     if (column.styleName) def.styleName = column.styleName
     if (column.align) def.styleName = `${def.styleName ?? ''} rg-data-cell-${column.align}`
 
+    if (column.options) {
+      column.labels = column.options.map(o => o[0])
+      column.values = column.options.map(o => o[1])
+    }
     if (column.values?.length) {
       def.values = column.values
       def.labels = column.labels
