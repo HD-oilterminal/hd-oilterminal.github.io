@@ -36,7 +36,7 @@ defineExpose({ focus: () => el.value?.focus() })
         norm: 'border border-gray-300 bg-white text-gray-500 hover:text-black',
         liner: 'border border-gray-300 bg-white/30 text-gray-500 hover:bg-gray-100',
         ghost: 'bg-primary-400 text-white hover:bg-[#07D]',
-        united: 'absolute right-0 px-2! text-gray-700 hover:bg-gray-200/70',
+        united: '-ml-0.5 rounded-l-none border border-gray-300 px-2! text-gray-700 hover:bg-gray-200/70',
         none: ''
       }[variant ?? 'primary'],
       [disabled ? 'cursor-not-allowed' : 'cursor-pointer']
