@@ -20,11 +20,11 @@ export const temporal = (value: any) => {
   return h > 0 ? `${h}시간 ${m}분` : `${m}분`
 }
 
-export const pad = (value: string | undefined, basic: string, pad: number = 2): string => {
+export const pad = (value?: string | number, basic: string = '0', pad: number = 2): string => {
   const n = Number(value)
   if (!value || isNaN(n) || n <= 0) return basic
 
-  return pad ? value.padStart(pad, '0') : value
+  return pad ? value.toString().padStart(pad, '0') : value.toString()
 }
 
 export const padTime = (value: string | undefined, basic: string): string => {

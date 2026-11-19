@@ -15,7 +15,7 @@ import TableUp, {
 } from 'quill-table-up'
 import { onMounted, ref, watch } from 'vue'
 
-const props = defineProps<{ rows?: number | 'auto'; readonly?: boolean }>()
+const props = defineProps<{ rows?: number | 'auto'; readonly?: boolean; placeholder?: string }>()
 
 const model = defineModel<string>()
 const el = ref<HTMLElement>()
@@ -71,7 +71,9 @@ watch(model, value => {
 
 <template>
   <div class="texteditor w-64" :class="{ readonly }" @click.prevent>
-    <div ref="el" :style="rows === 'auto' ? { height: '100%' } : { height: `calc(${rows ?? 3} * 1rem + 24px)` }" />
+    <div ref="el" :style="rows === 'auto' ? { height: '100%' } : { height: `calc(${rows ?? 3} * 1rem + 24px)` }">
+      <p v-if="$props.placeholder" class="bg-gray-200 p-2 text-center">{{ $props.placeholder }}</p>
+    </div>
     <textarea :value="model" tabindex="-1" aria-hidden="true" @focus="quill?.focus()" />
   </div>
 </template>

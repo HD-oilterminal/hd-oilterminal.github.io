@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CheckboxIndicator, CheckboxRoot } from 'reka-ui'
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -22,19 +22,24 @@ const emit = defineEmits<{
   change: [value: boolean | 'indeterminate']
 }>()
 
-const onUpdate = (value: boolean | 'indeterminate' | 'Y' | 'N') => {
-  if ('Y' === value) value = true
-  if ('N' === value) value = false
+const normalize = (v: boolean | 'indeterminate' | 'Y' | 'N') => ('Y' === v ? true : 'N' === v ? false : v)
 
-  emit('update:modelValue', value)
-  emit('change', value)
+const root = ref<HTMLLabelElement>()
+
+const onUpdate = (value: boolean | 'indeterminate' | 'Y' | 'N') => {
+  emit('update:modelValue', normalize(value))
 }
 
 watch(
   () => props.modelValue,
-  value => {
+  (value, old) => {
     if ('Y' === value) emit('update:modelValue', true)
     if ('N' === value) emit('update:modelValue', false)
+
+    if (old !== undefined) {
+      emit('change', normalize(value))
+      root.value?.dispatchEvent(new Event('change', { bubbles: true }))
+    }
   },
   { immediate: true }
 )
@@ -42,8 +47,9 @@ watch(
 
 <template>
   <label
+    ref="root"
     :class="[
-      'inline-flex shrink-0 items-center gap-1 select-none',
+      'field field-checkbox inline-flex shrink-0 items-center gap-1 select-none',
       disabled || readonly ? 'cursor-not-allowed opacity-70' : ''
     ]"
   >

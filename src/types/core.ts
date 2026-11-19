@@ -118,7 +118,7 @@ export type ColumnOption = [label: string, value: string] | Option
 export interface Column {
   key?: string
   width?: number
-  type?: ValueType
+  type?: ValueType | string
   json?: boolean
   header?: ColumnHeader | string | string[]
   visible?: boolean

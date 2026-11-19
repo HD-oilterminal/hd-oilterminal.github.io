@@ -2,18 +2,14 @@
 import { CalendarDate, type DateValue, endOfMonth, getLocalTimeZone, startOfMonth, today } from '@internationalized/date'
 import {
   type DateRange,
-  DateRangePickerCalendar,
-  DateRangePickerCell,
-  DateRangePickerCellTrigger,
-  DateRangePickerGrid,
-  DateRangePickerGridBody,
-  DateRangePickerGridHead,
-  DateRangePickerGridRow,
-  DateRangePickerHeadCell,
-  DateRangePickerHeader,
-  DateRangePickerNext,
-  DateRangePickerPrev,
-  DateRangePickerRoot
+  RangeCalendarCell,
+  RangeCalendarCellTrigger,
+  RangeCalendarGrid,
+  RangeCalendarGridBody,
+  RangeCalendarGridHead,
+  RangeCalendarGridRow,
+  RangeCalendarHeadCell,
+  RangeCalendarRoot
 } from 'reka-ui'
 import { computed, onMounted, ref, shallowRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -56,10 +52,12 @@ function parseDate(val: string) {
 }
 
 const internalValue = shallowRef<DateRange>({ start: toDate(props.start), end: toDate(props.end) })
-const placeholder = ref<DateValue | undefined>(toDate(props.start) ?? toDate(props.end))
+// 왼쪽 달력은 start, 오른쪽 달력은 end 기준으로 독립 이동
+const SIDES = ['start', 'end'] as const
+const startView = shallowRef<DateValue | undefined>(toDate(props.start))
+const endView = shallowRef<DateValue | undefined>(toDate(props.end))
+const views = { start: startView, end: endView }
 const isOpen = ref(false)
-const prev = ref()
-const next = ref()
 const jump = ref('monthly')
 
 function useSegments(key: 'start' | 'end', initial: string) {
@@ -108,7 +106,7 @@ function useSegments(key: 'start' | 'end', initial: string) {
     if (yearStr.value.length === 4) {
       const yNum = parseInt(yearStr.value)
       const mNum = Math.min(Math.max(parseInt(monthStr.value) || 1, 1), 12)
-      placeholder.value = new CalendarDate(yNum, mNum, 1)
+      views[key].value = new CalendarDate(yNum, mNum, 1)
     }
     const dateVal = value()
     internalValue.value = { ...internalValue.value, [key]: dateVal }
@@ -255,6 +253,8 @@ const onUpdate = (value: DateRange) => {
   startSeg.setDate(s)
   endSeg.setDate(e)
   internalValue.value = { start: s, end: e }
+  if (s) startView.value = s
+  if (e) endView.value = e
   emit('update:start', s ? dateString(s) : '')
   emit('update:end', e ? dateString(e) : '')
   // 시작·종료가 모두 선택되면 닫고, 시작만 선택된 상태면 종료 선택을 위해 열어 둠
@@ -268,7 +268,7 @@ const onFocusOut = (e: FocusEvent) => {
     const sOk = startSeg.settle()
     const eOk = endSeg.settle()
     // 둘 다 비어 있으면 달력은 오늘 기준으로 복귀
-    if (!sOk && !eOk) placeholder.value = undefined
+    if (!sOk && !eOk) startView.value = endView.value = undefined
     isOpen.value = false
   }, 0)
 }
@@ -285,7 +285,7 @@ const syncFromProps = (key: 'start' | 'end', seg: ReturnType<typeof useSegments>
   const { y, m, d } = parseDate(val)
   seg.set(y, m, d)
   internalValue.value = { ...internalValue.value, [key]: dateVal }
-  if (dateVal) placeholder.value = dateVal
+  if (dateVal) views[key].value = dateVal
 }
 
 watch(() => props.start, syncFromProps('start', startSeg))
@@ -304,17 +304,24 @@ watch(
   })()
 )
 
-// 헤더 연/월 select: placeholder 기준(미입력 시 오늘)으로 표시, 선택 시 해당 월로 이동
-const headDate = computed(() => placeholder.value ?? today(getLocalTimeZone()))
-const years = computed(() => Array.from({ length: 31 }, (_, i) => headDate.value.year - 15 + i))
-const onYearChange = (e: Event) => {
-  placeholder.value = new CalendarDate(Number((e.target as HTMLSelectElement).value), headDate.value.month, 1)
+// 헤더 연/월 select: 각 달력의 표시 월. 미입력 시 오늘
+const startHead = computed(() => startView.value ?? today(getLocalTimeZone()))
+const endHead = computed(() => endView.value ?? today(getLocalTimeZone()))
+const heads = computed(() => ({ start: startHead.value, end: endHead.value }))
+const years = (year: number) => Array.from({ length: 31 }, (_, i) => year - 15 + i)
+const selectValue = (e: Event) => Number((e.target as HTMLSelectElement).value)
+const onYearChange = (key: 'start' | 'end', e: Event) => {
+  views[key].value = new CalendarDate(selectValue(e), heads.value[key].month, 1)
 }
-const onMonthChange = (e: Event) => {
-  placeholder.value = new CalendarDate(headDate.value.year, Number((e.target as HTMLSelectElement).value), 1)
+const onMonthChange = (key: 'start' | 'end', e: Event) => {
+  views[key].value = new CalendarDate(heads.value[key].year, selectValue(e), 1)
+}
+const shiftView = (key: 'start' | 'end', delta: -1 | 1) => {
+  const { year, month } = heads.value[key]
+  views[key].value = new CalendarDate(year, month, 1).add({ months: delta })
 }
 const goToday = () => {
-  placeholder.value = today(getLocalTimeZone())
+  startView.value = endView.value = today(getLocalTimeZone())
 }
 
 const shiftValue = (delta: -1 | 1) => {
@@ -326,15 +333,22 @@ const shiftValue = (delta: -1 | 1) => {
   startSeg.setDate(s)
   endSeg.setDate(e)
   internalValue.value = { start: s, end: e }
-  placeholder.value = s
+  startView.value = s
+  endView.value = e
   emit('update:start', dateString(s))
   emit('update:end', dateString(e))
 }
 
-const { onPointerDown, onPointerUp, onPointerCancel, onClickCapture, onWheel } = useDragNav(
-  () => prev.value?.$el.click(),
-  () => next.value?.$el.click()
-)
+const navs = {
+  start: useDragNav(
+    () => shiftView('start', -1),
+    () => shiftView('start', 1)
+  ),
+  end: useDragNav(
+    () => shiftView('end', -1),
+    () => shiftView('end', 1)
+  )
+}
 
 // <label>(Field) 안에 놓이면 셀(div) 클릭이 label 활성화로 이어져 첫 labelable 요소(before 버튼)가 클릭됨 → 차단
 const onClick = (e: MouseEvent) => {
@@ -383,14 +397,7 @@ const onKeydown = (e: KeyboardEvent) => {
         {{ label }}
       </i>
       <span class="relative inline-block" @click="onClick" @focusout="onFocusOut" @keydown="onKeydown">
-        <DateRangePickerRoot
-          v-model:placeholder="placeholder as DateValue"
-          :model-value="calendarValue"
-          :disabled="disabled || readonly"
-          :locale="locale"
-          :number-of-months="2"
-          @update:model-value="onUpdate"
-        >
+        <div>
           <div class="inline-flex items-center gap-1">
             <button
               v-if="!noButton"
@@ -518,114 +525,127 @@ const onKeydown = (e: KeyboardEvent) => {
             <Radio v-if="!noButton && !noOption" v-model="jump" :disabled="disabled || readonly" :items="JUMP_OPTIONS" />
           </div>
 
-          <div v-if="isOpen" class="absolute top-full left-0 z-50 rounded-md border border-gray-200 bg-white shadow-lg">
-            <DateRangePickerCalendar
-              v-slot="{ grid, weekDays }"
-              class="p-1 select-none"
-              @pointerdown="onPointerDown"
-              @pointerup="onPointerUp"
-              @pointercancel="onPointerCancel"
-              @click.capture="onClickCapture"
-              @wheel.prevent="onWheel"
-            >
-              <DateRangePickerHeader class="mb-1 flex items-center justify-between">
-                <DateRangePickerPrev
-                  ref="prev"
-                  tabindex="-1"
-                  class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-75"
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="m15 18-6-6 6-6" />
-                  </svg>
-                </DateRangePickerPrev>
-                <div class="flex items-center gap-1 font-semibold text-gray-900" @wheel.stop>
-                  <select
-                    :value="headDate.year"
+          <div
+            v-if="isOpen"
+            class="absolute top-full left-0 z-50 rounded-md border border-gray-200 bg-white p-1 shadow-lg select-none"
+          >
+            <div class="flex gap-3">
+              <RangeCalendarRoot
+                v-for="side in SIDES"
+                :key="side"
+                v-slot="{ grid, weekDays }"
+                :model-value="calendarValue"
+                :placeholder="heads[side]"
+                :disabled="disabled || readonly"
+                :locale="locale"
+                @update:model-value="onUpdate"
+                @pointerdown="navs[side].onPointerDown"
+                @pointerup="navs[side].onPointerUp"
+                @pointercancel="navs[side].onPointerCancel"
+                @click.capture="navs[side].onClickCapture"
+                @wheel.prevent="navs[side].onWheel"
+              >
+                <div class="mb-1 flex items-center" :class="side === 'start' ? 'justify-start' : 'justify-end'">
+                  <button
+                    v-if="side === 'start'"
+                    type="button"
                     tabindex="-1"
-                    class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
-                    @change="onYearChange"
+                    class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100"
+                    @click="shiftView('start', -1)"
                   >
-                    <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-                  </select>
-                  <select
-                    :value="headDate.month"
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="m15 18-6-6 6-6" />
+                    </svg>
+                  </button>
+                  <div class="mx-4 flex items-center gap-1 font-semibold text-gray-900" @wheel.stop>
+                    <select
+                      :value="heads[side].year"
+                      tabindex="-1"
+                      class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
+                      @change="onYearChange(side, $event)"
+                    >
+                      <option v-for="y in years(heads[side].year)" :key="y" :value="y">{{ y }}</option>
+                    </select>
+                    <select
+                      :value="heads[side].month"
+                      tabindex="-1"
+                      class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
+                      @change="onMonthChange(side, $event)"
+                    >
+                      <option v-for="m in 12" :key="m" :value="m">{{ String(m).padStart(2, '0') }}</option>
+                    </select>
+                  </div>
+                  <button
+                    v-if="side === 'end'"
+                    type="button"
                     tabindex="-1"
-                    class="head-select cursor-pointer rounded-md bg-transparent px-1 py-0.5 hover:bg-gray-100 focus:outline-none"
-                    @change="onMonthChange"
+                    class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100"
+                    @click="shiftView('end', 1)"
                   >
-                    <option v-for="m in 12" :key="m" :value="m">{{ String(m).padStart(2, '0') }}</option>
-                  </select>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  </button>
                 </div>
-                <DateRangePickerNext
-                  ref="next"
-                  tabindex="-1"
-                  class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-75"
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="m9 18 6-6-6-6" />
-                  </svg>
-                </DateRangePickerNext>
-              </DateRangePickerHeader>
 
-              <div class="relative z-1000 flex gap-3 text-sm">
-                <DateRangePickerGrid v-for="month in grid" :key="month.value.toString()">
-                  <DateRangePickerGridHead>
-                    <DateRangePickerGridRow class="flex">
-                      <DateRangePickerHeadCell
+                <RangeCalendarGrid v-for="month in grid" :key="month.value.toString()" class="text-sm">
+                  <RangeCalendarGridHead>
+                    <RangeCalendarGridRow class="flex">
+                      <RangeCalendarHeadCell
                         v-for="day in weekDays"
                         :key="day"
                         class="w-6 text-center font-medium text-gray-400"
                       >
                         {{ day }}
-                      </DateRangePickerHeadCell>
-                    </DateRangePickerGridRow>
-                  </DateRangePickerGridHead>
-                  <DateRangePickerGridBody class="space-y-px">
-                    <DateRangePickerGridRow v-for="(week, i) in month.rows" :key="i" class="flex">
-                      <DateRangePickerCell v-for="day in week" :key="day.toString()" :date="day" class="p-0">
-                        <DateRangePickerCellTrigger
+                      </RangeCalendarHeadCell>
+                    </RangeCalendarGridRow>
+                  </RangeCalendarGridHead>
+                  <RangeCalendarGridBody class="space-y-px">
+                    <RangeCalendarGridRow v-for="(week, i) in month.rows" :key="i" class="flex">
+                      <RangeCalendarCell v-for="day in week" :key="day.toString()" :date="day" class="p-0">
+                        <RangeCalendarCellTrigger
                           :day="day"
                           :month="month.value"
                           tabindex="-1"
                           class="inline-flex h-6 w-6 items-center justify-center rounded transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none data-disabled:pointer-events-none data-disabled:opacity-75 data-highlighted:rounded-none data-highlighted:bg-blue-100 data-outside-view:bg-transparent! data-outside-view:text-gray-300! data-selected:rounded-none data-selected:bg-blue-100 data-selection-end:rounded-r-md data-selection-end:bg-blue-600 data-selection-end:text-white data-selection-start:rounded-l-md data-selection-start:bg-blue-600 data-selection-start:text-white data-today:font-semibold data-today:text-blue-600 data-selection-end:data-today:text-white data-selection-start:data-today:text-white"
                         />
-                      </DateRangePickerCell>
-                    </DateRangePickerGridRow>
-                  </DateRangePickerGridBody>
-                </DateRangePickerGrid>
-              </div>
+                      </RangeCalendarCell>
+                    </RangeCalendarGridRow>
+                  </RangeCalendarGridBody>
+                </RangeCalendarGrid>
+              </RangeCalendarRoot>
+            </div>
 
-              <div class="flex justify-center border-t border-gray-100">
-                <button
-                  type="button"
-                  tabindex="-1"
-                  class="rounded-md px-3 py-1 font-medium text-blue-600 hover:bg-blue-50"
-                  @click="goToday"
-                >
-                  Today
-                </button>
-              </div>
-            </DateRangePickerCalendar>
+            <div class="flex justify-center border-t border-gray-100">
+              <button
+                type="button"
+                tabindex="-1"
+                class="rounded-md px-3 py-1 font-medium text-blue-600 hover:bg-blue-50"
+                @click="goToday"
+              >
+                Today
+              </button>
+            </div>
           </div>
-        </DateRangePickerRoot>
+        </div>
       </span>
     </label>
   </div>

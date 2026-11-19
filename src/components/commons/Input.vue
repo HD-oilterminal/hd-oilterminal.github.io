@@ -9,7 +9,7 @@ const props = withDefaults(
     type?: 'text' | 'number' | 'tel' | 'email' | 'password'
     label?: string
     labelSize?: string
-    placeholder?: string
+    placeholder?: string | string[]
     prefix?: string
     suffix?: string
     icon?: string
@@ -17,7 +17,7 @@ const props = withDefaults(
     disabled?: boolean
     readonly?: boolean
     class?: string
-    labelClass?: string
+    wrapClass?: string
     inputClass?: string
     linking?: boolean
     breadth?: boolean
@@ -32,7 +32,7 @@ const props = withDefaults(
     suffix: '',
     icon: undefined,
     class: '',
-    labelClass: '',
+    wrapClass: '',
     inputClass: ''
   }
 )
@@ -257,7 +257,7 @@ defineExpose({ input })
 </script>
 
 <template>
-  <div class="field-wrapper flex" :class="[breadth ? 'w-full' : 'w-fit', $props.labelClass]">
+  <div class="field-wrapper flex" :class="[breadth ? 'w-full' : 'w-fit', $props.wrapClass]">
     <label
       class="field field-input relative flex w-full items-center gap-1.5"
       :class="{ 'cursor-not-allowed': disabled || readonly, required, linking }"
@@ -285,7 +285,7 @@ defineExpose({ input })
           v-bind="$attrs"
           ref="input"
           :type="type"
-          :placeholder="placeholder"
+          :placeholder="Array.isArray(placeholder) ? placeholder.join(', ') : placeholder"
           :disabled="disabled"
           :readonly="readonly"
           :value="modelValue as string"
@@ -298,7 +298,7 @@ defineExpose({ input })
           ref="input"
           type="text"
           inputmode="tel"
-          :placeholder="placeholder"
+          :placeholder="Array.isArray(placeholder) ? placeholder.join(', ') : placeholder"
           :disabled="disabled"
           :readonly="readonly"
           :class="`w-full shrink grow bg-transparent tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800 ${props.inputClass}`"
@@ -318,7 +318,7 @@ defineExpose({ input })
           ref="input"
           type="text"
           inputmode="decimal"
-          :placeholder="placeholder"
+          :placeholder="Array.isArray(placeholder) ? placeholder.join(', ') : placeholder"
           :disabled="disabled"
           :readonly="readonly"
           :class="`w-full shrink grow bg-transparent px-0.5 text-right tabular-nums outline-none disabled:cursor-not-allowed disabled:text-gray-800 ${props.inputClass}`"
@@ -332,7 +332,7 @@ defineExpose({ input })
             }
           "
         />
-        <span v-if="suffix" class="shrink-0 text-sm font-bold text-gray-400" v-html="suffix"></span>
+        <span v-if="suffix" class="ml-0.5 shrink-0 text-sm font-bold text-gray-400" v-html="suffix"></span>
         <icon
           v-if="icon && !disabled"
           :name="icon"

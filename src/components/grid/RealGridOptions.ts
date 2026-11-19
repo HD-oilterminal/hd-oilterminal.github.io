@@ -8,6 +8,7 @@ import {
   type DataColumn,
   type DataFieldInput,
   DataProviderBase,
+  type DropDownCellEditor,
   GridBase,
   type GridCell,
   GridFitStyle,
@@ -398,16 +399,19 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
       def.labels = column.labels
       def.lookupDisplay = true
       if (def.editable) {
-        def.editor = {
-          type: 'dropdown',
-          domainOnly: true,
-          textReadOnly: true,
-          dropDownWhenClick: false,
-          dropDownWhenEnter: true,
-          ...column.editor
-        }
+        def.editor = { type: 'dropdown' }
         def.editButtonVisibility = 'always'
       }
+    }
+
+    if (def.editor?.type === 'dropdown') {
+      def.editor = {
+        domainOnly: true,
+        textReadOnly: true,
+        dropDownWhenClick: false,
+        dropDownWhenEnter: true,
+        ...column.editor
+      } as DropDownCellEditor
     }
 
     if (column.icon) {
