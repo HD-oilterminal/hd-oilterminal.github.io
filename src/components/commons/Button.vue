@@ -23,7 +23,7 @@ defineExpose({ focus: () => el.value?.focus() })
     ref="el"
     :disabled="disabled"
     :class="[
-      'btn inline-flex items-center justify-center rounded font-medium whitespace-nowrap transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-visible:ring-2 focus-visible:outline-none disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-50',
+      'btn inline-flex items-center justify-center rounded font-medium whitespace-nowrap transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-visible:ring-2 focus-visible:outline-none disabled:border-gray-400 disabled:bg-gray-100 disabled:text-gray-500 disabled:opacity-50',
       {
         xs: 'px-1 text-[11px]',
         sm: 'h-control-sm px-1.5',
@@ -31,7 +31,7 @@ defineExpose({ focus: () => el.value?.focus() })
         lg: 'h-12 px-3 text-base'
       }[size ?? 'md'],
       {
-        primary: 'bg-primary-500 hover:bg-primary-600 text-white',
+        primary: 'border-primary-600 bg-primary-500 hover:bg-primary-600 border text-white',
         secondary: 'border border-gray-500 bg-white text-gray-900 hover:bg-gray-200',
         norm: 'border border-gray-300 bg-white text-gray-500 hover:text-black',
         liner: 'border border-gray-300 bg-white/30 text-gray-500 hover:bg-gray-100',

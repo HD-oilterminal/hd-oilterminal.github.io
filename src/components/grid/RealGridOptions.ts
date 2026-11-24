@@ -406,6 +406,7 @@ const columnsAdapter = (columns: Record<string, Column>, editable?: boolean): Co
 
     if (def.editor?.type === 'dropdown') {
       def.editor = {
+        type: 'dropdown',
         domainOnly: true,
         textReadOnly: true,
         dropDownWhenClick: false,

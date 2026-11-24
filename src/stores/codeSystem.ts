@@ -7,7 +7,7 @@ import type { Code, Codes, Option } from '../types/core'
 export const SELECT_REQUIRED_LABEL = '<선택>'
 export const SELECT_REQUIRED = { value: '', label: SELECT_REQUIRED_LABEL }
 
-let codes: Ref<Codes, Codes>
+let codes = ref<Codes>({})
 
 export const select4Code = (
   code: string,
@@ -47,6 +47,8 @@ export const codeSystem = defineStore(
 
     const load = async (_codes?: Codes) => (codes.value = _codes ?? {})
 
+    const clear = () => (codes.value = {}) && console.debug('clear codes 🍀')
+
     const list = (code: string): Code[] => codes.value[code]
 
     const getName = (code: string, detailCode: any, _locale: Locale = locale.value): any => {
@@ -60,6 +62,7 @@ export const codeSystem = defineStore(
       all: codes,
       load,
       list,
+      clear,
       getName,
       locale,
       toOptions: select4Code

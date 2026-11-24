@@ -39,6 +39,12 @@ export const menuSystem = defineStore(
       menuLv2.value = _menus?.menu_lv2_list ?? []
     }
 
+    const clear = () => {
+      menuLv1.value = []
+      menuLv2.value = []
+      console.log('clear menus😉')
+    }
+
     const getSubMenus = (upperMenuId: string): MenuLv2Item[] => menuLv2.value.filter(m => m.upper_menu_id === upperMenuId)
 
     const hasAccess = (menuId: string): boolean =>
@@ -52,7 +58,18 @@ export const menuSystem = defineStore(
       descriptions.value[menuId] = description
     }
 
-    return { menuLv1, menuLv2, activeUpperMenuId, load, getSubMenus, hasAccess, descriptions, getDescription, setDescription }
+    return {
+      menuLv1,
+      menuLv2,
+      activeUpperMenuId,
+      load,
+      clear,
+      getSubMenus,
+      hasAccess,
+      descriptions,
+      getDescription,
+      setDescription
+    }
   },
   {
     persist: { pick: ['menuLv1', 'menuLv2', 'descriptions'], storage: sessionStorage }
